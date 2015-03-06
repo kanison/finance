@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="GBK"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd"
+	default-autowire="byName">
+	
+	<bean class="com.tenpay.sm.lang.extend.ValueExtension">
+		<property name="extensionPointBean" ref="payOrder"/>
+		<property name="extensionPointProperty"><value>contactList</value></property>
+		<property name="extensionValue"><value>1332434543</value></property>
+	</bean>
+	<bean class="com.tenpay.sm.lang.extend.ValueExtension">
+		<property name="extensionPointBean" ref="payOrder"/>
+		<property name="extensionPointProperty"><value>contactList</value></property>
+		<property name="extensionValue"><value>1332434543</value></property>
+	</bean>
+	
+	<bean class="com.tenpay.sm.lang.extend.ValueExtension">
+		<property name="extensionPointBean" ref="payOrder"/>
+		<property name="extensionPointProperty"><value>itemReceivers</value></property>
+		<property name="extensionKey"><value>tom</value></property>
+		<property name="extensionValue">
+			<bean class="com.tenpay.sm.test.domain.Customer">
+				<property name="firstName"><value>merry</value></property>
+				<property name="lastName"><value>kate</value></property>
+				<property name="gender"><value>female</value></property>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="tomAndJerry" class="com.tenpay.sm.test.domain.Customer">
+				<property name="firstName"><value>tom</value></property>
+				<property name="lastName"><value>jerry</value></property>
+				<property name="gender"><value>male</value></property>
+	</bean>
+	<bean class="com.tenpay.sm.lang.extend.ValueExtension">
+		<property name="extensionPointBeanName" value="payOrder"/>
+		<property name="extensionPointProperty"><value>itemReceivers</value></property>
+		<property name="extensionKey"><value>tom</value></property>
+		<property name="extensionValue" ref="tomAndJerry"/>
+	</bean>
+	
+	<bean class="com.tenpay.sm.lang.extend.ValueExtension">
+		<property name="extensionPointBean" ref="payOrder"/>
+		<property name="extensionPointProperty"><value>memos</value></property>
+		<property name="extensionValue" value="I am extension"/>
+	</bean>
+	
+	<bean class="com.tenpay.sm.lang.extend.ValueExtension">
+		<property name="extensionPointBean" ref="payOrder"/>
+		<property name="extensionPointProperty"><value>items</value></property>
+		<property name="extensionValue">
+			<bean class="com.tenpay.sm.test.domain.PurchaseItem">
+				<property name="quantity" value="2"/>
+				<property name="price" value="2.21"/>
+				<property name="itemNo" value="no.123"/>
+				<property name="itemName" value="i....phone"/>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean class="com.tenpay.sm.lang.extend.MethodInvokeExtension">
+		<property name="extensionPointBean" ref="payOrder"/>
+		<property name="methodSignature" 
+			value="addItemReceiver(java.lang.String arg1, com.tenpay.sm.test.domain.Customer arg2)"/>
+		<property name="arguments">
+			<list>
+				<value>from method invoke extension 1</value>
+				<bean class="com.tenpay.sm.test.domain.Customer">
+					<property name="firstName"><value>1 method invoke</value></property>
+					<property name="lastName"><value>extension</value></property>
+					<property name="gender"><value>male</value></property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean class="com.tenpay.sm.lang.extend.MethodInvokeExtension">
+		<property name="extensionPointBean" ref="payOrder"/>
+		<property name="methodName" value="addItemReceiver"/>
+		<property name="parameterTypes" value="java.lang.String, com.tenpay.sm.test.domain.Customer"/>
+		<property name="arguments">
+			<list>
+				<value>from method invoke extension 2</value>
+				<bean class="com.tenpay.sm.test.domain.Customer">
+					<property name="firstName"><value>2 method invoke</value></property>
+					<property name="lastName"><value>extension</value></property>
+					<property name="gender"><value>female</value></property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="payOrder" scope="request" class="com.tenpay.sm.test.domain.PayOrder"></bean>
+	
+</beans>

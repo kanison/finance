@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="GBK"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd"
+	default-autowire="byName">
+
+
+	<import resource="classpath:META-INF/spring/ApplicationContextPlatformTest.xml"/>
+	<import resource="classpath:META-INF/spring/sm-platform-lang-springreload.xml"/>
+	<import resource="classpath:META-INF/spring/sm-platform-web.xml"/>
+	<import resource="classpath:META-INF/spring/sm-platform-event.xml"/>
+	<import resource="classpath:META-INF/spring/sm-platform-client.xml"/>
+	<import resource="classpath:META-INF/spring/sm-platform-testcase-extension.xml"/>	
+	<import resource="classpath:META-INF/spring/sm-platform-testcase-cache.xml"/>
+	
+	<import resource="classpath:META-INF/spring/sm-platform-testcase-esbevent.xml"/>
+	<import resource="classpath:META-INF/spring/sm-platform-testcase-esbinvoke.xml"/>
+	<import resource="classpath:META-INF/spring/sm-platform-testcase-esbreceiver.xml"/>
+	
+	
+	<import resource="classpath:META-INF/spring/sm-platform-testcase-async.xml"/>
+</beans>

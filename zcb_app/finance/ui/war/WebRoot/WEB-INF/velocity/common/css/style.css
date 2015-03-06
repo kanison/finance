@@ -1,0 +1,500 @@
+/*********Base CSS************/
+/*Reset*/
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td {  margin:0; padding:0; } 
+table { border-collapse:collapse; border-spacing:0; } 
+img {  border:0; } 
+address,caption,cite,code,dfn,em,strong,th,var { font-style:normal; font-weight:normal; } 
+ol,ul { list-style:none; } 
+caption,th { text-align:left; } 
+h1,h2,h3,h4,h5,h6 { font-size:100%; font-weight:normal; } 
+q:before,q:after { content:''; } 
+abbr,acronym { border:0; } 
+/*Reset End*/
+/*Font*/
+h1 { font-size: 18px; }
+h2 { font-size: 16px; }
+h3 { font-size: 14px; }
+h1,h2,h3,h4,h5,h6,strong,dt { font-weight: bold; }
+optgroup { font-weight: normal; }
+abbr,acronym { border-bottom: 1px dotted #000; cursor: help; }
+em { font-style: italic; }
+del { text-decoration: line-through; }
+ol li { list-style: decimal outside; }
+dl dd { margin-left: 1em; }
+th { font-weight: bold; text-align: center; }
+caption { margin-bottom: .5em; text-align: center; }
+sup { vertical-align: super; }
+sub { vertical-align: sub; }
+button,input[type="checkbox"],input[type="radio"],input[type="reset"],input[type="submit"] { padding: 1px; }
+/*Font End*/
+/*********Base CSS End************/
+
+/**********General*******************/
+body { font:12px/1.2 Helvetica,Arial,sans-serif; }
+a { color: #07679c; text-decoration:underline; }
+a:hover { color: #FF7E00; }
+.clear:after { content:"."; display:block; height:0; clear:both; visibility:hidden; }
+.clear { zoom:1; }
+.text-clip { display:block; white-space: nowrap; text-overflow: ellipsis; overflow:hidden; } /* 必须设定元素的长度 */
+/**********General*******************/
+
+#wrapper {
+	width: 910px;  
+	margin: 0 auto; 
+}
+#container {
+	zoom: 1;
+	overflow: hidden !important;
+	overflow: visible;
+	padding-top: 30px; 
+	min-height: 400px;
+	_height: 400px;
+}
+#content {
+	float:left;
+	width: 700px;
+}
+#sidebar {
+	float:right;
+	width: 190px; 
+}
+#header {
+	border-bottom: 5px solid #066b9f;
+	height: 70px; 
+    overflow: hidden;
+}
+#header h1 {
+	width: 279px; 
+	height: 42px;
+	float:left;
+	margin-top: 20px; 
+}
+.common-header h1 a.tenpay {
+    background: url(../img/tenpay_logo.png) no-repeat left top !important;
+    width: 270px !important;
+    height: 45px !important;
+}
+#header h1 a.tenpay {
+	float:left; 
+	width: 122px;
+	height: 42px;
+	text-indent: -2000em;
+    overflow: hidden;
+    background: url(../img/lianlian_bg.png) no-repeat left top; 
+}
+#header h1 a.lianlian { 
+	float:left;
+	width: 135px;
+	height: 42px; 
+	text-indent: -2000em;
+	margin-left: 20px;
+	display: inline;
+    background: url(../img/lianlian_bg.png) no-repeat -141px 0;
+}
+#header h1 a.zhenghe { 
+    float:left;
+	width: 135px;
+	height: 42px; 
+	text-indent: -2000em;
+	margin-left: 20px;
+	display: inline;
+	background:url(../img/zhenghe_logo.png) no-repeat 0px 2px;
+}
+#header h1 a.ebaimi { 
+	float:left;
+	width: 135px;
+	height: 42px; 
+	text-indent: -2000em;
+	margin-left: 20px;
+	display: inline;
+    background: url(../img/ebaimi_logo.png) no-repeat 0 0;
+}
+#header h1 a.huahong { 
+    float:left;
+	width: 135px;
+	height: 42px; 
+	text-indent: -2000em;
+	margin-left: 20px;
+	display: inline;
+	background:url(../img/huahong_logo.png) no-repeat 0px 0px;
+}
+.header-info {
+	float:right;
+	margin-top: 48px;  
+	
+}
+.separator {
+	margin: 0 10px;
+}
+.title { 
+	font-size:14px;
+}
+.description {
+	color:#999;
+	margin-top: 3px; 
+	font-family: Tahoma,Arial,Sans-Serif;
+}
+.description ul {
+	padding-left: 16px;
+}
+.description li {
+	list-style-type: disc;
+	line-height: 1.8; 
+}
+
+/* =============流程步骤============ */
+.mod-step{color:#333;font-size:12px;*position:relative;*left:-40px;_left:0;}
+.mod-step ol{list-style:none;padding:0;}
+.mod-step li{list-style:none;float:left;padding:0 15px 0 42px;position:relative;}
+.mod-step li.first{padding-left:22px;}
+.mod-step li.on{font-size:14px;line-height:18px;font-weight:bold;}
+.mod-step li span,
+.mod-step li strong{width:11px;height:17px;display:block;margin:0 5px 0 0;padding:2px 0 0 26px;position:absolute;top:-4px;left:0;background:url(https://img.tenpay.com/v2.0/img/icons_v20090417.jpg) no-repeat -93px -747px;font:bold 12px Arial;color:#fefefc;}
+.mod-step li strong{padding-top:3px;}
+.mod-step li strong{background-position:-93px -718px;}
+.mod-step li.first strong,
+.mod-step li.first span{width:17px;height:17px;background-position:-113px -748px;text-align:center;padding:3px 0 0;}
+.mod-step li.first strong{background-position:-113px -718px;}
+.mod-step li.first span{padding:1px 0 0;}
+.mod-step ol:after{content:'.';display:block;clear:both;height:0;visibility:hidden;}
+.mod-step ol{zoom:1;width: 430px; margin: 0 auto;  }
+/* =============流程步骤============ */
+
+.mod-step {
+	margin: 35px 0;
+}
+.main-area {
+	width: 500px;  
+	margin: 35px auto; 
+	font-size:14px;
+	font-family: Tahoma,Arial,Sans-Serif;
+	font-size:14px;
+}
+.main-area table {
+	width: 100%;
+}
+.main-area td {
+	height: 45px;
+}
+.label-td { 
+	text-align:right; 
+	width: 150px; 
+}
+.indicator { 
+	color:#ff6733; 
+	font-size:12px;
+	margin-top: 3px; 
+}
+.left-valign { 
+	vertical-align:top;
+	padding-top: 10px; 
+}
+.right-valign {
+	vertical-align:top; 
+	padding-top: 8px; 
+}
+
+/*===============buttons and tabs=================*/
+.slide-btn,.high-blue,.low-blue,.high-white,.low-white,.high-dark,.low-dark,.high-light,.low-light
+{ border:none; width:auto; display: inline-block; overflow:hidden; height: 30px; cursor:pointer; font-weight: bold; text-align: center; vertical-align:middle; padding: 0 5px 0 0; width: auto; color:#FFF; text-align: center; background: url(https://img.tenpay.com/v2.0/img/bg_comb.png) no-repeat; text-decoration:none; font-family: Helvetica,Arial,Sans-serif;  }
+.slide-btn button,.high-blue button,.low-blue button,.high-white button,.low-white button,.high-dark button,.low-dark button,.high-light button,.low-light button
+{  border:none; white-space:nowrap; padding: 0 25px 0 30px; font-weight: bold; height: 30px; text-align: center; vertical-align:middle; background: #FFF url(https://img.tenpay.com/v2.0/img/bg_comb.png) no-repeat; cursor: pointer; overflow: visible; display:inline-block; }
+
+.high-blue,.high-dark,.high-white,.high-light {  height: 32px; font-size: 14px !important;  }
+.high-blue { background-position: 100% 0; }
+.high-dark { background-position: 100% -321px; } 
+.high-white { background-position: 100% -50px; }
+.high-light { background-position: 100% -581px; }
+
+.high-blue button,.high-dark button,.high-white button,.high-light button 
+{ padding-bottom: 5px; *padding-bottom: 0; padding-bottom /*\**/: 0\9;  color:#FFF; height: 32px;line-height: 27px;  font-size:14px !important; }
+.high-blue button { background-position: 0 0; color:#FFF;  }
+.high-dark button { background-position: 0 -321px; color:#CCC; }
+.high-white button { background-position: 0 -50px; color:#25558b; }
+.high-light button { background-position: 0 -581px; color:#CCC; }
+
+.low-blue,.low-dark,.low-white,.low-light { height: 25px; font-size: 12px !important; }
+.low-blue { background-position: 100% -100px; }
+.low-dark { background-position: 100% -540px; }
+.low-white  { background-position: 100% -141px; }
+.low-light { background-position: 100% -630px; }
+
+.low-blue button,.low-dark button,.low-white button,.low-light button 
+{  height: 25px; *line-height: 23px; _line-height: 20px; color:#FFF; padding-bottom: 5px !important; padding-bottom: 0; /* For IE6 */ _vertical-align:baseline !important;  font-size:12px !important; }
+.low-blue button { background-position: 0 -100px; }
+.low-dark button { background-position: 0 -540px; color:#CCC; }
+.low-white button,.low-light button { background-position: 0 -141px; color:#25558b; }
+.low-light button { background-position: 0 -630px; color:#CCC; }
+
+.little-pd button,.pd-10 button { padding-right: 5px; padding-left: 10px; }
+.pd-20 button { padding-right: 15px; padding-left: 20px; }
+.pd-30 button { padding-right: 25px; padding-left: 30px; }
+.much-pd button,.pd-40 button { padding-right: 35px; padding-left: 40px; }
+
+.txt-input {
+	padding: 1px; 
+	font-family: Tahoma,Arial,Sans-Serif;
+	margin-right: 5px; 
+	font-size:12px;
+	width: 90px; 
+}
+.btn-line td { 
+	padding-top: 15px; 
+}
+
+.activate-link { 
+	font-size:12px;
+	margin-left: 5px; 
+}
+#sidebar h4 {
+	 font-size:14px;
+}
+.help-links { 
+	line-height: 2;
+	margin-top: 10px; 
+}
+.recharge-record { 
+	width: 907px; 
+	border-collapse: collapse;
+	border-spacing: 0;
+	border: 1px solid #9eb0bc;
+	margin-left: 1px; 
+}
+.agent-id { 
+	margin-top: 15px;
+	font-size: 14px;
+	margin-bottom: 10px;
+}
+.recharge-record th,.recharge-record td {
+	height: 35px; 
+	text-align:center;
+	border-bottom: 1px solid #9db1bc;
+}
+.recharge-record td { 
+	height: 30px; 
+}
+.recharge-record th { 
+	background-color:#eff3f6; 
+}
+#record-query .label-td {
+	width: 120px;
+}
+.label-align {
+	text-align:right;
+}
+.time-select {
+	width: 80px;
+}
+.col1 {
+	width: 70px;
+}
+.col2 {
+	width: 450px;
+}
+.query-table { 
+	table-layout: fixed;
+	border-collapse: collapse;
+}
+#record-query .main-area {
+	width: 600px;
+}
+.type-select {
+	width: 152px;
+}
+
+.recharge-suc .icon {
+	float:left;
+	background:url(../img/lianlian_bg.png) no-repeat 0px -58px; 
+	width: 35px;
+	height: 38px; 
+}
+.suc-wrapper {
+	width: 700px;  
+	margin: 0 auto; 
+}
+.suc-text {
+	margin-left: 56px;  
+	padding-top: 10px; 
+	border-bottom: 1px solid #ddd;
+	padding-bottom: 25px; 
+}
+.suc-text strong {
+	font-size:14px; 
+	
+}
+.suc-text ul {
+	margin-top: 10px;
+	padding-left: 15px; 
+}
+.suc-text li {
+	line-height: 2;  
+	list-style-type: disc;
+}
+.online-help { 
+	background:url(../img/lianlian_bg.png) no-repeat -57px -65px;
+	padding: 4px 5px 2px 28px;
+	line-height: 1.5; 
+	text-decoration:none; 
+	color:#1a659f;
+	display: inline-block;
+}
+.online-help:hover {
+	color:#1a659f;
+}
+.suc-text .link-li {
+	list-style-type: none;
+}
+.info-table {
+	border-collapse: collapse;
+	border-spacing: 0;
+	margin: 20px 0 20px 60px; 
+}
+.info-table td {
+	height: 30px;  
+	
+}
+.info-table .left-td {
+	width: 86px;  
+	text-align:right; 
+}
+.get-back { 
+	background:url(../img/lianlian_bg.png) no-repeat 0px -107px;
+	padding: 4px 0 6px 0;
+	*padding-top: 5px; /* For IE */
+	padding-top: 5px\9; /* For IE 8 */
+	text-decoration:none; 
+	font-weight:bold;
+	margin-right: 10px; 
+	zoom: 1;
+	display: inline-block;
+	width: 134px;
+	text-align: center;
+}
+.get-back:hover {
+	color: #07679c;  
+	
+}
+.links-td a {
+	margin-right: 20px;  
+	vertical-align:middle;
+	
+}
+.links-td {
+	padding-top: 10px;
+}
+.err-info { 
+	color:red;
+	font-size:12px;
+	display:none;
+}
+.blue-btn { 
+	border: none;
+	width: 105px;
+	height: 32px;
+	background:url(../img/lianlian_bg.png) no-repeat -171px -99px;
+	color:#FFF;
+	font-weight:bold;
+	font-size:14px;
+	cursor: hand;
+}
+.err-td td { 
+	height: 15px; 
+}
+.err-alert {
+	font-size:14px; 
+	width: 500px;
+	margin: 50px auto 0;
+}
+.err-alert .icon { 
+	background:url(../img/lianlian_bg.png) no-repeat -171px -49px;
+	width: 35px;
+	height: 39px;
+	float:left;
+}
+.err-alert .err-text { 
+	margin-left: 50px;
+	_margin-left: 47px;
+	zoom: 1;
+	font-weight:bold;
+	margin-top: 10px;
+}
+.err-page .err-text {
+    padding-top: 10px;
+}
+.help-links .more { 
+	text-align: right;
+	padding: 5px 30px 0 0; 
+}
+
+/*===========small footer===========*/
+#small-footer { width:910px; text-align:center; padding:22px 0 35px 0;  margin: 0 auto; border-top: 1px solid #9db0bc; margin-top:30px;  }
+
+#record-query .main-area {
+	margin: 15px auto;  
+}
+.required {
+	color:#F00;
+}
+.tips { 
+	color:#A6A6A6;
+	font-size:12px;
+}
+.recharge-btn { 
+	background:url(../img/lianlian_bg.png) no-repeat -221px -56px;
+	padding:0 !important; 
+	float:left;
+	width: 56px; 
+	height:22px; 
+	text-indent: -2000em;
+	font-size:12px; 
+	margin-right:0 !important; 
+	overflow:hidden;
+	position:relative; 
+	top: -3px;
+}
+#select-date input { 
+	width: 30px; 
+}
+#select-date {
+	margin-top: 10px;  
+}
+#record-query td { 
+	height: 30px; 
+}
+#inpour td {
+	vertical-align:top;	
+}
+#inpour .label-td { 
+	padding-top: 2px; 
+}
+#inpour .btn-line td { 
+	padding-top: 0px;
+}
+.amount-tip {
+    margin-left: 15px;
+}
+/*易百米的帮助页面*/
+.article h3 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+.article p {
+    line-height: 1.6;
+    font-size: 13px;
+    margin: 0.5em 0;
+}
+.help #content {
+    width: 660px;
+}
+.help #sidebar {
+    background-color: #F2F8F5;
+    padding: 12px;
+    font-size: 13px;
+}
+.article .paras {
+    background-color: #FAFAFA;
+    padding: 15px;
+}
+.help .more {
+    margin-top: 30px;
+}

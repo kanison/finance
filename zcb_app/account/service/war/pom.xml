@@ -1,0 +1,31 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>zcb_app-account-service</artifactId>
+    <groupId>com.zhaocb.zcb_app</groupId>
+    <version>1.0</version>
+  </parent>
+  <groupId>com.zhaocb.zcb_app</groupId>
+  <artifactId>zcb_app-account-service-war</artifactId>
+  <version>1.0</version>
+  <packaging>war</packaging>
+  <name>zcb_app-account-service-war</name>
+  
+  <build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1-beta-1</version>
+				<configuration>
+					<webResources>
+						<resource>
+							<!-- this is relative to the pom.xml directory -->
+							<directory>WebRoot</directory>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

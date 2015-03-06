@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<!-- ========================================================== -->
+<!-- Configuration for ibatis sqlmap mapping. -->
+<!-- ========================================================== -->
+
+
+<sqlMap namespace="user">
+
+	<update id="updateDeviceInfo" parameterClass="com.zhaocb.zcb_app.finance.service.facade.dataobject.DeviceInfoDO">
+		update
+		t_device_info set
+		<isNotEqual property="state" compareValue="0">
+			Fstate = #state# ,
+		</isNotEqual>
+			FModifyTime = NOW()
+		where
+			FdeviceId = #deviceId#
+	</update>
+	
+</sqlMap>

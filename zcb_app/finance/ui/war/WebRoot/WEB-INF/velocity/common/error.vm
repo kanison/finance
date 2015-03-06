@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <title>91fuweng</title>
+  <link rel="stylesheet" type="text/css" href="common/css/style.css" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
+#set ($uin = '用户')
+  <div id="wrapper">
+	#parse ('./header.vm')
+    <div id="container">
+	<div class="err-alert">
+		<div class="icon"></div>
+		<div class="err-text">系统繁忙，请稍候再试或联系客服</div>
+		<div class="err-text">$!{errorCode.message} [$!{errorCode.code}]</div>
+	</div>
+    </div>
+    #include ('./footer.vm')
+    </div>
+</body>
+</html>

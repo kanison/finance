@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<artifactId>zcb_app-finance-ui</artifactId>
+		<groupId>com.zhaocb.zcb_app.finance</groupId>
+		<version>1.0</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion><properties><project.build.sourceEncoding>GBK</project.build.sourceEncoding><maven.compiler.encoding>GBK</maven.compiler.encoding></properties>
+	<groupId>com.zhaocb.zcb_app.finance</groupId>
+	<artifactId>zcb_app-finance-ui-war</artifactId>
+	<packaging>war</packaging>
+	<name>zcb_app-finance-ui-war</name>
+	<version>1.0</version>
+	<dependencies>
+		
+		<dependency>
+			<groupId>com.zhaocb.zcb_app.finance</groupId>
+			<artifactId>zcb_app-finance-ui-web</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+		</dependency>
+		
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1-beta-1</version>
+				<configuration>
+					<webResources>
+						<resource>
+							<!-- this is relative to the pom.xml directory -->
+							<directory>WebRoot</directory>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

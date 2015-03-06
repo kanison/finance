@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="GBK"?>
+<sm:ifLogin xmlns:sm="http://www.tenpay.com/sm">
+	<sm:for times="3">
+		你的用户名：<sm:userName/>，
+		你的余额：<sm:balance/>元。
+		你的用户名：${user.userName}，
+		你的余额：${user.balance}元。	
+		<sm:if test="${user.balance>300}">
+			<h2 color="red">你好有钱啊</h2>
+		</sm:if>	
+	</sm:for>
+	<script language="javascript">
+		alert('脚本可以执行吗？');
+		window.opener = null;
+		window.close();
+	</script>
+</sm:ifLogin>

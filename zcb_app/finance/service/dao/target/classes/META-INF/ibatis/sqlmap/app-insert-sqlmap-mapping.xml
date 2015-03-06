@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+	<!-- ==========================================================  -->
+	<!-- Configuration for ibatis sqlmap mapping.                    -->
+	<!-- ==========================================================  -->
+
+<sqlMap namespace="user">
+
+	<insert id="insertDeviceInfo"
+		parameterClass="com.zhaocb.zcb_app.finance.service.facade.dataobject.DeviceInfoDO">
+		INSERT INTO t_device_info
+		(FdeviceId, Fimei, Fmac, Fmac2, Fextr, FappVer,FchannelId,FplatType, FclientIp, Fstate, FcreateTime,FmodifyTime)
+		VALUES
+		(#deviceId#, #imei#, #mac#, #mac2#, #extr#, #appVer#,#channelId#,#platType#, #clientIp#, #state#, NOW(), NOW())
+		<selectKey resultClass="java.lang.Long" keyProperty="itemId">
+			SELECT LAST_INSERT_ID() AS itemId   
+        </selectKey>
+	</insert>
+
+	
+</sqlMap>

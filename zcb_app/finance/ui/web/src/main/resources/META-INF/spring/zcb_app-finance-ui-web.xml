@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		 http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/osgi
+         http://www.springframework.org/schema/osgi/spring-osgi.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd"
+	default-autowire="byName">
+	<context:component-scan base-package="com.zhaocb.app.website.web"
+		name-generator="com.tenpay.sm.lang.beanname.LowercaseUnderlineBeanNameGenerator">
+		<context:include-filter type="annotation"
+			expression="org.springframework.web.bind.annotation.RequestMapping" />
+	</context:component-scan>
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	</bean>
+	
+	<bean id="multiExtBeanNameUrlHandlerMapping" parent="abstractHandlerMapping"
+		class="com.tenpay.sm.web.handler.MultiExtBeanNameUrlHandlerMapping">		
+		<property name="order" value="4"></property>
+		<property name="suffixes">
+			<list>
+				<value>.htm</value>
+				<value>.jhtm</value>
+				<value>.JSP</value>
+				<value>.vhtm</value>
+				<value>.json</value>
+				<value>.xml</value>
+				<value>.rest</value>				
+				<value>.pull</value>
+				<value>.api</value>
+				<value>.xmlori</value>
+				<value>.raw</value>	
+				<value>.cgi</value>
+				<value>.xls</value>
+				<value>.relay</value>	
+				<value>.wechat</value>			
+			</list>
+		</property>
+	</bean>	
+	
+    <bean id="fundFacade" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+        <property name="serviceUrl" value="${fundServiceUrl}"/>
+        <property name="serviceInterface" value="com.zhaocb.zcb_app.finance.service.facade.FundFacade"/> 
+    </bean>
+    
+</beans>

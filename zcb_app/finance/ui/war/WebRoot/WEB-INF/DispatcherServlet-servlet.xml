@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="GBK"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		 http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/osgi
+         http://www.springframework.org/schema/osgi/spring-osgi.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd"
+	default-autowire="byName">
+
+	<import resource="classpath:META-INF/spring/sm-platform-web.xml"/>
+	<import resource="classpath:META-INF/spring/sm-platform-client.xml"/>
+	<import resource="classpath:META-INF/spring/zcb_app-finance-ui-web.xml"/>
+	<import resource="classpath:META-INF/spring/base_common-web.xml"/>
+	
+</beans>

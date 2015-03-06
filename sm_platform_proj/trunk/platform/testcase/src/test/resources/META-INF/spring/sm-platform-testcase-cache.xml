@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="GBK"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		 http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/osgi
+         http://www.springframework.org/schema/osgi/spring-osgi.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd"
+	default-autowire="byName">
+	
+	<bean id="memCachedConfig" class="com.tenpay.sm.cache.center.MemCachedConfig">
+		<property name="servers">
+			<list>
+				<value>localhost:11211</value>
+				<value>localhost:11211</value>
+				<value>localhost:11211</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="javaMemCachedWrapper" class="com.tenpay.sm.cache.center.JavaMemCachedWrapper">
+		<property name="memCachedConfig" ref="memCachedConfig"></property>
+	</bean>
+	<bean id="spyMemCachedWrapper" class="com.tenpay.sm.cache.center.SpyMemCachedWrapper">
+		<property name="memCachedConfig" ref="memCachedConfig"></property>
+	</bean>
+</beans>

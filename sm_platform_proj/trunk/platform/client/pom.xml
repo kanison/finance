@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion><properties><project.build.sourceEncoding>GBK</project.build.sourceEncoding><maven.compiler.encoding>GBK</maven.compiler.encoding></properties>
+
+	<parent>
+		<groupId>com.tenpay.sm</groupId>
+		<artifactId>sm-platform</artifactId>
+		<version>1.0</version>
+	</parent>
+
+	<groupId>com.tenpay.sm.platform</groupId>
+	<artifactId>sm-platform-client</artifactId>
+	<version>1.0</version>
+
+	<name>sm-platform-client</name>
+	<url>https://www.tenpay.com/sm</url>
+	<description>sm-platform-client...</description>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>org.codehaus.xfire</groupId>
+			<artifactId>xfire-spring</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.tenpay.sm.platform</groupId>
+			<artifactId>sm-platform-lang</artifactId>
+		</dependency>
+
+	</dependencies>
+</project>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		 http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/osgi
+         http://www.springframework.org/schema/osgi/spring-osgi.xsd
+         http://www.springframework.org/schema/aop 
+         http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd"
+	default-autowire="byName">
+	
+	<bean id="toCgiViewResolver" class="com.app.common.view.ToCgiViewResolver">
+		<property name="order" value="15"></property>
+	</bean>
+	<bean id="toCgiView" class="com.app.common.view.ToCgiView" />
+	<bean id="toAPIViewResolver" class="com.app.common.view.ToAPIViewResolver">
+		<property name="order" value="10"></property>
+	</bean>
+	<bean id="toAPIView" class="com.app.common.view.ToAPIView" />
+	
+	<bean id="multiExtBeanNameUrlHandlerMapping" parent="abstractHandlerMapping"
+		class="com.tenpay.sm.web.handler.MultiExtBeanNameUrlHandlerMapping">		
+		<property name="order" value="4"></property>
+		<property name="suffixes">
+			<list>
+				<value>.htm</value>
+				<value>.jhtm</value>
+				<value>.JSP</value>
+				<value>.vhtm</value>
+				<value>.json</value>
+				<value>.xml</value>
+				<value>.rest</value>				
+				<value>.pull</value>
+				<value>.api</value>
+				<value>.xmlori</value>
+				<value>.raw</value>	
+				<value>.cgi</value>
+				<value>.xls</value>		
+			</list>
+		</property>
+	</bean>	
+	
+	<!-- use aop -->
+	<aop:aspectj-autoproxy />
+
+	<!--aspect-->
+	<bean id="logMethod" class="com.app.aop.aspect.LogMethod" />
+	
+	<bean id="cacheMethod" class="com.app.aop.aspect.CacheMethod" />
+	<bean id="cacheMethod10SAspect"
+		class="com.app.aop.aspect.CacheMethod10SAspect" />
+	<bean id="cacheMethod300SAspect"
+		class="com.app.aop.aspect.CacheMethod300SAspect" />
+	<bean id="cacheMethod30SAspect"
+		class="com.app.aop.aspect.CacheMethod30SAspect" />
+	<bean id="cacheMethod3600SAspect"
+		class="com.app.aop.aspect.CacheMethod3600SAspect" />
+	<bean id="cacheMethod60SAspect"
+		class="com.app.aop.aspect.CacheMethod60SAspect" />
+	<bean id="cacheMethod600SAspect"
+		class="com.app.aop.aspect.CacheMethod600SAspect" />
+	<bean id="cacheMethodAspect"
+		class="com.app.aop.aspect.CacheMethodAspect" />
+	<bean id="cacheMethod365DAspect"
+		class="com.app.aop.aspect.CacheMethod365DAspect" />
+		
+	<bean id="remoteCacheMethod" class="com.app.aop.aspect.RemoteCacheMethod" />
+	<bean id="remoteCacheMethod10SAspect"
+		class="com.app.aop.aspect.RemoteCacheMethod10SAspect" />
+	<bean id="remoteCacheMethod600SAspect"
+		class="com.app.aop.aspect.RemoteCacheMethod600SAspect" />
+	<bean id="remoteCacheMethod30SAspect"
+		class="com.app.aop.aspect.RemoteCacheMethod30SAspect" />
+	<bean id="remoteCacheMethod60SAspect"
+		class="com.app.aop.aspect.RemoteCacheMethod60SAspect" />
+	<bean id="remoteCacheMethod300SAspect"
+		class="com.app.aop.aspect.RemoteCacheMethod300SAspect" />
+	<bean id="remoteCacheMethod3600SAspect"
+		class="com.app.aop.aspect.RemoteCacheMethod3600SAspect" />
+
+	<bean id="asyncCacheMethod" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<value>com.app.aop.aspect.CacheMethodFacade
+			</value>
+		</property>
+		<property name="target">
+			<ref bean="cacheMethod" />
+		</property>
+		<property name="interceptorNames">
+			<list>
+				<value>asyncCacheMethodInvokeInterceptor</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="asyncCacheMethodInvokeInterceptor"
+		class="com.tenpay.sm.lang.async.AsyncInvokeInterceptor">
+		<property name="taskExecutor">
+			<ref bean="asyncCacheMethodThreadPoolTaskExecutor" />
+		</property>
+	</bean>
+	<bean id="asyncCacheMethodThreadPoolTaskExecutor"
+		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="5" />
+		<property name="maxPoolSize" value="10" />
+		<property name="queueCapacity" value="100" />
+	</bean>
+	
+	<bean id="aliSpyMemCache" name="AliSpyMemCacheFacade"
+		class="com.app.utils.AliSpyMemCachedWrapper">
+	</bean>
+	
+</beans>

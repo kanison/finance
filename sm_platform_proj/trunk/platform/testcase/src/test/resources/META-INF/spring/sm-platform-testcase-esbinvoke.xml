@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="GBK"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:jms="http://www.springframework.org/schema/jms"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		 http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/osgi
+         http://www.springframework.org/schema/osgi/spring-osgi.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd
+         http://www.springframework.org/schema/jms
+         http://www.springframework.org/schema/jms/spring-jms.xsd"
+	default-autowire="byName">
+	
+	<bean id="jmsConnectionFactoryForTestEsbInvoke" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="userName"><value></value></property>
+		<property name="password"><value></value></property>
+		<property name="brokerURL"><value>tcp://localhost:61616</value></property>
+	</bean>
+	<bean id="jmsTemplateForTestEsbInvoke" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory"><ref bean="jmsConnectionFactoryForTestEsbInvoke"/></property>
+		<property name="defaultDestinationName"><value>SimpleFacade.Topic</value></property>
+		<property name="pubSubDomain"><value>true</value></property>
+		<property name="explicitQosEnabled"><value>true</value></property>
+		<property name="pubSubNoLocal"><value>true</value></property>
+		<property name="deliveryMode"><value>2</value></property>
+		<property name="timeToLive"><value>600000</value></property>
+		<property name="sessionTransacted"><value>true</value></property>
+		<property name="sessionAcknowledgeMode"><value>2</value></property>
+	</bean>
+	<bean id="esbEventEngineForTestEsbInvoke" class="com.tenpay.sm.event.engine.EsbEventEngineImpl">
+		<property name="afterTransactionCommit"><value>true</value></property>
+		<property name="defaultJmsTemplate" ref="jmsTemplateForTestEsbInvoke"></property>
+		<property name="jmsTemplates">
+			<map>
+				<entry key="SimpleFacade.Channel">
+					<ref bean="jmsTemplateForTestEsbInvoke"/>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="simpleFacadeEsbAsyncInvokeInterceptor" class="com.tenpay.sm.event.asyncinvoke.EsbAsyncInvokeInterceptor">
+		<property name="asyncInvokeEsbEventEngine"><ref bean="esbEventEngineForTestEsbInvoke"/></property>
+		<property name="targetBeanName"><value>simpleFacade</value></property>
+		<property name="channel"><value>SimpleFacade.Channel</value></property>
+	</bean>
+	<bean id="esbAsyncSimpleFacade" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<value>com.tenpay.sm.test.async.SimpleFacade</value>
+		</property>
+		<property name="interceptorNames">
+			<list>
+				<value>simpleFacadeEsbAsyncInvokeInterceptor</value>
+			</list>
+		</property>
+	</bean>
+	
+</beans>
