@@ -22,7 +22,7 @@ public class KanisonTest {
 
 		CommonOutput out = new CommonOutput();
 		out.setRetCode(123);
-		out.setRetMsg("kanison hello   wahaha");
+		out.setRetMsg("kanison hello wahaha");
 		return out;
 	}
 }
