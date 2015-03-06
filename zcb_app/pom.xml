@@ -13,7 +13,7 @@
 		<module>finance</module>
     <module>account</module>
   </modules>
-	<build>
+	<build>  
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
