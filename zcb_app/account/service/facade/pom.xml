@@ -9,4 +9,22 @@
   <artifactId>zcb_app-account-service-facade</artifactId>
   <version>1.0</version>
   <name>zcb_app-account-service-facade</name>
+  <dependencies>
+  	<dependency>
+  		<groupId>com.tenpay.sm.platform</groupId>
+  		<artifactId>sm-platform-lang</artifactId>
+  	</dependency>
+  	<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+	</dependency>
+
+	<dependency>
+		<groupId>com.zhaocb.common</groupId>
+		<artifactId>zcb_common</artifactId>
+		<version>1.0</version>
+		<type>pom</type>
+		<scope>compile</scope>
+	</dependency>
+  </dependencies>
 </project>
