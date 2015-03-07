@@ -424,12 +424,7 @@
 			</dependency>
 			<dependency>
 				<groupId>com.zhaocb.common.base-common</groupId>
-  				<artifactId>zcb_common_base-common</artifactId>
-  				<version>1.0</version>
-  			</dependency>
-			<dependency>
-				<groupId>com.51fuweng.common.user-common</groupId>
-				<artifactId>common_user-common</artifactId>
+				<artifactId>zcb_common_base-common</artifactId>
 				<version>1.0</version>
 				<type>jar</type>
 				<scope>compile</scope>

@@ -73,7 +73,8 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 		return null;
 	}
 
-	public void userAccountTranfer(UserAccountRollDO userAccountRollDO) {
+	public void userAccountTranfer(UserAccountRollDO fromUserAccountRollDO,
+			UserAccountRollDO toUserAccountRollDO) {
 		// TODO Auto-generated method stub
 		
 	}

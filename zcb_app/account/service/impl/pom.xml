@@ -9,4 +9,36 @@
   <artifactId>zcb_app-account-service-impl</artifactId>
   <version>1.0</version>
   <name>zcb_app-account-service-impl</name>
+  <dependencies>
+  	<dependency>
+			<groupId>com.tenpay.sm.platform</groupId>
+			<artifactId>sm-platform-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.tenpay.sm.platform</groupId>
+			<artifactId>sm-platform-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.caucho</groupId>
+			<artifactId>hessian</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>memcached</groupId>
+			<artifactId>memcached</artifactId>
+			<version>2.8.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.zhaocb.common.base-common</groupId>
+			<artifactId>zcb_common_base-common</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.zhaocb.zcb_app</groupId>
+			<artifactId>zcb_app-account-service-facade</artifactId>
+			<version>1.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+  </dependencies>
 </project>

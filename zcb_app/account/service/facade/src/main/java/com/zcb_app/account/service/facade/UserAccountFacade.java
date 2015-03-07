@@ -1,9 +1,11 @@
-package com.zcb_app.account.service.dao;
+package com.zcb_app.account.service.facade;
 
 import com.zcb_app.account.service.facade.dataobject.UserAccountDO;
 import com.zcb_app.account.service.facade.dataobject.UserAccountRollDO;
 
-public interface UserAccountDAO {
+
+
+public interface UserAccountFacade {
 	public void createUserAccount(UserAccountDO userAccountDO);
 
 	public UserAccountDO queryUserAccount(UserAccountDO userAccountDO);
