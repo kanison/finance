@@ -6,11 +6,11 @@
 		<maven.compiler.encoding>GBK</maven.compiler.encoding>
 	</properties>
 	<groupId>com.zhaocb.zcb_app</groupId>
-	<artifactId>zcb_app</artifactId>
+	<artifactId>zcb_app</artifactId> 
 	<version>1.0</version>
 	<packaging>pom</packaging>
 	<modules>
-		<module>finance</module>
+		<module>finance</module>  
     <module>account</module>
   </modules>
 	<build>  
