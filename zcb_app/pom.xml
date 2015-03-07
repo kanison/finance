@@ -10,7 +10,7 @@
 	<version>1.0</version>
 	<packaging>pom</packaging>
 	<modules>
-		<module>finance</module>
+		<module>finance</module>  
     <module>account</module>
   </modules>
 	<build>  
