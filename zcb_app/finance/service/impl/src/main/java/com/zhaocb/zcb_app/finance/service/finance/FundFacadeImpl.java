@@ -1,4 +1,4 @@
-package com.zhaocb.zcb_app.finance.service.fund;
+package com.zhaocb.zcb_app.finance.service.finance;
 
 import java.util.Map;
 import java.util.Random;
@@ -9,14 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.app.utils.AliSpyMemCachedWrapper;
 import com.zhaocb.zcb_app.finance.service.dao.FundDAO;
-import com.zhaocb.zcb_app.finance.service.facade.FundAssistFacade;
 import com.zhaocb.zcb_app.finance.service.facade.FundFacade;
 import com.zhaocb.zcb_app.finance.service.facade.dataobject.DeviceInfoDO;
 
 public class FundFacadeImpl implements FundFacade {
 	private static final Log LOG = LogFactory.getLog(FundFacadeImpl.class);
 	private FundDAO fundDAO;
-	private FundAssistFacade asyncFundAssist;
+
 	private Random random = new Random();
 	private Map<String, String> appConfig;
 	private AliSpyMemCachedWrapper aliSpyMemCache;
@@ -27,14 +26,6 @@ public class FundFacadeImpl implements FundFacade {
 
 	public void setFundDAO(FundDAO fundDAO) {
 		this.fundDAO = fundDAO;
-	}
-
-	public FundAssistFacade getAsyncFundAssist() {
-		return asyncFundAssist;
-	}
-
-	public void setAsyncFundAssist(FundAssistFacade asyncFundAssist) {
-		this.asyncFundAssist = asyncFundAssist;
 	}
 
 	public Map<String, String> getAppConfig() {
