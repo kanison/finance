@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+	<!-- ==========================================================  -->
+	<!-- Configuration for ibatis sqlmap mapping.                    -->
+	<!-- ==========================================================  -->
+
+<sqlMap namespace="user">
+
+	<select id="queryDeviceInfo"
+		resultClass="com.zhaocb.zcb_app.finance.service.facade.dataobject.DeviceInfoDO">
+		SELECT 
+			FitemId	itemId,
+			FdeviceId	deviceId,
+			Fimei	imei,
+			Fmac	mac,
+			Fmac2	mac2,
+			Fextr	extr,
+			FappVer	appVer,
+			FchannelId	channelId,
+			FplatType	platType,
+			FclientIp clientIp,
+			Fstate state,
+			FcreateTime	createTime,
+			FmodifyTime	modifyTime
+		FROM t_device_info
+		where 
+			Fstate	= 1
+			<isNotEqual  property="itemId" compareValue="0">
+				and FitemId = #itemId#
+			</isNotEqual>
+			<isNotEqual  property="deviceId" compareValue="0">
+				and FdeviceId = #deviceId#
+			</isNotEqual>
+			<isNotEmpty property="imei">
+				and Fimei = #imei#
+			</isNotEmpty>
+	</select>
+	
+
+</sqlMap>

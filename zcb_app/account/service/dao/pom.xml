@@ -9,4 +9,38 @@
   <artifactId>zcb_app-account-service-dao</artifactId>
   <version>1.0</version>
   <name>zcb_app-account-service-dao</name>
+  <dependencies>
+  		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.ibatis</groupId>
+			<artifactId>ibatis2-sqlmap</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.tenpay.sm.platform</groupId>
+			<artifactId>sm-platform-lang</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>c3p0</groupId>
+		    <artifactId>c3p0</artifactId>
+		</dependency> 				
+  	<dependency>
+  		<groupId>com.zhaocb.zcb_app</groupId>
+  		<artifactId>zcb_app-account-service-facade</artifactId>
+  		<version>1.0</version>
+  		<scope>compile</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.zhaocb.common.base-common</groupId>
+  		<artifactId>zcb_common_base-common</artifactId>
+  		<version>1.0</version>
+  		<scope>compile</scope>
+  	</dependency>
+  </dependencies>
 </project>
