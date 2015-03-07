@@ -32,7 +32,7 @@ public class UserAccountRollDO implements Serializable {
 	private int state;// 用户状态
 	private Date create_time;// 创建时间
 	private Date modify_time;// 修改时间
-	private String acc_time;
+	private String trade_time; //交易时间，分库分表字段
 	private String memo;
 
 	public int getState() {
@@ -179,12 +179,12 @@ public class UserAccountRollDO implements Serializable {
 		modify_time = modifyTime;
 	}
 
-	public String getAcc_time() {
-		return acc_time;
+	public String getTrade_time() {
+		return trade_time;
 	}
 
-	public void setAcc_time(String accTime) {
-		acc_time = accTime;
+	public void setTrade_time(String tradeTime) {
+		trade_time = tradeTime;
 	}
 
 	public static void main(String[] args) {
