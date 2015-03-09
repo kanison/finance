@@ -9,7 +9,12 @@ public class WebServiceRetException  extends ErrorCodeException{
 	 */
 	private static final long serialVersionUID = 4660797621140148970L;
 	public static final String SYSTEM_ERROR="20210000";//系统错误
-	public static final String APP_ERROR="20220000";//系统错误
+	public static final String UNEXPECTED_ERR="20210001";  // 不期望出现的异常，日志中最好打出期望的是什么，本次出现的是什么
+	
+	
+	
+	public static final String APP_ERROR="20220000";//业务错误
+	public static final String APP_CREDIT_QUOTO_NOT_ENOUGH="20220001";//商户可用额度不足
 	public WebServiceRetException(String msg) {
 		super(msg);
 	}

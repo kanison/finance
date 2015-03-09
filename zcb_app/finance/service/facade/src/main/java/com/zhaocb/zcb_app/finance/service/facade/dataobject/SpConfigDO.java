@@ -8,10 +8,10 @@ public class SpConfigDO implements java.io.Serializable{
 	private static final long serialVersionUID = -7370065146778855896L;
 	public String uid;
 	public String spid;
-	public String sp_name;
+	public String spName;
 	public String lstate; // 物理状态  1 有效;2 无效 该用户不可用
-	public long auth_flag; // 权限控制位
-	public String sign_key;
+	public long authFlag; // 权限控制位
+	public String signKey; // 商户签名key
 	public String createTime;
 	public String modifyTime;
 	public String memo;
@@ -30,11 +30,11 @@ public class SpConfigDO implements java.io.Serializable{
 	public void setSpid(String spid) {
 		this.spid = spid;
 	}
-	public String getSp_name() {
-		return sp_name;
+	public String getSpName() {
+		return spName;
 	}
-	public void setSp_name(String sp_name) {
-		this.sp_name = sp_name;
+	public void setSpName(String spName) {
+		this.spName = spName;
 	}
 	public String getLstate() {
 		return lstate;
@@ -42,18 +42,17 @@ public class SpConfigDO implements java.io.Serializable{
 	public void setLstate(String lstate) {
 		this.lstate = lstate;
 	}
-	
-	public long getAuth_flag() {
-		return auth_flag;
+	public long getAuthFlag() {
+		return authFlag;
 	}
-	public void setAuth_flag(long auth_flag) {
-		this.auth_flag = auth_flag;
+	public void setAuthFlag(long authFlag) {
+		this.authFlag = authFlag;
 	}
-	public String getSign_key() {
-		return sign_key;
+	public String getSignKey() {
+		return signKey;
 	}
-	public void setSign_key(String sign_key) {
-		this.sign_key = sign_key;
+	public void setSignKey(String signKey) {
+		this.signKey = signKey;
 	}
 	public String getCreateTime() {
 		return createTime;
@@ -85,5 +84,7 @@ public class SpConfigDO implements java.io.Serializable{
 	public void setAdvanceTypeConfigDo(AdvanceTypeConfigDO advanceTypeConfigDo) {
 		this.advanceTypeConfigDo = advanceTypeConfigDo;
 	}
+	
+	
 	
 }

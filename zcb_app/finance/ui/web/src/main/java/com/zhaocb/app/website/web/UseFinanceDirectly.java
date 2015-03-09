@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.app.aop.annotation.LogMethod;
 import com.zhaocb.app.website.web.model.UseFinanceInput;
 import com.zhaocb.app.website.web.model.UseFinanceOutput;
+import com.zhaocb.app.website.web.util.FinanceWebComm;
 import com.zhaocb.zcb_app.finance.service.facade.FinanceFacade;
 import com.zhaocb.zcb_app.finance.service.facade.FundFacade;
+import com.zhaocb.zcb_app.finance.service.facade.dataobject.SpConfigDO;
 
 
 @RequestMapping
@@ -32,7 +34,8 @@ public class UseFinanceDirectly {
 		// 检查参数
 		checkParam(useFinanceInput);
 		// 检查额度是否可用
-		//checkCreditMoney(useFinanceInput);
+		SpConfigDO spConfigDO = financeFacade.querySpConfig(useFinanceInput.getSpid(), useFinanceInput.getBizCode());
+		FinanceWebComm.checkCreditBalance(spConfigDO, useFinanceInput.getTotalFee());  // 不足直接抛出异常
 		// 记录订单
 		
 		// 垫资账户c2c转账给提现

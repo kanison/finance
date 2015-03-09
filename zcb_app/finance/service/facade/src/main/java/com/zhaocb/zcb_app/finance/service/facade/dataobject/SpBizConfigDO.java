@@ -8,19 +8,20 @@ public class SpBizConfigDO implements Serializable{
 	 */
 	private static final long serialVersionUID = 2927833138870413703L;
 	public String spid;
-	public String biz_code; // 业务号
+	public String bizCode; // 业务号
 	public int lstate;  // 该业务是否可用 1 可用; 2 不可用
-	public String advance_id;   // 垫资类型id
+	public int advanceId;   // 垫资类型id
 	public String createTime;
 	public String modifyTime;
 	public String type;
-	public String rate_id;
-	public String charge_rate;
-	public String charge_fee;
-	public String charge_type;
-	public String bank_type;
-	public String card_no;
-	public String true_name;
+	public String rateId;
+	public String chargeRate;
+	public String chargeFee;
+	public String chargeType;
+	public String bankType;  // 商户回补银行的银行类型
+	public String cardNo;    // 回补银行卡号
+	public String trueName;  // 回补持卡人姓名
+	public String bankName;  // 银行名称
 	public String memo;
 	public String getSpid() {
 		return spid;
@@ -28,11 +29,11 @@ public class SpBizConfigDO implements Serializable{
 	public void setSpid(String spid) {
 		this.spid = spid;
 	}
-	public String getBiz_code() {
-		return biz_code;
+	public String getBizCode() {
+		return bizCode;
 	}
-	public void setBiz_code(String biz_code) {
-		this.biz_code = biz_code;
+	public void setBizCode(String bizCode) {
+		this.bizCode = bizCode;
 	}
 	public int getLstate() {
 		return lstate;
@@ -40,11 +41,11 @@ public class SpBizConfigDO implements Serializable{
 	public void setLstate(int lstate) {
 		this.lstate = lstate;
 	}
-	public String getAdvance_id() {
-		return advance_id;
+	public int getAdvanceId() {
+		return advanceId;
 	}
-	public void setAdvance_id(String advance_id) {
-		this.advance_id = advance_id;
+	public void setAdvanceId(int advanceId) {
+		this.advanceId = advanceId;
 	}
 	public String getCreateTime() {
 		return createTime;
@@ -64,47 +65,53 @@ public class SpBizConfigDO implements Serializable{
 	public void setType(String type) {
 		this.type = type;
 	}
-	public String getRate_id() {
-		return rate_id;
+	public String getRateId() {
+		return rateId;
 	}
-	public void setRate_id(String rate_id) {
-		this.rate_id = rate_id;
+	public void setRateId(String rateId) {
+		this.rateId = rateId;
 	}
-	public String getCharge_rate() {
-		return charge_rate;
+	public String getChargeRate() {
+		return chargeRate;
 	}
-	public void setCharge_rate(String charge_rate) {
-		this.charge_rate = charge_rate;
+	public void setChargeRate(String chargeRate) {
+		this.chargeRate = chargeRate;
 	}
-	public String getCharge_fee() {
-		return charge_fee;
+	public String getChargeFee() {
+		return chargeFee;
 	}
-	public void setCharge_fee(String charge_fee) {
-		this.charge_fee = charge_fee;
+	public void setChargeFee(String chargeFee) {
+		this.chargeFee = chargeFee;
 	}
-	public String getCharge_type() {
-		return charge_type;
+	public String getChargeType() {
+		return chargeType;
 	}
-	public void setCharge_type(String charge_type) {
-		this.charge_type = charge_type;
+	public void setChargeType(String chargeType) {
+		this.chargeType = chargeType;
 	}
-	public String getBank_type() {
-		return bank_type;
+	public String getBankType() {
+		return bankType;
 	}
-	public void setBank_type(String bank_type) {
-		this.bank_type = bank_type;
+	public void setBankType(String bankType) {
+		this.bankType = bankType;
 	}
-	public String getCard_no() {
-		return card_no;
+	public String getCardNo() {
+		return cardNo;
 	}
-	public void setCard_no(String card_no) {
-		this.card_no = card_no;
+	public void setCardNo(String cardNo) {
+		this.cardNo = cardNo;
 	}
-	public String getTrue_name() {
-		return true_name;
+	public String getTrueName() {
+		return trueName;
 	}
-	public void setTrue_name(String true_name) {
-		this.true_name = true_name;
+	public void setTrueName(String trueName) {
+		this.trueName = trueName;
+	}
+	public String getBankName() {
+		return bankName;
+	}
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
 	}
 	public String getMemo() {
 		return memo;
@@ -112,5 +119,7 @@ public class SpBizConfigDO implements Serializable{
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
+	
+	
 	
 }
