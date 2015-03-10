@@ -9,6 +9,7 @@ import com.zhaocb.zcb_app.finance.service.facade.dataobject.AdvanceTypeConfigDO;
 import com.zhaocb.zcb_app.finance.service.facade.dataobject.SpBizConfigDO;
 import com.zhaocb.zcb_app.finance.service.facade.dataobject.SpConfigDO;
 import com.zhaocb.zcb_app.finance.service.facade.dataobject.TradeOrderDO;
+import com.zhaocb.zcb_app.finance.service.facade.dataobject.UserBindDO;
 
 public class FinanceFacadeImp implements FinanceFacade {
 	private Map<String, String> appConfig;
@@ -33,8 +34,13 @@ public class FinanceFacadeImp implements FinanceFacade {
 		}
 		return retSpConfig;
 	}
-	public void createTradeOrder(TradeOrderDO TradeOrderDO){
-		
+	public void createTradeOrder(TradeOrderDO tradeOrderDO){
+		financeDAO.insertTradeOrder(tradeOrderDO);
+	}
+	
+	public UserBindDO queryUserBindInfo(UserBindDO userBindDO){
+		UserBindDO condition = new UserBindDO();
+		return financeDAO.queryUserBindInfo(condition);
 	}
 	public SpBizConfigDO querySpBizConfig(String spid,String bizCode){
 		SpBizConfigDO spBizCondition = new SpBizConfigDO();

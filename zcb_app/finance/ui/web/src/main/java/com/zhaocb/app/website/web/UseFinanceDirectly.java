@@ -1,7 +1,6 @@
 package com.zhaocb.app.website.web;
 
 import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
@@ -17,6 +16,8 @@ import com.zhaocb.app.website.web.util.FinanceWebComm;
 import com.zhaocb.zcb_app.finance.service.facade.FinanceFacade;
 import com.zhaocb.zcb_app.finance.service.facade.FundFacade;
 import com.zhaocb.zcb_app.finance.service.facade.dataobject.SpConfigDO;
+import com.zhaocb.zcb_app.finance.service.facade.dataobject.TradeOrderDO;
+import com.zhaocb.zcb_app.finance.service.facade.dataobject.UserBindDO;
 
 
 @RequestMapping
@@ -36,8 +37,12 @@ public class UseFinanceDirectly {
 		// 检查额度是否可用
 		SpConfigDO spConfigDO = financeFacade.querySpConfig(useFinanceInput.getSpid(), useFinanceInput.getBizCode());
 		FinanceWebComm.checkCreditBalance(spConfigDO, useFinanceInput.getTotalFee());  // 不足直接抛出异常
-		// 记录订单
 		
+		// 查询用户是否绑定，没绑定的进行绑定，返回用户信息
+		checkUserBind(useFinanceInput);
+		
+		// 记录订单
+		createOrder(useFinanceInput);
 		// 垫资账户c2c转账给提现
 		
 		// 扣减商户可用额度
@@ -47,8 +52,34 @@ public class UseFinanceDirectly {
 		return useFinanceOutput;
 	}
 	
-	
+	public void checkUserBind(UseFinanceInput useFinanceInput){
+		// 查询用户绑定信息
+		UserBindDO cond = new UserBindDO();
+		cond.setBindId(useFinanceInput.get);
+		cond.setSpid(useFinanceInput.getSpid());
+		cond.setSpUserId(useFinanceInput.getSpUserId());
+		UserBindDO userBindDO = financeFacade.queryUserBindInfo(userBindDO)
+		// 判断没有绑定，进行绑定
+	}
+	public void createOrder(UseFinanceInput useFinanceInput){
+		TradeOrderDO tradeOrderDO = new TradeOrderDO();
 		
+		//TODO 生成订单
+		String listId = "";
+		tradeOrderDO.setListId(listId);
+		tradeOrderDO.setBindId("");
+		tradeOrderDO.setSpid(useFinanceInput.getSpid());
+		tradeOrderDO.setBizCode(useFinanceInput.getBizCode());
+		tradeOrderDO.setOutTradeNo(useFinanceInput.getOutTradeNo());
+		tradeOrderDO.setTotalFee(useFinanceInput.getTotalFee());
+		tradeOrderDO.setUseType(useFinanceInput.getUseType());
+		tradeOrderDO.setUseDays(useFinanceInput.getUseDays());
+		tradeOrderDO.setBankType(useFinanceInput.getBankType());
+		
+		tradeOrderDO.setCardNo(useFinanceInput.getCardNo());
+		tradeOrderDO.setTrueName(useFinanceInput.getTrueName());
+		financeFacade.createTradeOrder(tradeOrderDO);
+	}
 	
 	
 	

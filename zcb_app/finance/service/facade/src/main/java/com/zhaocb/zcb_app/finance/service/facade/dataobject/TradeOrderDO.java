@@ -11,6 +11,7 @@ public class TradeOrderDO implements Serializable {
 	private static final long serialVersionUID = 6946461330962381594L;
 	public String listId;
 	public String bindId;
+	public long uid;
 	public String spid;
 	public String bizCode;
 	public String outTradeNo;
@@ -26,7 +27,7 @@ public class TradeOrderDO implements Serializable {
 	public String trueName;
 	public int state;
 	public String fetchLlistId;
-	public String advanceListId;
+	public String transferListId;
 	public String freezeListId;
 	public Date createTime;
 	public Date modifyTime;
@@ -34,6 +35,12 @@ public class TradeOrderDO implements Serializable {
 	public String sign;
 	public String memo;
 	
+	public long getUid() {
+		return uid;
+	}
+	public void setUid(long uid) {
+		this.uid = uid;
+	}
 	public String getListId() {
 		return listId;
 	}
@@ -136,11 +143,12 @@ public class TradeOrderDO implements Serializable {
 	public void setFetchLlistId(String fetchLlistId) {
 		this.fetchLlistId = fetchLlistId;
 	}
-	public String getAdvanceListId() {
-		return advanceListId;
+	
+	public String getTransferListId() {
+		return transferListId;
 	}
-	public void setAdvanceListId(String advanceListId) {
-		this.advanceListId = advanceListId;
+	public void setTransferListId(String transferListId) {
+		this.transferListId = transferListId;
 	}
 	public String getFreezeListId() {
 		return freezeListId;

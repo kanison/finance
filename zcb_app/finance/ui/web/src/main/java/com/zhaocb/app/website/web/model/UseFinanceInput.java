@@ -5,19 +5,27 @@ import java.math.BigDecimal;
 public class UseFinanceInput {
 	private String spid;
 	private String spUserId; // 用户在商户系统的id
+	private String bindId;  // 绑定序列号
 	private String bizCode; // 商户业务id
 	private String outTradeNo; // 商户单号
 	private BigDecimal totalFee; 
 	private String listid; // 垫资系统单号
 	private int useType; // 垫资使用类型 1 t+1归还  2 按天数使用
 	private int useDays; // 资金使用天数 
-	private String bankType;
+	private int bankType;
 	private String cardNo;
 	private String trueName;
 	private int creType;
 	private String creId;
 	private String mobile;
 	private String accTime;
+	
+	public String getBindId() {
+		return bindId;
+	}
+	public void setBindId(String bindId) {
+		this.bindId = bindId;
+	}
 	public String getSpid() {
 		return spid;
 	}
@@ -67,10 +75,11 @@ public class UseFinanceInput {
 	public void setUseDays(int useDays) {
 		this.useDays = useDays;
 	}
-	public String getBankType() {
+
+	public int getBankType() {
 		return bankType;
 	}
-	public void setBankType(String bankType) {
+	public void setBankType(int bankType) {
 		this.bankType = bankType;
 	}
 	public String getCardNo() {
