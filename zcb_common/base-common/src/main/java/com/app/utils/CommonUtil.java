@@ -922,4 +922,14 @@ public class CommonUtil {
 		closeProcessStream(p);
 		return p;
 	}
+	
+	/**
+	 * TODO 
+	 * @param appid
+	 * @return
+	 */
+	public static String getBillNO(int appid){
+		//retrun getSerialNO();
+		return "1234567890";
+	}
 }
