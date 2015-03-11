@@ -41,5 +41,15 @@ public class FinanceIbatisImp extends SqlMapClientDaoSupport implements
 		SqlMapClientTemplate client = getSqlMapClientTemplate();
 		return (UserBindDO) client.queryForObject("queryUserBindDO", userBindDO);
 	}
+	
+	public void insertUserBind(UserBindDO userBindDO){
+		SqlMapClientTemplate client = getSqlMapClientTemplate();
+		client.insert("insertUserBind", userBindDO);
+	}
+	
+	public void updateTradeOrder(TradeOrderDO tradeOrderDO){
+		SqlMapClientTemplate client = getSqlMapClientTemplate();
+		client.update("updateTradeOrder", tradeOrderDO);
+	}
 
 }

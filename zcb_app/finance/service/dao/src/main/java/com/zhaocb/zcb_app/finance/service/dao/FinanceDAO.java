@@ -17,4 +17,8 @@ public interface FinanceDAO  {
 	public void insertTradeOrder(TradeOrderDO tradeOrderDO);
 	
 	public UserBindDO queryUserBindInfo(UserBindDO userBindDO);
+	
+	public void insertUserBind(UserBindDO userBindDO);
+	
+	public void updateTradeOrder(TradeOrderDO tradeOrderDO);
 }

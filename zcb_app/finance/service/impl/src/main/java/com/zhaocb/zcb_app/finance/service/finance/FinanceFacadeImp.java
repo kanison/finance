@@ -2,7 +2,12 @@ package com.zhaocb.zcb_app.finance.service.finance;
 
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.app.utils.CommonUtil;
+import com.zcb_app.account.service.facade.UserAccountFacade;
+import com.zcb_app.account.service.facade.dataobject.UserAccountRollDO;
 import com.zhaocb.zcb_app.finance.service.dao.FinanceDAO;
 import com.zhaocb.zcb_app.finance.service.facade.FinanceFacade;
 import com.zhaocb.zcb_app.finance.service.facade.dataobject.AdvanceTypeConfigDO;
@@ -14,13 +19,17 @@ import com.zhaocb.zcb_app.finance.service.facade.dataobject.UserBindDO;
 public class FinanceFacadeImp implements FinanceFacade {
 	private Map<String, String> appConfig;
 	private FinanceDAO financeDAO;
-	
-	
+	private UserAccountFacade userAccountFacade;
+	private static final Log LOG = LogFactory.getLog(FinanceFacadeImp.class);
 	public SpConfigDO querySpConfig(String spid,String bizCode){
 		SpConfigDO spCondition = new SpConfigDO();
 		spCondition.setSpid(spid);
 		SpConfigDO retSpConfig = financeDAO.querySpConfig(spCondition);
-		if(CommonUtil.trimString(bizCode) !=null && retSpConfig != null ){
+		if(retSpConfig == null || retSpConfig.getLstate() == SpConfigDO.LSTATE_INVALID){
+			LOG.info("商户信息为空，或商户状态不可用 spid="+spid);
+			return null;
+		}
+		if(CommonUtil.trimString(bizCode) !=null ){
 			SpBizConfigDO spBizCondition = new SpBizConfigDO();
 			spBizCondition.setSpid(spid);
 			spBizCondition.setBizCode(bizCode);
@@ -33,6 +42,18 @@ public class FinanceFacadeImp implements FinanceFacade {
 			}
 		}
 		return retSpConfig;
+	}
+	
+	public void c2cTransferDirectly(UserAccountRollDO fromUser,UserAccountRollDO toUser){
+		userAccountFacade.userAccountTranfer(fromUser, toUser);
+	}
+	
+	public void bindUser(UserBindDO userBindDO){
+		financeDAO.insertUserBind(userBindDO);
+	}
+	
+	public void updateTradeOrder(TradeOrderDO tradeOrderDO){
+		financeDAO.updateTradeOrder(tradeOrderDO);
 	}
 	public void createTradeOrder(TradeOrderDO tradeOrderDO){
 		financeDAO.insertTradeOrder(tradeOrderDO);
@@ -67,6 +88,14 @@ public class FinanceFacadeImp implements FinanceFacade {
 
 	public void setFinanceDAO(FinanceDAO financeDAO) {
 		this.financeDAO = financeDAO;
+	}
+
+	public UserAccountFacade getUserAccountFacade() {
+		return userAccountFacade;
+	}
+
+	public void setUserAccountFacade(UserAccountFacade userAccountFacade) {
+		this.userAccountFacade = userAccountFacade;
 	}
 	
 }

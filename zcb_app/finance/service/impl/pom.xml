@@ -20,6 +20,11 @@
 			<artifactId>sm-platform-client</artifactId>
 		</dependency>
 		<dependency>
+	 		<groupId>com.zhaocb.zcb_app</groupId>
+  	 		<artifactId>zcb_app-account-service-facade</artifactId>
+  	 		<version>1.0</version>
+  		</dependency>
+		<dependency>
 			<groupId>com.caucho</groupId>
 			<artifactId>hessian</artifactId>
 		</dependency>

@@ -1,6 +1,7 @@
 package com.zhaocb.zcb_app.finance.service.facade.dataobject;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class UserBindDO implements Serializable {
 
@@ -8,26 +9,26 @@ public class UserBindDO implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 8836329996316392796L;
-	public String uid;
+	public long pkid;
 	public String bindId;
 	public String spid;
 	public String spUserId;
-	public String lstate;
-	public String creType;
+	public int lstate=1;  // 1 有效   2 无效  
+	public int creType;
 	public String creId;
 	public String trueName;
 	public String phone;
 	public String mobile;
-	public String acc_time;
+	public Date accTime;
 	public String createTime;
 	public String modifyTime;
 	public String memo;
-	
-	public String getUid() {
-		return uid;
+
+	public long getPkid() {
+		return pkid;
 	}
-	public void setUid(String uid) {
-		this.uid = uid;
+	public void setPkid(long pkid) {
+		this.pkid = pkid;
 	}
 	public String getBindId() {
 		return bindId;
@@ -47,16 +48,18 @@ public class UserBindDO implements Serializable {
 	public void setSpUserId(String spUserId) {
 		this.spUserId = spUserId;
 	}
-	public String getLstate() {
+	
+	public int getLstate() {
 		return lstate;
 	}
-	public void setLstate(String lstate) {
+	public void setLstate(int lstate) {
 		this.lstate = lstate;
 	}
-	public String getCreType() {
+	
+	public int getCreType() {
 		return creType;
 	}
-	public void setCreType(String creType) {
+	public void setCreType(int creType) {
 		this.creType = creType;
 	}
 	public String getCreId() {
@@ -83,11 +86,12 @@ public class UserBindDO implements Serializable {
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
-	public String getAcc_time() {
-		return acc_time;
+	
+	public Date getAccTime() {
+		return accTime;
 	}
-	public void setAcc_time(String acc_time) {
-		this.acc_time = acc_time;
+	public void setAccTime(Date accTime) {
+		this.accTime = accTime;
 	}
 	public String getCreateTime() {
 		return createTime;

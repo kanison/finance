@@ -6,10 +6,12 @@ public class SpConfigDO implements java.io.Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -7370065146778855896L;
-	public String uid;
+	public static int LSTATE_VALID=1;
+	public static int LSTATE_INVALID;
+	public long uid;
 	public String spid;
 	public String spName;
-	public String lstate; // 物理状态  1 有效;2 无效 该用户不可用
+	public int lstate; // 物理状态  1 有效;2 无效 该用户不可用
 	public long authFlag; // 权限控制位
 	public String signKey; // 商户签名key
 	public String createTime;
@@ -18,10 +20,11 @@ public class SpConfigDO implements java.io.Serializable{
 	
 	public SpBizConfigDO spBizConfigDO;
 	public AdvanceTypeConfigDO advanceTypeConfigDo;
-	public String getUid() {
+	
+	public long getUid() {
 		return uid;
 	}
-	public void setUid(String uid) {
+	public void setUid(long uid) {
 		this.uid = uid;
 	}
 	public String getSpid() {
@@ -36,10 +39,11 @@ public class SpConfigDO implements java.io.Serializable{
 	public void setSpName(String spName) {
 		this.spName = spName;
 	}
-	public String getLstate() {
+	
+	public int getLstate() {
 		return lstate;
 	}
-	public void setLstate(String lstate) {
+	public void setLstate(int lstate) {
 		this.lstate = lstate;
 	}
 	public long getAuthFlag() {

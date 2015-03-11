@@ -8,6 +8,16 @@ public class TradeOrderDO implements Serializable {
 	/**
 	 * 
 	 */
+	public static int STATE_INIT=0;  // 创建订单
+	public static int STATE_FINANCE_APPLY_SUC=1;  //垫资使用申请成功
+	public static int STATE_SP_CONFIRM=2;	// 商户确认使用
+	public static int STATE_FINANCE_RETURN=3;   // 商户未确认，资金退回到垫资账户
+	public static int STATE_RECORD_FETCH_ORDER=4;  // 记录提现单
+	public static int STATE_FETCHING=5;  // 提现中
+	public static int STATE_FINANCE_USE_SUC=6;  // 垫资使用成功
+	public static int STATE_FINANCE_USE_FAIL=7;  // 垫资使用失败
+	public static int STATE_INVALID=20;   // 订单作废
+	
 	private static final long serialVersionUID = 6946461330962381594L;
 	public String listId;
 	public String bindId;
@@ -34,7 +44,14 @@ public class TradeOrderDO implements Serializable {
 	public Date accTime;
 	public String sign;
 	public String memo;
+	public int lastState;
 	
+	public int getLastState() {
+		return lastState;
+	}
+	public void setLastState(int lastState) {
+		this.lastState = lastState;
+	}
 	public long getUid() {
 		return uid;
 	}

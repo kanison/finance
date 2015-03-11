@@ -26,6 +26,11 @@
 		<type>pom</type>
 		<scope>compile</scope>
 	</dependency>
+	<dependency>
+	 	<groupId>com.zhaocb.zcb_app</groupId>
+  	 	<artifactId>zcb_app-account-service-facade</artifactId>
+  	 	<version>1.0</version>
+  	</dependency>
   </dependencies>
   <properties><project.build.sourceEncoding>GBK</project.build.sourceEncoding><maven.compiler.encoding>GBK</maven.compiler.encoding></properties>
   <groupId>com.zhaocb.zcb_app.finance</groupId>

@@ -2,6 +2,7 @@ package com.zhaocb.app.website.web;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -10,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.app.aop.annotation.LogMethod;
+import com.app.utils.CommonUtil;
+import com.zcb_app.account.service.facade.dataobject.UserAccountRollDO;
+import com.zhaocb.app.website.web.exception.WebServiceRetException;
 import com.zhaocb.app.website.web.model.UseFinanceInput;
 import com.zhaocb.app.website.web.model.UseFinanceOutput;
 import com.zhaocb.app.website.web.util.FinanceWebComm;
@@ -39,35 +43,90 @@ public class UseFinanceDirectly {
 		FinanceWebComm.checkCreditBalance(spConfigDO, useFinanceInput.getTotalFee());  // 不足直接抛出异常
 		
 		// 查询用户是否绑定，没绑定的进行绑定，返回用户信息
-		checkUserBind(useFinanceInput);
+		UserBindDO userBindDO = checkUserBind(useFinanceInput);
 		
 		// 记录订单
-		createOrder(useFinanceInput);
-		// 垫资账户c2c转账给提现
+		useFinanceInput.setListid(FinanceWebComm.genListId(useFinanceInput.getSpid()));
+		TradeOrderDO tradeOrderDO = createOrder(useFinanceInput,userBindDO);
 		
-		// 扣减商户可用额度
+		// 垫资账户c2c转账给提现
+		financeToFetchAccount(useFinanceInput);
+		
+		// TODO 扣减商户可用额度
+		
+		// 更新订单状态为使用申请成功
+		updateTradeOrderState(tradeOrderDO,TradeOrderDO.STATE_INIT,TradeOrderDO.STATE_FINANCE_APPLY_SUC);
+		
 		
 		// 返回
 		UseFinanceOutput useFinanceOutput = new UseFinanceOutput();
 		return useFinanceOutput;
 	}
 	
-	public void checkUserBind(UseFinanceInput useFinanceInput){
+	public void updateTradeOrderState(TradeOrderDO inputTradeOrder,int fromState,int toState){
+		TradeOrderDO tradeOrderDO = new TradeOrderDO();
+		tradeOrderDO.setListId(inputTradeOrder.getListId());
+		tradeOrderDO.setState(toState);
+		tradeOrderDO.setLastState(fromState);
+	}
+	
+	public void financeToFetchAccount(UseFinanceInput useFinanceInput){
+		String financeSpid = appConfig.get("financeSpid");
+		String fetchSpid = appConfig.get("fetchSpid");
+		SpConfigDO financeSpConfig = financeFacade.querySpConfig(financeSpid, null);
+		SpConfigDO fetchSpConfig = financeFacade.querySpConfig(fetchSpid, null);
+		if(financeSpConfig == null || fetchSpConfig == null ){
+			LOG.info("垫资账户 或 提现账户 不可用，请确认, 垫子商户号:"+financeSpid
+					+ "提现商户号:"+fetchSpid);
+			throw new WebServiceRetException(WebServiceRetException.SP_CANNOT_USE,"商户不可用，请确认");
+		}
+		
+		UserAccountRollDO fromAccount = new UserAccountRollDO();
+		fromAccount.setUid(financeSpConfig.getUid());
+		fromAccount.setListid(useFinanceInput.getListid());
+		fromAccount.setCoding(useFinanceInput.getOutTradeNo());
+		fromAccount.setPaynum(useFinanceInput.getTotalFee());
+		
+		UserAccountRollDO toAccount = new UserAccountRollDO();
+		toAccount.setUid(fetchSpConfig.getUid());
+		toAccount.setListid(useFinanceInput.getListid());
+		toAccount.setCoding(useFinanceInput.getOutTradeNo());
+		toAccount.setPaynum(useFinanceInput.getTotalFee());
+		
+		financeFacade.c2cTransferDirectly(fromAccount,toAccount);
+	}
+	public UserBindDO checkUserBind(UseFinanceInput useFinanceInput){
 		// 查询用户绑定信息
 		UserBindDO cond = new UserBindDO();
-		cond.setBindId(useFinanceInput.get);
+		
 		cond.setSpid(useFinanceInput.getSpid());
 		cond.setSpUserId(useFinanceInput.getSpUserId());
-		UserBindDO userBindDO = financeFacade.queryUserBindInfo(userBindDO)
+		UserBindDO userBindDO = financeFacade.queryUserBindInfo(cond);
 		// 判断没有绑定，进行绑定
+		if(userBindDO == null || CommonUtil.trimString(userBindDO.getBindId()) == null){
+			userBindDO = bindUser(useFinanceInput);
+		}
+		return userBindDO;
 	}
-	public void createOrder(UseFinanceInput useFinanceInput){
+	public UserBindDO bindUser(UseFinanceInput useFinanceInput){
+		
+		UserBindDO userBindDO = new UserBindDO();
+		userBindDO.setBindId(FinanceWebComm.genBindId());
+		userBindDO.setSpid(useFinanceInput.getSpid());
+		userBindDO.setSpUserId(useFinanceInput.getSpUserId());
+		userBindDO.setCreType(useFinanceInput.getCreType());
+		userBindDO.setCreId(useFinanceInput.getCreId());
+		userBindDO.setTrueName(useFinanceInput.getTrueName());
+		userBindDO.setMobile(useFinanceInput.getMobile());
+		userBindDO.setAccTime(new Date());
+		financeFacade.bindUser(userBindDO);
+		return userBindDO;
+	}
+	public TradeOrderDO createOrder(UseFinanceInput useFinanceInput,UserBindDO userBindDO){
 		TradeOrderDO tradeOrderDO = new TradeOrderDO();
 		
-		//TODO 生成订单
-		String listId = "";
-		tradeOrderDO.setListId(listId);
-		tradeOrderDO.setBindId("");
+		tradeOrderDO.setListId(useFinanceInput.getListid());
+		tradeOrderDO.setBindId(userBindDO.getBindId());
 		tradeOrderDO.setSpid(useFinanceInput.getSpid());
 		tradeOrderDO.setBizCode(useFinanceInput.getBizCode());
 		tradeOrderDO.setOutTradeNo(useFinanceInput.getOutTradeNo());
@@ -75,10 +134,10 @@ public class UseFinanceDirectly {
 		tradeOrderDO.setUseType(useFinanceInput.getUseType());
 		tradeOrderDO.setUseDays(useFinanceInput.getUseDays());
 		tradeOrderDO.setBankType(useFinanceInput.getBankType());
-		
 		tradeOrderDO.setCardNo(useFinanceInput.getCardNo());
 		tradeOrderDO.setTrueName(useFinanceInput.getTrueName());
 		financeFacade.createTradeOrder(tradeOrderDO);
+		return tradeOrderDO;
 	}
 	
 	
