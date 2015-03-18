@@ -26,6 +26,7 @@ public class FinanceWebComm {
 			LOG.info("查询商户信息有误，查询结果spConfigDO 或者 spConfigDO 为空");
 			throw new WebServiceRetException(WebServiceRetException.UNEXPECTED_ERR,"系统繁忙，请稍候再试");
 		}
+		// TODO 是否需要判断自有资金, 是否有商户只用自己的资金用垫资系统的付款功能
 		AdvanceTypeConfigDO advanceTypeDO = spConfigDO.getAdvanceTypeConfigDo();
 		BigDecimal canUseMoney = advanceTypeDO.getCreditQuoto().divide(advanceTypeDO.getUsedCreditQuoto()).divide(advanceTypeDO.getCreditQuotoOffset());
 		if(canUseMoney.compareTo(totalMoney) < 0){

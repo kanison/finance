@@ -27,7 +27,6 @@ import com.zhaocb.zcb_app.finance.service.facade.dataobject.UserBindDO;
 @RequestMapping
 public class UseFinanceDirectly {
 	private Map<String, String> appConfig;
-	private FundFacade fundFacade;
 	private FinanceFacade financeFacade;
 	private static final Log LOG = LogFactory.getLog(UseFinanceInput.class);
 
@@ -49,10 +48,10 @@ public class UseFinanceDirectly {
 		useFinanceInput.setListid(FinanceWebComm.genListId(useFinanceInput.getSpid()));
 		TradeOrderDO tradeOrderDO = createOrder(useFinanceInput,userBindDO);
 		
-		// 垫资账户c2c转账给提现
+		// 垫资账户c2c转账给提现账户
 		financeToFetchAccount(useFinanceInput);
 		
-		// TODO 扣减商户可用额度
+		// TODO 扣减商户可用额度放在事物中，放在更新订单使用申请成功中
 		
 		// 更新订单状态为使用申请成功
 		updateTradeOrderState(tradeOrderDO,TradeOrderDO.STATE_INIT,TradeOrderDO.STATE_FINANCE_APPLY_SUC);
@@ -68,6 +67,8 @@ public class UseFinanceDirectly {
 		tradeOrderDO.setListId(inputTradeOrder.getListId());
 		tradeOrderDO.setState(toState);
 		tradeOrderDO.setLastState(fromState);
+		
+		financeFacade.updateTradeOrder(tradeOrderDO);
 	}
 	
 	public void financeToFetchAccount(UseFinanceInput useFinanceInput){
@@ -146,14 +147,6 @@ public class UseFinanceDirectly {
 		
 	}
 	
-	public FundFacade getFundFacade() {
-		return fundFacade;
-	}
-
-	public void setFundFacade(FundFacade fundFacade) {
-		this.fundFacade = fundFacade;
-	}
-
 	public FinanceFacade getFinanceFacade() {
 		return financeFacade;
 	}
