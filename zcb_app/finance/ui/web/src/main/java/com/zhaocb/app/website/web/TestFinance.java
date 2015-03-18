@@ -26,12 +26,13 @@ public class TestFinance {
 		LOG.info("handleTextFinance imei = " + deviceInfoDO.getImei());
 		
 		DeviceInfoDO result = fundFacade.queryDeviceInfo(deviceInfoDO);
-		LOG.info("result mac="+result.getMac());
 		CommonOutput commonOutput = new CommonOutput();
-		commonOutput.setRetCode(1);
-		commonOutput.setRetMsg("测试休闲平台服务器搭建情况，2015-01-04");
 
 		if (null != result) {
+			LOG.info("result mac="+result.getMac());
+			
+			commonOutput.setRetCode(1);
+			commonOutput.setRetMsg("测试休闲平台服务器搭建情况，2015-01-04");
 			commonOutput.setRetMsg(commonOutput.getRetMsg() + "    :imei = " + result.getImei()
 					+ ", mac = " + result.getMac());
 		}
