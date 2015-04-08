@@ -38,7 +38,7 @@
 		<property name="order" value="1"></property> 
         <property name="urlMap">  
             <map>  
-                <entry key="/fundFacade">  
+                <entry key="/fundFacade.ws">  
                     <ref bean="fundFacadeExporter" />  
                 </entry>
                 <entry key="/fundFacade.hessian">  
