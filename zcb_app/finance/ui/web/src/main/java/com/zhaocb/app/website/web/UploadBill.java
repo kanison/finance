@@ -109,7 +109,7 @@ public class UploadBill {
 			throw new ParameterInvalidException("商户号不能为空");
 		} else if (!checkMD5(uploadBillInput.getFile_body().getBytes(),
 				uploadBillInput.getFile_md5())) {
-			//throw new ParameterInvalidException("文件MD5校验失败");
+			throw new ParameterInvalidException("文件MD5校验失败");
 		}
 		if(uploadBillInput.getFile_type()!=0 && uploadBillInput.getFile_type()!=1){
 			throw new ParameterInvalidException("上传的文件类型暂时只支持txt zip");

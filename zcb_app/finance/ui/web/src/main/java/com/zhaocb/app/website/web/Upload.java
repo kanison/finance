@@ -15,6 +15,8 @@ import java.util.Map;
 
 import javax.activation.MimetypesFileTypeMap;
 
+import com.zhaocb.app.website.web.util.SignUtil;
+
 /**
  * 
  * @author zhl
@@ -27,20 +29,20 @@ public class Upload {
 	 */
 	public static void main(String[] args) {
 		
-		String filepath="D:\\mchapi.zip";
-		
-		String urlStr = "http://127.0.0.1:8080/zcb_app-finance-ui-war-1.0/upload_bill.xmlori";
+		String filepath="D:\\mchapi.zip";		
+		String urlStr = "http://127.0.0.1:8080/zcb_app-finance-ui-war-1.0/upload_bill.xmlori";		
+		String signType = "MD5";
 		
 		Map<String, String> textMap = new HashMap<String, String>();
 	
-		textMap.put("sign_type ", "MD5");
+		textMap.put("sign_type ", signType);
 		textMap.put("service_version", "1.0");
 		textMap.put("input_charset", "GBK");
 		textMap.put("sign_key_index", "1");
 		textMap.put("date", "20141110");
 		textMap.put("file_pre", "file_pre ");
 		textMap.put("partner", "2000000501");
-		textMap.put("file_md5", "B368E1C7E47405D120D34E31E5075C97");
+		textMap.put("file_md5", SignUtil.getHash(filepath, signType));
 		textMap.put("sign", "284e322d13003a46c10ff23a74cfbe9b");
 		textMap.put("file_type", "1");
 

@@ -43,7 +43,7 @@ public class DownBill {
 		checkParams(downBillInput);
 
 		// ∂¡»°¬∑æ∂≈‰÷√
-		String downFilePath = FundWebCommon.getAppConfig("downFilePath");
+		String downFilePath = FundWebCommon.getWebConfig("downFilePath");
 		
 		if (downFilePath == null){
 			downFilePath = "up_down_files";
