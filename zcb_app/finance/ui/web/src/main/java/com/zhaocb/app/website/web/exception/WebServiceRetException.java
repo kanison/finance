@@ -16,6 +16,9 @@ public class WebServiceRetException  extends ErrorCodeException{
 	public static final String APP_ERROR="20220000";//业务错误
 	public static final String APP_CREDIT_QUOTO_NOT_ENOUGH="20220001";//商户可用额度不足
 	public static final String SP_CANNOT_USE="20220002";//商户不可用
+	
+	public static final String USER_REG_ERROR="30000001";//用户已存在
+	
 	public WebServiceRetException(String msg) {
 		super(msg);
 	}

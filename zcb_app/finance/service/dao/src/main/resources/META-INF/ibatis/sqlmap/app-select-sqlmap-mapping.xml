@@ -1,41 +1,79 @@
 <?xml version="1.0" encoding="GB2312" ?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
-	<!-- ==========================================================  -->
-	<!-- Configuration for ibatis sqlmap mapping.                    -->
-	<!-- ==========================================================  -->
+<!-- ========================================================== -->
+<!-- Configuration for ibatis sqlmap mapping. -->
+<!-- ========================================================== -->
 
 <sqlMap namespace="user">
 
 	<select id="queryDeviceInfo"
 		resultClass="com.zhaocb.zcb_app.finance.service.facade.dataobject.DeviceInfoDO">
-		SELECT 
-			FitemId	itemId,
-			FdeviceId	deviceId,
-			Fimei	imei,
-			Fmac	mac,
-			Fmac2	mac2,
-			Fextr	extr,
-			FappVer	appVer,
-			FchannelId	channelId,
-			FplatType	platType,
-			FclientIp clientIp,
-			Fstate state,
-			FcreateTime	createTime,
-			FmodifyTime	modifyTime
+		SELECT
+		FitemId itemId,
+		FdeviceId deviceId,
+		Fimei imei,
+		Fmac mac,
+		Fmac2
+		mac2,
+		Fextr extr,
+		FappVer appVer,
+		FchannelId channelId,
+		FplatType
+		platType,
+		FclientIp clientIp,
+		Fstate state,
+		FcreateTime createTime,
+		FmodifyTime modifyTime
 		FROM t_device_info
-		where 
-			Fstate	= 1
-			<isNotEqual  property="itemId" compareValue="0">
-				and FitemId = #itemId#
-			</isNotEqual>
-			<isNotEqual  property="deviceId" compareValue="0">
-				and FdeviceId = #deviceId#
-			</isNotEqual>
-			<isNotEmpty property="imei">
-				and Fimei = #imei#
-			</isNotEmpty>
+		where
+		Fstate = 1
+		<isNotEqual property="itemId" compareValue="0">
+			and FitemId =
+			#itemId#
+		</isNotEqual>
+		<isNotEqual property="deviceId" compareValue="0">
+			and FdeviceId
+			= #deviceId#
+		</isNotEqual>
+		<isNotEmpty property="imei">
+			and Fimei = #imei#
+		</isNotEmpty>
 	</select>
-	
+
+	<select id="queryUserByUserName"
+		resultClass="com.zhaocb.zcb_app.finance.service.facade.dataobject.UserInfoDO">
+		SELECT 
+		Fuid userId,
+		Fuser_name userName,
+		Ftrue_name trueName,
+		Fpwd userPwd,
+		Fpay_pwd userPayPassword,
+		Fsex sex,
+		Fmobile mobile,
+		Femail email,
+		Fphone phone,
+		Fcre_type creType,
+		Fcre_id creId,
+		Fstate state,
+		Flstate logicState,
+		Fip regIp,
+		Fuser_seed userSeed,
+		Fsign sign,
+		Fcreate_time createTime,
+		Fmodify_time modifyTime,
+		Flogin_ip loginIp,
+		Flogin_time loginTime,
+		Fpwd_mtime pwdModTime,
+		Fpwd_ip pwdModIp,
+		Fpaypwd_mtime payPwdModTime,
+		Fpaypwd_ip payPwdModIp,
+		Fquestion1 question1,
+		Fanswer1 answer1,
+		Fmemo memo
+		FROM t_user_info
+		where Fuser_name = #userName#
+	</select>
+
 
 </sqlMap>

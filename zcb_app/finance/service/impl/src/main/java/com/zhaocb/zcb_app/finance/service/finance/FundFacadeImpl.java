@@ -11,6 +11,7 @@ import com.app.utils.AliSpyMemCachedWrapper;
 import com.zhaocb.zcb_app.finance.service.dao.FundDAO;
 import com.zhaocb.zcb_app.finance.service.facade.FundFacade;
 import com.zhaocb.zcb_app.finance.service.facade.dataobject.DeviceInfoDO;
+import com.zhaocb.zcb_app.finance.service.facade.dataobject.UserInfoDO;
 
 public class FundFacadeImpl implements FundFacade {
 	private static final Log LOG = LogFactory.getLog(FundFacadeImpl.class);
@@ -55,6 +56,14 @@ public class FundFacadeImpl implements FundFacade {
 	@Transactional
 	public void updateDeviceInfo(DeviceInfoDO deviceInfoDO) {
 		fundDAO.updateDeviceInfo(deviceInfoDO);
+	}
+
+	public long insertUserInfo(UserInfoDO userInfoDO) {
+		return fundDAO.insertUserInfo(userInfoDO);
+	}
+
+	public UserInfoDO queryUserByUserName(String userName) {
+		return fundDAO.queryUserByUserName(userName);
 	}
 
 }

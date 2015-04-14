@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
@@ -47,6 +48,11 @@ import com.tenpay.sm.web.view.ViewUtil;
 public class CommonUtil {
 
 	private static final Log LOG = LogFactory.getLog(CommonUtil.class);
+	
+	public static String getUUID(){
+		return UUID.randomUUID().toString().replace("-", "");		
+	}
+	
 
 	/**
 	 * 估计url和参数生成完整连接

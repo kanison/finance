@@ -10,6 +10,7 @@ import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
 import com.zhaocb.zcb_app.finance.service.dao.FundDAO;
 import com.zhaocb.zcb_app.finance.service.facade.dataobject.DeviceInfoDO;
+import com.zhaocb.zcb_app.finance.service.facade.dataobject.UserInfoDO;
 
 public class FundIbatisImpl extends SqlMapClientDaoSupport implements FundDAO {
 	private static final Log LOG = LogFactory.getLog(FundIbatisImpl.class);
@@ -28,6 +29,16 @@ public class FundIbatisImpl extends SqlMapClientDaoSupport implements FundDAO {
 	public void updateDeviceInfo(DeviceInfoDO deviceInfoDO) {
 		SqlMapClientTemplate client = getSqlMapClientTemplate();
 		client.update("updateDeviceInfo", deviceInfoDO);
+	}
+
+	public long insertUserInfo(UserInfoDO userInfoDO) {
+		SqlMapClientTemplate client = getSqlMapClientTemplate();
+		return (Long)client.insert("insertUserInfo", userInfoDO);
+	}
+
+	public UserInfoDO queryUserByUserName(String userName) {
+		SqlMapClientTemplate client = getSqlMapClientTemplate();
+		return (UserInfoDO) client.queryForObject("queryUserByUserName", userName);
 	}
 
 }
