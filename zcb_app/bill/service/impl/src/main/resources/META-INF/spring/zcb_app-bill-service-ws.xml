@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		 http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/osgi
+         http://www.springframework.org/schema/osgi/spring-osgi.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd"
+	default-autowire="byName">
+	
+	<!--  begin service api Exporter-->
+	
+    <bean id="billFacadeExporter" class="org.codehaus.xfire.spring.remoting.XFireExporter">  
+        <property name="serviceFactory">  
+            <ref bean="xfire.serviceFactory" />  
+        </property>  
+        <property name="xfire">  
+            <ref bean="xfire" />  
+        </property>  
+        <property name="serviceBean">  
+            <ref bean="billFacade" />  
+        </property>  
+        <property name="serviceClass">  
+            <value>com.zhaocb.zcb_app.bill.service.facade.BillFacade</value>  
+        </property>  
+    </bean> 
+    
+    <bean id="billFacadeHessianExporter" class="org.springframework.remoting.caucho.HessianServiceExporter">
+       <property name="service" ref="billFacade"/>
+       <property name="serviceInterface" value="com.zhaocb.zcb_app.bill.service.facade.BillFacade"/>
+    </bean>
+    <!--  end service api Exporter-->
+    
+    <bean id="simpleUrlHandlerMapping_Service" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping"> 
+		<property name="order" value="1"></property> 
+        <property name="urlMap">  
+            <map>  
+                <entry key="/billFacade.ws">  
+                    <ref bean="billFacadeExporter" />  
+                </entry>
+                <entry key="/billFacade.hessian">  
+                    <ref bean="billFacadeHessianExporter" />  
+                </entry> 
+            </map>  
+        </property>  
+    </bean>  
+</beans>

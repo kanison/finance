@@ -1,0 +1,15 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion><properties><project.build.sourceEncoding>GBK</project.build.sourceEncoding><maven.compiler.encoding>GBK</maven.compiler.encoding></properties>
+  <parent>
+    <artifactId>zcb_app</artifactId>
+    <groupId>com.zhaocb.zcb_app</groupId>
+    <version>1.0</version>
+  </parent>
+  <groupId>com.zhaocb.zcb_app.bill</groupId>
+  <artifactId>zcb_app-bill</artifactId>
+  <version>1.0</version>
+  <packaging>pom</packaging>
+  <modules>
+	<module>service</module>
+  </modules>
+</project>
