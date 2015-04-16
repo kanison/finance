@@ -1,4 +1,4 @@
-package com.zhaocb.app.website.web.exception;
+package com.app.common.exception;
 
 import com.tenpay.sm.lang.error.ErrorCodeException;
 
