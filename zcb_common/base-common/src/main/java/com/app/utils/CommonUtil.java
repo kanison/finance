@@ -2,6 +2,7 @@ package com.app.utils;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,6 +25,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -38,6 +40,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.app.utils.CommonUtil;
 import com.tenpay.sm.context.Context;
 import com.tenpay.sm.context.ContextUtil;
 import com.tenpay.sm.lang.error.ErrorCode;
@@ -53,6 +56,28 @@ public class CommonUtil {
 		return UUID.randomUUID().toString().replace("-", "");		
 	}
 	
+	/**
+	 * 读取tomcat/conf/app-config.properties配置文件
+	 * @param key
+	 * @return string
+	 * @author zhl
+	 */
+	public static String getWebConfig(String key){
+		Map<String,String> map = System.getenv();		
+		String tomcatHome = map.get("CATALINA_HOME");				
+		Properties prop = new Properties();   
+		String property;
+        try {   
+        	InputStream in = new BufferedInputStream(new FileInputStream(tomcatHome +"/conf/app-config.properties"));
+            prop.load(in);   
+            property = CommonUtil.trimString(prop.getProperty(key));   
+        } catch (Exception e) {   
+        	LOG.warn("read exception ", e);
+			return null;
+        }   
+        
+        return property;
+	}
 
 	/**
 	 * 估计url和参数生成完整连接

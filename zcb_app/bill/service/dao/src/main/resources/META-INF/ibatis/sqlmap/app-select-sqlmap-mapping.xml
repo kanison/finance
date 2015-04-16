@@ -7,7 +7,16 @@
 
 <sqlMap namespace="user">
 
-	
+	<select id="queryAppIdInfo"
+		resultClass="com.zhaocb.zcb_app.bill.service.facade.dataobject.AppIdInfo">
+		SELECT
+		FappId appId,
+		FstartNo startNo
+		FROM t_appid_config
+		where FappId =
+		#appId#
+	</select>
+
 
 
 </sqlMap>

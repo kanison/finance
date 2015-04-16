@@ -8,10 +8,10 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.app.common.exception.ParameterInvalidException;
 import com.app.utils.CommonUtil;
 import com.app.utils.IPUtil;
 import com.app.utils.MD5Util;
-import com.zhaocb.app.website.web.exception.ParameterInvalidException;
 import com.zhaocb.app.website.web.exception.WebServiceRetException;
 import com.zhaocb.app.website.web.model.CommonOutput;
 import com.zhaocb.zcb_app.finance.service.facade.FundFacade;

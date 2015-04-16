@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.app.aop.annotation.AuthMchWithoutCertOrApiWithoutCert;
 import com.app.aop.annotation.LogMethod;
+import com.app.common.exception.ParameterInvalidException;
 import com.app.utils.CommonUtil;
 import com.zhaocb.app.website.web.exception.FundMchapiWebRetException;
-import com.zhaocb.app.website.web.exception.ParameterInvalidException;
 import com.zhaocb.app.website.web.model.CommonOutput;
 import com.zhaocb.app.website.web.model.UploadBillInput;
 import com.zhaocb.app.website.web.util.FundWebCommon;
@@ -42,7 +42,7 @@ public class UploadBill {
 		checkParams(uploadBillInput);
 
 		// 从配置中取文件路径
-		String uploadFilePath = FundWebCommon.getWebConfig("uploadFilePath");
+		String uploadFilePath = CommonUtil.getWebConfig("uploadFilePath");
 
 		if (uploadFilePath == null){
 			uploadFilePath = "up_down_files";

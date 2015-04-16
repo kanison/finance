@@ -8,20 +8,22 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
 import com.app.aop.annotation.AuthMchWithoutCertOrApiWithoutCert;
 import com.app.aop.annotation.LogMethod;
+import com.app.common.exception.ParameterInvalidException;
 import com.app.utils.CommonUtil;
 import com.app.utils.URLEncoder;
 import com.tenpay.sm.context.ContextUtil;
 import com.tenpay.sm.web.context.WebModuleContext;
 import com.zhaocb.app.website.web.exception.FundMchapiWebRetException;
-import com.zhaocb.app.website.web.exception.ParameterInvalidException;
 import com.zhaocb.app.website.web.model.CommonOutput;
 import com.zhaocb.app.website.web.model.DownBillInput;
-import com.zhaocb.app.website.web.util.FundWebCommon;
 
 /**
  * 文件下载
@@ -43,7 +45,7 @@ public class DownBill {
 		checkParams(downBillInput);
 
 		// 读取路径配置
-		String downFilePath = FundWebCommon.getWebConfig("downFilePath");
+		String downFilePath = CommonUtil.getWebConfig("downFilePath");
 		
 		if (downFilePath == null){
 			downFilePath = "up_down_files";

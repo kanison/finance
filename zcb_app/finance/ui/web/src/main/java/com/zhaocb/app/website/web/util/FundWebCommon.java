@@ -27,30 +27,7 @@ public class FundWebCommon {
 	public static String getAppConfig(String key) {
 		return CommonUtil.trimString(ReloadableAppConfig.appConfig.get(key));
 	}
-	
-	/**
-	 * ∂¡»°tomcat/conf/app-config.properties≈‰÷√Œƒº˛
-	 * @param key
-	 * @return string
-	 * @author zhl
-	 */
-	public static String getWebConfig(String key){
-		Map<String,String> map = System.getenv();		
-		String tomcatHome = map.get("CATALINA_HOME");				
-		Properties prop = new Properties();   
-		String property;
-        try {   
-        	InputStream in = new BufferedInputStream(new FileInputStream(tomcatHome +"/conf/app-config.properties"));
-            prop.load(in);   
-            property = CommonUtil.trimString(prop.getProperty(key));   
-        } catch (Exception e) {   
-        	LOG.warn("read exception ", e);
-			return null;
-        }   
-        
-        return property;
-	}
-	
+		
 	/**
 	 * 
 	 * @param object
