@@ -30,7 +30,7 @@ public class UserInfoDO implements Serializable {
 	public Date pwdModTime;
 	public String pwdModIp;
 	public Date payPwdModTime;
-	public Date payPwdModIp;
+	public String payPwdModIp;
 	public String question1;
 	public String answer1;
 	public String memo;
@@ -211,11 +211,11 @@ public class UserInfoDO implements Serializable {
 		this.payPwdModTime = payPwdModTime;
 	}
 
-	public Date getPayPwdModIp() {
+	public String getPayPwdModIp() {
 		return payPwdModIp;
 	}
 
-	public void setPayPwdModIp(Date payPwdModIp) {
+	public void setPayPwdModIp(String payPwdModIp) {
 		this.payPwdModIp = payPwdModIp;
 	}
 
