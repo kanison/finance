@@ -12,6 +12,7 @@ public class BillServiceRetException extends ErrorCodeException {
 	
 	public static final String SYSTEM_ERROR = "20110000";// 系统错误
 	public static final String APP_ERROR = "20120000";// 系统错误
+	public static final String SEQ_LIMIT_ERROR = "30000000";// 最大单号限制为6亿
 
 	public BillServiceRetException(String msg) {
 		super(msg);

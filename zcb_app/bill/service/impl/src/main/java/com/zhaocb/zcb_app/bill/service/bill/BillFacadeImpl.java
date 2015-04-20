@@ -102,9 +102,14 @@ public class BillFacadeImpl implements BillFacade {
 			saveMaxSeqNoToFile(billInput);
 		}
 		
+		int curSeqNo = curSeqNoMap.get(appId);
+		if(curSeqNo > 600000000){
+			throw new BillServiceRetException(BillServiceRetException.SEQ_LIMIT_ERROR, "最大序号不能超过6亿");
+		}
+		
 		// 从配置中取1位机器号，最多支持10台机器
 		String macNo = CommonUtil.getWebConfig("macNo");
-		String seqNo = macNo + formatSeqNo(curSeqNoMap.get(appId));
+		String seqNo = macNo + formatSeqNo(curSeqNo);
 		
 		return seqNo;
 		
@@ -136,6 +141,11 @@ public class BillFacadeImpl implements BillFacade {
 				maxSeqNo += Integer.valueOf(CommonUtil.trimString(br.readLine()));
 				br.close();
 			}			
+			
+			int curSeqNo = maxSeqNo - 999;
+			if(curSeqNo >= 600000000){
+				throw new BillServiceRetException(BillServiceRetException.SYSTEM_ERROR, "获取单号失败");
+			}
 			
 			BufferedWriter bw = new BufferedWriter(new FileWriter(appIdFile));		
 			bw.write(String.valueOf(maxSeqNo));
