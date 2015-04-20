@@ -5,18 +5,46 @@
 	<!-- Configuration for ibatis sqlmap mapping.                    -->
 	<!-- ==========================================================  -->
 
-<sqlMap namespace="user">
-
-	<insert id="insertDeviceInfo"
-		parameterClass="com.zhaocb.zcb_app.finance.service.facade.dataobject.DeviceInfoDO">
-		INSERT INTO t_device_info
-		(FdeviceId, Fimei, Fmac, Fmac2, Fextr, FappVer,FchannelId,FplatType, FclientIp, Fstate, FcreateTime,FmodifyTime)
+<sqlMap namespace="user">	
+	<insert id="createUserAccount"
+		parameterClass="com.zcb_app.account.service.facade.dataobject.UserAccountDO">
+		INSERT INTO ct_db.t_account
+		(Fuid,Fuserid, Facct_type, Fcur_type,Fbalance,Ffreeze_balance,Fcreate_time,Fmodify_time,
+		Frecon_day,Frecon_balance)
 		VALUES
-		(#deviceId#, #imei#, #mac#, #mac2#, #extr#, #appVer#,#channelId#,#platType#, #clientIp#, #state#, NOW(), NOW())
-		<selectKey resultClass="java.lang.Long" keyProperty="itemId">
-			SELECT LAST_INSERT_ID() AS itemId   
-        </selectKey>
+		(#uid#,#userid#,#accttype#,#curtype#,0.00,0.00,NOW(),NOW(),curdate(),0.00)		
 	</insert>
-
+	<insert id="insertUserAcctRoll"
+		parameterClass="com.zcb_app.account.service.facade.dataobject.UserAccountRollDO">
+		INSERT INTO ct_db_$db_idx$.t_acctroll_list_$tb_idx$
+		(Flistid,Facctid,Fuid,Fuserid,Facct_type,Fcur_type,Fto_uid,
+		Fto_userid,Fpay_amt,Fpayfreeze_amt,Fbalance,Ffreeze_balance,
+		Faction_type,Ftrans_type,Ftype,Ftrade_acc_time,Fmemo,
+		Fcreate_time,Fmodify_time)
+		VALUES
+		(#listid#,#acctid#,#uid#,#userid#,#acct_type#,#cur_type#,#to_uid#,
+		#to_userid#,#pay_amt#,#payfreeze_amt#,#balance#,#freeze_balance#,
+		#action_type#,#trans_type#,#type#,#trade_acc_time#,#memo#,NOW(),NOW())		
+	</insert>
+	<insert id="insertTransVoucher"
+		parameterClass="com.zcb_app.account.service.facade.dataobject.TransVoucherDO">
+		INSERT INTO ct_db_$db_idx$.t_trans_voucher_$tb_idx$
+		(Fvoucher,Flistid,Freq_no,Fcur_type,Ftrans_amt,Ffrozen_amt,
+		Faction_type,Ftrans_type,Ffrom_uid,Ffrom_userid,Fto_uid,
+		Fto_userid,Ftrade_acc_time,Fmemo,Fcreate_time,Fmodify_time)
+		VALUES
+		(#voucher#,#listid#,#req_no#,#cur_type#,#trans_amt#,#frozen_amt#,
+		#action_type#,#trans_type#,#from_uid#,#from_userid#,#to_uid#,
+		#to_userid#,#trade_acc_time#,#memo#,NOW(),NOW())	
+	</insert>
+	<insert id="insertFreezeList"
+		parameterClass="com.zcb_app.account.service.facade.dataobject.FreezeListDO">
+		INSERT INTO ct_db_$db_idx$.t_freeze_list_$tb_idx$
+		(Flistid,Fuid,Fuserid,Fcur_type,Ffreeze_amt,Faction_type,
+		Freason,Frela_list,Fmemo,Fip,Fstate,Fcreate_time,Fmodify_time)
+		VALUES
+		(#listid#,#uid#,#userid#,#cur_type#,#freeze_amt#,#action_type#,
+		#reason#,#rela_list#,#memo#,#ip#,2,NOW(),NOW())	
+	</insert>
 	
 </sqlMap>

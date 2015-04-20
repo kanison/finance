@@ -1,0 +1,36 @@
+﻿create database if not exists ct_db_$XX;
+use ct_db_$XX;
+
+CREATE TABLE t_trans_voucher_$Y(
+	Fpkid	bigint(20) AUTO_INCREMENT,
+	Fvoucher varchar(64) NOT NULL,
+	Flistid varchar(64) NOT NULL,
+	Freq_no varchar(64) default NULL,
+	Fcur_type	smallint(6)	NOT NULL COMMENT '币种',	
+	Ftrans_amt decimal(18,2)	NOT NULL,
+	Ffrozen_amt decimal(18,2)	NOT NULL,
+	Faction_type	smallint(6) 	NOT NULL COMMENT '操作类型',
+	Ftrans_type smallint(6) 	NOT NULL COMMENT '交易类型',
+	Ffrom_uid bigint(20) NOT NULL COMMENT '用户id',
+	Ffrom_userid varchar(64) default NULL COMMENT '用户名',
+	Fto_uid bigint(20) NOT NULL COMMENT '用户id',
+	Fto_userid varchar(64) default NULL COMMENT '用户名',	
+	Ftrade_acc_time datetime NOT NULL,
+	Fcreate_time    datetime NOT NULL,
+	Fmodify_time    datetime NOT NULL,
+	Fsign	varchar(32) NOT NULL default '' COMMENT '防串改签名',
+	Fmemo        varchar(255) default NULL,
+	Fstandby1    int(11)    default NULL,
+	Fstandby2    int(11)    default NULL,
+	Fstandby3    bigint(20)    default NULL,
+	Fstandby4    decimal(18,2) NOT NULL default '0',
+	Fstandby5    datetime   default NULL,
+	Fstandby6    varchar(64) default NULL,
+	Fstandby7    varchar(128) default NULL,
+	Fstandby8    varchar(255) default NULL,
+  PRIMARY KEY (`Fpkid`),
+  UNIQUE KEY `idx_voucher` (`Fvoucher`),
+  KEY `idx_listid` (`Flistid`),
+  KEY `idx_tradetime` (`Ftrade_acc_time`),
+  KEY `idx_mtime` (`Fmodify_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

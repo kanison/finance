@@ -5,37 +5,75 @@
 	<!-- Configuration for ibatis sqlmap mapping.                    -->
 	<!-- ==========================================================  -->
 
-<sqlMap namespace="user">
-
-	<select id="queryDeviceInfo"
-		resultClass="com.zhaocb.zcb_app.finance.service.facade.dataobject.DeviceInfoDO">
+<sqlMap namespace="user">	
+	<select id="queryUserAccount"
+		resultClass="com.zcb_app.account.service.facade.dataobject.UserAccountDO">
 		SELECT 
-			FitemId	itemId,
-			FdeviceId	deviceId,
-			Fimei	imei,
-			Fmac	mac,
-			Fmac2	mac2,
-			Fextr	extr,
-			FappVer	appVer,
-			FchannelId	channelId,
-			FplatType	platType,
-			FclientIp clientIp,
+			Facctid	acctid,
+			Fuid uid,
+			Fuserid userid,
+			Facct_type accttype,
+			Fcur_type curtype,
+			Fbalance balance,
+			Ffreeze_balance freeze_balance,
 			Fstate state,
-			FcreateTime	createTime,
-			FmodifyTime	modifyTime
-		FROM t_device_info
+			Flstate lstate,
+			Fcreate_time create_time,
+			Fmodify_time modify_time,
+			Fsign sign,
+			Fmemo memo
+		FROM ct_db.t_account
 		where 
-			Fstate	= 1
-			<isNotEqual  property="itemId" compareValue="0">
-				and FitemId = #itemId#
-			</isNotEqual>
-			<isNotEqual  property="deviceId" compareValue="0">
-				and FdeviceId = #deviceId#
-			</isNotEqual>
-			<isNotEmpty property="imei">
-				and Fimei = #imei#
-			</isNotEmpty>
+			Fstate = 1 AND Flstate=1 AND Fuid=#uid# AND Facct_type=#accttype# AND Fcur_type=#curtype# 
+			<isEqual  property="querylock" compareValue="true">
+				FOR UPDATE
+			</isEqual>			
 	</select>
-	
-
+	<select id="queryTransVoucher"
+		resultClass="com.zcb_app.account.service.facade.dataobject.TransVoucherDO">
+		SELECT 
+			Fpkid pkid,
+			Fvoucher voucher,
+			Flistid listid,
+			Freq_no req_no,
+			Fcur_type cur_type,
+			Ftrans_amt trans_amt,
+			Ffrozen_amt frozen_amt,
+			Faction_type action_type,
+			Ftrans_type trans_type,
+			Ffrom_uid from_uid,
+			Ffrom_userid from_userid,
+			Fto_uid to_uid,
+			Fto_userid to_userid,
+			Ftrade_acc_time trade_acc_time,
+			Fcreate_time create_time,
+			Fmodify_time modify_time,
+			Fmemo memo
+		FROM ct_db_$db_idx$.t_trans_voucher_$tb_idx$
+		where Flistid=#listid#
+	</select>
+	<select id="querySpInfo"
+		resultClass="com.zcb_app.account.service.dao.type.SpUserInfo">
+		SELECT 
+			Fuid uid,
+			Fspid spid,
+			Fstate state,
+			Fauthflag authflag
+		FROM finance_db.t_sp_info
+		where Fspid=#spid#
+	</select>
+	<select id="queryFreezeList"
+		resultClass="com.zcb_app.account.service.facade.dataobject.FreezeListDO">
+		SELECT 
+			Flistid listid,
+			Fuid uid,
+			Fuserid userid,
+			Fcur_type cur_type,
+			Ffreeze_amt freeze_amt,
+			Frela_list rela_list,
+			Funfreeze_amt unfreeze_amt,
+			Fstate state
+		FROM ct_db_$db_idx$.t_freeze_list_$tb_idx$
+		where Flistid=#listid# AND Fuid=#uid# AND Fcur_type=#cur_type#
+	</select>	
 </sqlMap>
