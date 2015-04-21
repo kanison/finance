@@ -7,16 +7,16 @@
 
 
 <sqlMap namespace="user">
-
-	<update id="updateDeviceInfo" parameterClass="com.zhaocb.zcb_app.finance.service.facade.dataobject.DeviceInfoDO">
-		update
-		t_device_info set
-		<isNotEqual property="state" compareValue="0">
-			Fstate = #state# ,
-		</isNotEqual>
-			FModifyTime = NOW()
-		where
-			FdeviceId = #deviceId#
+	<update id="updateUserAcctBalance"
+		parameterClass="com.zcb_app.account.service.facade.dataobject.UserAccountDO">
+		UPDATE ct_db.t_account
+		SET Fbalance=#balance#,Ffreeze_balance=#freeze_balance#,Fmodify_time=NOW()
+		WHERE Fuid=#uid# AND Facct_type=#accttype# AND Fcur_type=#curtype#		
 	</update>
-	
+	<update id="updateFreezeList"
+		parameterClass="com.zcb_app.account.service.facade.dataobject.FreezeListDO">
+		UPDATE ct_db_$db_idx$.t_freeze_list_$tb_idx$
+		SET Funfreeze_amt=#unfreeze_amt#,Fstate=#state#,Fmodify_time=NOW()
+		WHERE Flistid=#listid# AND Fuid=#uid# AND Fcur_type=#cur_type#		
+	</update>
 </sqlMap>

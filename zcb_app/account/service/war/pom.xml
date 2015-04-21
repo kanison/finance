@@ -10,7 +10,69 @@
   <version>1.0</version>
   <packaging>war</packaging>
   <name>zcb_app-account-service-war</name>
-  
+  <dependencies>		
+		<dependency>
+			<groupId>com.tenpay.sm.platform</groupId>
+			<artifactId>sm-platform-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.tenpay.sm.platform</groupId>
+			<artifactId>sm-platform-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.tenpay.sm.platform</groupId>
+			<artifactId>sm-platform-lang</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.axis</groupId>
+			<artifactId>axis</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.zhaocb.common.base-common</groupId>
+  			<artifactId>zcb_common_base-common</artifactId>
+  		</dependency>
+		<dependency>
+			<groupId>com.caucho</groupId>
+			<artifactId>hessian</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.zhaocb.zcb_app</groupId>
+			<artifactId>zcb_app-account-service-dao</artifactId>
+			<version>1.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.zhaocb.zcb_app</groupId>
+			<artifactId>zcb_app-account-service-facade</artifactId>
+			<version>1.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.zhaocb.zcb_app</groupId>
+			<artifactId>zcb_app-account-service-impl</artifactId>
+			<version>1.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
   <build>
 		<plugins>
 			<plugin>

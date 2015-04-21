@@ -1,215 +1,455 @@
 package com.zcb_app.account.service.dao.ibatis;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.orm.ibatis.SqlMapClientTemplate;
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.app.utils.CommonUtil;
+import com.app.utils.MoneyType;
 import com.zcb_app.account.service.dao.UserAccountDAO;
+import com.zcb_app.account.service.dao.type.AcctTransParams;
+import com.zcb_app.account.service.dao.type.SpUserInfo;
 import com.zcb_app.account.service.exception.AccountServiceRetException;
+import com.zcb_app.account.service.facade.dataobject.FreezeListDO;
+import com.zcb_app.account.service.facade.dataobject.TransVoucherDO;
 import com.zcb_app.account.service.facade.dataobject.UserAccountDO;
 import com.zcb_app.account.service.facade.dataobject.UserAccountRollDO;
+import com.zcb_app.account.service.type.FreezeType;
+import com.zcb_app.account.service.type.TransType;
 
 public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 		UserAccountDAO {
-
+	private static final Log LOG = LogFactory.getLog(UserAccountIbatisImpl.class);
+		
 	private void createUserAccountRoll(UserAccountRollDO userAccountRollDO) {
 		if (userAccountRollDO == null
 				|| CommonUtil.trimString(userAccountRollDO.getListid()) == null) {
 			throw new AccountServiceRetException(
 					AccountServiceRetException.LISTID_NOT_EXIST, "缺少交易单号");
 		}
+		userAccountRollDO.genDataTableIndex();
 		SqlMapClientTemplate client = getSqlMapClientTemplate();
-		client.insert("insertUserAccountRoll", userAccountRollDO);
-
+		client.insert("insertUserAcctRoll", userAccountRollDO);
 	}
-
+	
+	/**
+	 * 更新用户账户金额
+	 * @param userAccountDO
+	 */
+	private void updateUserAccountBalance(UserAccountDO userAccountDO)
+	{
+		SqlMapClientTemplate client = getSqlMapClientTemplate();
+		int effected_rows = client.update("updateUserAcctBalance", userAccountDO);
+		if (1 != effected_rows) {
+			throw new AccountServiceRetException(
+					AccountServiceRetException.ERR_EFFECTED_ROWS, "更新的影响行数不为1");
+		}
+	}
+	
+	private void insertTransVoucher(TransVoucherDO obj)
+	{
+		obj.genDataTableIndex();
+		SqlMapClientTemplate client = getSqlMapClientTemplate();
+		client.insert("insertTransVoucher", obj);
+	}
+	
+	/**
+	 * 保存冻结单信息
+	 * @param obj
+	 */
+	private void insertFreezeList(FreezeListDO obj)
+	{
+		obj.genDataTableIndex();
+		SqlMapClientTemplate client = getSqlMapClientTemplate();
+		client.insert("insertFreezeList", obj);
+	}
+	
+	/**
+	 * 更新冻结单信息
+	 * @param obj
+	 */
+	private void updateFreezeList(FreezeListDO obj)
+	{
+		obj.genDataTableIndex();
+		SqlMapClientTemplate client = getSqlMapClientTemplate();
+		int effected_rows = client.update("updateFreezeList", obj);
+		
+		if (1 != effected_rows) {
+			throw new AccountServiceRetException(
+					AccountServiceRetException.ERR_EFFECTED_ROWS, "更新的影响行数不为1");
+		}
+	}
+	
+	/**
+	 * 减账户可用金额，记录账户流水
+	 * @param userAccountDO
+	 * @param userAccountRollDO
+	 * @return
+	 */
 	@Transactional
-	public UserAccountRollDO saveUserAccount(UserAccountRollDO userAccountRollDO) {
+	private UserAccountDO subTractUserUnfreezeBalance(
+			UserAccountDO user,
+			UserAccountRollDO roll) {
 
-		UserAccountDO userAccountDO = new UserAccountDO();
-		userAccountDO.setUid(userAccountRollDO.getUid());
-		userAccountDO.setAccount_type(userAccountRollDO.getAccount_type());
-		userAccountDO.setCurtype(userAccountRollDO.getCurtype());
-		userAccountDO = queryUserAccount(userAccountDO);
-
-		userAccountRollDO.setBalance(userAccountDO.getBalance().add(
-				userAccountRollDO.getPaynum()));
-		userAccountRollDO.setFreeze_balance(userAccountDO.getFreeze_balance());// 冻结金额不变
-		userAccountRollDO.setType(UserAccountRollDO.TYPE_SAVE);
-		userAccountRollDO.setAcctid(userAccountDO.getAcctid());
-		userAccountRollDO.setTrade_time(CommonUtil.formatDate(new Date(),
-				"yyyy-MM-dd HH:mm:ss"));
-
-		SqlMapClientTemplate client = getSqlMapClientTemplate();
-		client.update("updateUserAccount", userAccountRollDO);
-
-		createUserAccountRoll(userAccountRollDO);
-		return userAccountRollDO;
-
+		// 账户金额减冻结金额为剩余可用金额
+		BigDecimal ba = user.getBalance().subtract(
+				user.getFreeze_balance());
+		if (ba.compareTo(roll.getPay_amt()) < 0) {
+			throw new AccountServiceRetException(
+					AccountServiceRetException.BALANCE_NOT_ENOUGH, "账户余额不足");
+		}
+		
+		//减用户可以有余额
+		BigDecimal up_ba = user.getBalance().subtract(roll.getPay_amt());
+		user.setBalance(up_ba);
+		updateUserAccountBalance(user);
+		
+		//记录用户账户流水	
+		roll.setUid(user.getUid());
+		roll.setUserid(user.getUserid());
+		roll.setAcct_type(user.getAccttype());
+		roll.setType(TransType.BKT_PAY_OUT);
+		roll.setAcctid(user.getAcctid());
+		roll.setBalance(user.getBalance());
+		roll.setFreeze_balance(user.getFreeze_balance());
+		createUserAccountRoll(roll);
+		
+		return user;
 	}
-
+	
+	/**
+	 * 减用户冻结金额，记录账户流水
+	 * @param user
+	 * @param roll
+	 * @return
+	 */
+	private UserAccountDO subTractUserFreezeBalance(
+			UserAccountDO user,
+			UserAccountRollDO roll) {
+		//判断账户的冻结金额是否足够
+		BigDecimal usr_frozen_ba = user.getFreeze_balance();
+		if (usr_frozen_ba.compareTo(roll.getPay_amt()) < 0) {
+			throw new AccountServiceRetException(
+					AccountServiceRetException.BALANCE_NOT_ENOUGH, "账户余额不足");
+		}
+		
+		//查询冻结单		
+		FreezeListDO flistObj = new FreezeListDO();
+		flistObj.setListid(roll.getRela_list());
+		flistObj.setUid(user.getUid());
+		flistObj.setCur_type(roll.getCur_type());
+		flistObj = queryFreezeList(flistObj);
+		if (null == flistObj) {
+			throw new AccountServiceRetException(
+					AccountServiceRetException.INPUT_PARAMS_ERROR, "无效的冻结单");
+		}
+		
+		//检查冻结单状态
+		if (FreezeType.FS_FROZEN != flistObj.getState()
+			&& FreezeType.FS_PARTLY_UFREEZE != flistObj.getState()) {
+			throw new AccountServiceRetException(
+					AccountServiceRetException.LISTID_FREEZE_ERROR, "冻结单状态不正确");
+		}
+		
+		//可用的冻结金额为总冻结金额-已解冻金额
+		BigDecimal list_frozen_ba = flistObj.getFreeze_amt().subtract(flistObj.getUnfreeze_amt());
+		if (list_frozen_ba.compareTo(roll.getPay_amt()) < 0) {
+			throw new AccountServiceRetException(
+					AccountServiceRetException.FREEZE_BALANCE_NOT_ENOUGH, "冻结金额不足");
+		}
+		
+		//设置冻结单解冻金额和状态
+		BigDecimal ufamt = flistObj.getUnfreeze_amt();
+		ufamt = ufamt.add(roll.getPay_amt());
+		if (flistObj.getFreeze_amt().compareTo(ufamt) == 0)
+			flistObj.setState(FreezeType.FS_ALL_UFREEZE);
+		else
+			flistObj.setState(FreezeType.FS_PARTLY_UFREEZE);
+		
+		flistObj.setUnfreeze_amt(ufamt);
+		//更新冻结单
+		updateFreezeList(flistObj);
+		
+		//减用户可以有余额
+		BigDecimal up_ba = user.getBalance().subtract(roll.getPay_amt());
+		user.setBalance(up_ba);
+		usr_frozen_ba = user.getFreeze_balance().subtract(roll.getPay_amt());
+		user.setFreeze_balance(usr_frozen_ba);
+		updateUserAccountBalance(user);
+		
+		//记录用户账户流水	
+		roll.setUid(user.getUid());
+		roll.setUserid(user.getUserid());
+		roll.setAcct_type(user.getAccttype());
+		roll.setType(TransType.BKT_PAY_OUT);
+		roll.setAcctid(user.getAcctid());
+		roll.setBalance(user.getBalance());
+		roll.setFreeze_balance(user.getFreeze_balance());
+		createUserAccountRoll(roll);
+		
+		return user;
+	}
+	
+	@Transactional
+	private UserAccountDO subUserBalance(
+			UserAccountDO user,
+			UserAccountRollDO roll) {
+		//如果是解冻并转账则使用用户冻结金额，否则使用用户未冻结金额
+		if (TransType.ACT_C2C_UNFREEZE_TRSFR == roll.getAction_type()) {
+			return subTractUserFreezeBalance(user, roll);
+		} else {
+			return subTractUserUnfreezeBalance(user, roll);
+		}			
+	}
+	
+	/**
+	 * 增加账户金额
+	 * @param user
+	 * @param roll
+	 * @return
+	 */
+	@Transactional
+	private UserAccountDO addUserBalance(
+			UserAccountDO user,
+			UserAccountRollDO roll) {
+		//如果冻结金额不为0，则需要传入冻结单号
+		Boolean bfreeze = (roll.getPayfreeze_amt().compareTo(MoneyType.ZERO) > 0);
+		if( true == bfreeze
+			&& null == CommonUtil.trimString(roll.getRela_list())) {
+			throw new AccountServiceRetException(
+					AccountServiceRetException.INPUT_PARAMS_ERROR, "缺少冻结单号");
+		}
+		
+		//增加户可以有余额和冻结金额
+		user.setBalance(user.getBalance().add(roll.getPay_amt()));
+		if (bfreeze) {
+			user.setFreeze_balance(user.getFreeze_balance().add(
+					roll.getPayfreeze_amt()));
+		}
+		updateUserAccountBalance(user);
+		
+		//记录用户账户流水		
+		roll.setUid(user.getUid());
+		roll.setUserid(user.getUserid());
+		roll.setAcct_type(user.getAccttype());
+		roll.setType(TransType.BKT_PAY_IN);
+		roll.setAcctid(user.getAcctid());
+		roll.setBalance(user.getBalance());
+		roll.setFreeze_balance(user.getFreeze_balance());		
+		createUserAccountRoll(roll);
+		
+		//如果有冻结金额，需要记录冻结单
+		if (bfreeze) {
+			FreezeListDO flistObj = new FreezeListDO();
+			//用户信息
+			flistObj.setUid(user.getUid());
+			flistObj.setUserid(user.getUserid());
+			//交易信息，冻结单号为流水的关联单号
+			flistObj.setListid(roll.getRela_list());
+			flistObj.setFreeze_amt(roll.getPayfreeze_amt());
+			flistObj.setCur_type(roll.getCur_type());
+			flistObj.setAction_type(roll.getAction_type());
+			flistObj.setRela_list(roll.getListid());
+			flistObj.setReason(FreezeType.FR_TRANS_FREEZE);	
+			flistObj.setMemo(roll.getMemo());
+			flistObj.setIp(roll.getClient_ip());
+			
+			insertFreezeList(flistObj);
+		}
+		
+		return user;
+	}
+	
+	private void checkTransVoucher(AcctTransParams params)
+	{
+		TransVoucherDO tmptv = new TransVoucherDO();
+		tmptv.setListid(params.getListid());
+		TransVoucherDO tv = queryTransVoucher(tmptv);
+		if (null == tv)
+			return;
+		
+		//如果存在则比较关键参数是否一致
+		if (tv.getFrom_uid() != params.getFrom_uid())
+			throw new AccountServiceRetException(
+					AccountServiceRetException.ERR_REENTY_INCONSISTENT, "From_uid不一致");
+		
+		//LOG.debug("tv fromuserid="+tv.getFrom_userid()+",params.fromuserid="+params.getFrom_userid());
+		
+		if (!tv.getFrom_userid().equals(params.getFrom_userid()))
+			throw new AccountServiceRetException(
+					AccountServiceRetException.ERR_REENTY_INCONSISTENT, "From_userid不一致");
+					
+		if (tv.getTo_uid() != params.getTo_uid())
+			throw new AccountServiceRetException(
+					AccountServiceRetException.ERR_REENTY_INCONSISTENT, "To_uid不一致");
+		
+		if (!tv.getTo_userid().equals(params.getTo_userid()))
+			throw new AccountServiceRetException(
+					AccountServiceRetException.ERR_REENTY_INCONSISTENT, "To_userid不一致");
+		
+		if (tv.getCur_type() != params.getCur_type())
+			throw new AccountServiceRetException(
+					AccountServiceRetException.ERR_REENTY_INCONSISTENT, "交易币种不一致");
+		
+		if (!tv.getTrans_amt().equals(params.getTrans_amt()))
+			throw new AccountServiceRetException(
+					AccountServiceRetException.ERR_REENTY_INCONSISTENT, "交易金额不一致");
+		
+		if (!tv.getFrozen_amt().equals(params.getFrozen_amt()))
+			throw new AccountServiceRetException(
+					AccountServiceRetException.ERR_REENTY_INCONSISTENT, "冻结金额不一致");
+		
+		if (!tv.getRela_list().equals(params.getRela_list()))
+			throw new AccountServiceRetException(
+					AccountServiceRetException.ERR_REENTY_INCONSISTENT, "关联的单号不一致");
+		
+		//参数一致，报特定的重入错误码，业务根据此错误码处理已完成重复提交的请求
+		throw new AccountServiceRetException(
+				AccountServiceRetException.ERR_REENTY_OK, "交易已经成功");
+	}
+	
+	public SpUserInfo querySpUser(String spid)
+	{
+		SpUserInfo spuser = new SpUserInfo();
+		spuser.setSpid(spid);
+		SqlMapClientTemplate client = getSqlMapClientTemplate();
+		return (SpUserInfo) client.queryForObject("querySpInfo",
+				spuser);
+	}
+		
+	/**
+	 * 创建交易现金账户
+	 */
 	public void createUserAccount(UserAccountDO userAccountDO) {
 		SqlMapClientTemplate client = getSqlMapClientTemplate();
 		client.insert("createUserAccount", userAccountDO);
 	}
-
-	@Transactional
-	public UserAccountRollDO drawUserAccountDirectSuccess(
-			UserAccountRollDO userAccountRollDO) {
-		UserAccountDO userAccountDO = new UserAccountDO();
-		userAccountDO.setUid(userAccountRollDO.getUid());
-		userAccountDO.setAccount_type(userAccountRollDO.getAccount_type());
-		userAccountDO.setCurtype(userAccountRollDO.getCurtype());
-		userAccountDO = queryUserAccount(userAccountDO);
-
-		// 账户金额减冻结金额为剩余可用金额
-		if ((userAccountDO.getBalance().subtract(userAccountDO
-				.getFreeze_balance())).compareTo(userAccountRollDO.getPaynum()) < 0) {
-			throw new AccountServiceRetException(
-					AccountServiceRetException.BALANCE_NOT_ENOUGH, "账户金额不足");
-		}
-
-		userAccountRollDO.setBalance(userAccountDO.getBalance().subtract(
-				userAccountRollDO.getPaynum()));
-		userAccountRollDO.setFreeze_balance(userAccountDO.getFreeze_balance());// 冻结金额不变
-		userAccountRollDO.setType(UserAccountRollDO.TYPE_DRAW);
-		userAccountRollDO.setAcctid(userAccountDO.getAcctid());
-		userAccountRollDO.setTrade_time(CommonUtil.formatDate(new Date(),
-				"yyyy-MM-dd HH:mm:ss"));
-
-		SqlMapClientTemplate client = getSqlMapClientTemplate();
-		client.update("updateUserAccount", userAccountRollDO);
-
-		createUserAccountRoll(userAccountRollDO);
-		return userAccountRollDO;
-	}
-
-	@Transactional
-	public UserAccountRollDO drawUserAccountFreeze(
-			UserAccountRollDO userAccountRollDO) {
-		UserAccountDO userAccountDO = new UserAccountDO();
-		userAccountDO.setUid(userAccountRollDO.getUid());
-		userAccountDO.setAccount_type(userAccountRollDO.getAccount_type());
-		userAccountDO.setCurtype(userAccountRollDO.getCurtype());
-		userAccountDO = queryUserAccount(userAccountDO);
-
-		// 账户金额减冻结金额为剩余可用金额
-		if ((userAccountDO.getBalance().subtract(userAccountDO
-				.getFreeze_balance())).compareTo(userAccountRollDO
-				.getFreezenum()) < 0) {
-			throw new AccountServiceRetException(
-					AccountServiceRetException.BALANCE_NOT_ENOUGH, "账户金额不足");
-		}
-
-		userAccountRollDO.setBalance(userAccountDO.getBalance());// 账户余额不变
-		userAccountRollDO.setFreeze_balance(userAccountDO.getFreeze_balance()
-				.add(userAccountRollDO.getFreezenum()));
-		userAccountRollDO.setType(UserAccountRollDO.TYPE_FREEZE);
-		userAccountRollDO.setAcctid(userAccountDO.getAcctid());
-		userAccountRollDO.setTrade_time(CommonUtil.formatDate(new Date(),
-				"yyyy-MM-dd HH:mm:ss"));
-
-		SqlMapClientTemplate client = getSqlMapClientTemplate();
-		client.update("updateUserAccount", userAccountRollDO);
-
-		createUserAccountRoll(userAccountRollDO);
-		return userAccountRollDO;
-	}
-
-	@Transactional
-	public UserAccountRollDO drawUserAccountUnfreeze(
-			UserAccountRollDO userAccountRollDO, boolean draw) {
-		UserAccountDO userAccountDO = new UserAccountDO();
-		userAccountDO.setUid(userAccountRollDO.getUid());
-		userAccountDO.setAccount_type(userAccountRollDO.getAccount_type());
-		userAccountDO.setCurtype(userAccountRollDO.getCurtype());
-		userAccountDO = queryUserAccount(userAccountDO);
-
-		// 账户金额是否小于冻结金额，检查账户是否异常
-		if (userAccountDO.getBalance().compareTo(
-				userAccountDO.getFreeze_balance()) < 0) {
-			throw new AccountServiceRetException(
-					AccountServiceRetException.BALANCE_NOT_ENOUGH, "账户金额不足");
-		}
-		if (userAccountDO.getFreeze_balance().compareTo(
-				userAccountRollDO.getFreezenum()) < 0) {
-			throw new AccountServiceRetException(
-					AccountServiceRetException.FREEZE_BALANCE_NOT_ENOUGH,
-					"冻结金额不足");
-		}
-
-		// 查询冻结单
-		UserAccountRollDO queryUserAccountRollDO = new UserAccountRollDO();
-		queryUserAccountRollDO.setListid(userAccountRollDO.getListid());
-		queryUserAccountRollDO.setUid(userAccountRollDO.getUid());
-		queryUserAccountRollDO.setType(UserAccountRollDO.TYPE_FREEZE);
-		queryUserAccountRollDO.setAccount_type(userAccountRollDO.getAccount_type());
-		queryUserAccountRollDO.setCurtype(userAccountRollDO.getCurtype());
-		List<UserAccountRollDO> queryUserAccountRollResult = queryUserAccountRolllist(queryUserAccountRollDO);
-		if (queryUserAccountRollResult == null
-				|| queryUserAccountRollResult.size() > 1) {
-			throw new AccountServiceRetException(
-					AccountServiceRetException.LISTID_FREEZE_ERROR, "冻结单错误");
-		}
-
-		UserAccountRollDO freezeUserAccountRollDO = queryUserAccountRollResult
-				.get(0);
-		// 判断冻结单号的一致性
-		if (CommonUtil.trimString(freezeUserAccountRollDO.getFreeze_id()) != null
-				&& !freezeUserAccountRollDO.getFreeze_id().equals(
-						userAccountRollDO.getFreeze_id())) {
-			throw new AccountServiceRetException(
-					AccountServiceRetException.FREEZE_ID_ERROR, "解冻单号错误");
-		}
-		if (freezeUserAccountRollDO.getFreezenum().compareTo(
-				userAccountRollDO.getFreezenum()) != 0) {
-			throw new AccountServiceRetException(
-					AccountServiceRetException.FREEZE_BALANCE_ERROR, "解冻金额错误");
-		}
-		
-		//如果需要提现则减账户余额，无需提现则直接解冻
-		if (draw) {
-			userAccountRollDO.setPaynum(userAccountRollDO.getFreezenum());//账户余额变更值
-			userAccountRollDO.setBalance(userAccountDO.getBalance().subtract(userAccountRollDO.getPaynum()));
-		}
-		else{
-			userAccountRollDO.setBalance(userAccountDO.getBalance());// 账户余额不变
-		}
-				
-		userAccountRollDO.setFreeze_balance(userAccountDO.getFreeze_balance().subtract(userAccountRollDO.getFreezenum()));
-		userAccountRollDO.setType(UserAccountRollDO.TYPE_UNFREEZE);
-		userAccountRollDO.setAcctid(userAccountDO.getAcctid());
-		userAccountRollDO.setTrade_time(CommonUtil.formatDate(new Date(),
-				"yyyy-MM-dd HH:mm:ss"));
-		
-		SqlMapClientTemplate client = getSqlMapClientTemplate();
-		client.update("updateUserAccount", userAccountRollDO);
-
-		createUserAccountRoll(userAccountRollDO);
-		return userAccountRollDO;
-	}
-
+	
+	/**
+	 * 查询交易现在金账户
+	 */
 	public UserAccountDO queryUserAccount(UserAccountDO userAccountDO) {
 		SqlMapClientTemplate client = getSqlMapClientTemplate();
 		return (UserAccountDO) client.queryForObject("queryUserAccount",
 				userAccountDO);
 	}
+		
+	/**
+	 * 查询交易凭证信息
+	 * @param obj
+	 * @return
+	 */
+	public TransVoucherDO queryTransVoucher(TransVoucherDO obj)
+	{
+		obj.genDataTableIndex();
+		SqlMapClientTemplate client = getSqlMapClientTemplate();
+		return (TransVoucherDO) client.queryForObject("queryTransVoucher",
+				obj);
+	}
+	
+	/**
+	 * 查询冻结单信息
+	 * @param obj
+	 * @return
+	 */
+	public FreezeListDO queryFreezeList(FreezeListDO obj)
+	{
+		obj.genDataTableIndex();
+		SqlMapClientTemplate client = getSqlMapClientTemplate();
+		return (FreezeListDO)client.queryForObject("queryFreezeList", obj);
+	}
+	
 
 	@Transactional
-	public void userAccountTranfer(UserAccountRollDO fromUserAccountRollDO,
-			UserAccountRollDO toUserAccountRollDO) {
+	public void c2cTransfer(AcctTransParams params)
+	{
+		//查询凭证单是否存在，如果存在检查关键参数是否一致
+		checkTransVoucher(params);
+				
+		UserAccountDO fromuser = new UserAccountDO();
+		fromuser.setUid(params.getFrom_uid());
+		fromuser.setCurtype(params.getCur_type());
+		fromuser.setAccttype(params.getFrom_acct_type());
+		fromuser.setQuerylock(true);
+		
+		UserAccountDO touser = new UserAccountDO();
+		touser.setUid(params.getTo_uid());
+		touser.setCurtype(params.getCur_type());
+		touser.setAccttype(params.getTo_acct_type());
+		touser.setQuerylock(true);
+		
+		//锁交易账户，为防止死锁，按uid从小到的顺序加锁
+		if (fromuser.getUid() > touser.getUid()) {
+			touser = queryUserAccount(touser);		
+			fromuser = queryUserAccount(fromuser);
+		} else {
+			fromuser = queryUserAccount(fromuser);
+			touser = queryUserAccount(touser);
+		}
+		if (null == fromuser || null == touser) {
+			throw new AccountServiceRetException(
+					AccountServiceRetException.ERR_USER_ACCT_NOT_EXSIT, "交易账户不存在");
+		}
+		
 		//出钱账户减
-		drawUserAccountDirectSuccess(fromUserAccountRollDO);
+		UserAccountRollDO fromuser_roll = new UserAccountRollDO();
+		//设置交易信息
+		fromuser_roll.setCur_type(params.getCur_type());
+		fromuser_roll.setPay_amt(params.getTrans_amt());
+		fromuser_roll.setPayfreeze_amt(params.getFrozen_amt());
+		fromuser_roll.setAction_type(params.getAction_type());
+		fromuser_roll.setTrade_acc_time(params.getTrade_acc_time());
+		fromuser_roll.setListid(params.getListid());
+		fromuser_roll.setRela_list(params.getRela_list());
+		fromuser_roll.setMemo(params.getMemo());
+		fromuser_roll.setClient_ip(params.getClient_ip());
+		//设置目标账户
+		fromuser_roll.setTo_uid(touser.getUid());
+		fromuser_roll.setTo_userid(touser.getUserid());		
+		subUserBalance(fromuser, fromuser_roll);
 		
 		//入钱账户加
-		saveUserAccount(toUserAccountRollDO);
+		UserAccountRollDO touser_roll = new UserAccountRollDO();
+		touser_roll.setCur_type(params.getCur_type());
+		touser_roll.setPay_amt(params.getTrans_amt());
+		touser_roll.setPayfreeze_amt(params.getFrozen_amt());
+		touser_roll.setAction_type(params.getAction_type());
+		touser_roll.setTrade_acc_time(params.getTrade_acc_time());
+		touser_roll.setListid(params.getListid());
+		touser_roll.setRela_list(params.getRela_list());
+		touser_roll.setMemo(params.getMemo());
+		touser_roll.setClient_ip(params.getClient_ip());
+		//设置目标账户
+		touser_roll.setTo_uid(fromuser.getUid());
+		touser_roll.setTo_userid(fromuser.getUserid());
+		addUserBalance(touser, touser_roll);
+		
+		//记录凭证单
+		TransVoucherDO voobj = new TransVoucherDO();
+		voobj.setVoucher(params.getListid());
+		voobj.setListid(params.getListid());
+		voobj.setCur_type(params.getCur_type());
+		voobj.setTrans_amt(params.getTrans_amt());
+		voobj.setFrozen_amt(params.getFrozen_amt());
+		voobj.setAction_type(params.getAction_type());
+		voobj.setTrans_type(params.getTrans_type());
+		voobj.setFrom_uid(fromuser.getUid());
+		voobj.setFrom_userid(fromuser.getUserid());
+		voobj.setTo_uid(touser.getUid());
+		voobj.setTo_userid(touser.getUserid());
+		voobj.setTrade_acc_time(params.getTrade_acc_time());
+		voobj.setRela_list(params.getRela_list());
+		voobj.setMemo(params.getMemo());
 
+		insertTransVoucher(voobj);
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	public List<UserAccountRollDO> queryUserAccountRolllist(
 			UserAccountRollDO userAccountRollDO) {
