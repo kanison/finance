@@ -20,11 +20,10 @@
 	</dependency>
 
 	<dependency>
-		<groupId>com.zhaocb.common</groupId>
-		<artifactId>zcb_common</artifactId>
+		<groupId>com.zhaocb.common.base-common</groupId>
+		<artifactId>zcb_common_base-common</artifactId>
 		<version>1.0</version>
-		<type>pom</type>
 		<scope>compile</scope>
-	</dependency>
+		</dependency>
   </dependencies>
 </project>

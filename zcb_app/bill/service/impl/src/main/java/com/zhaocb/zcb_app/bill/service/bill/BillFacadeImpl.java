@@ -31,20 +31,21 @@ public class BillFacadeImpl implements BillFacade {
 	private BillDAO billDAO;
 	private static Map<String,Integer> curSeqNoMap;
 	private static Map<String,Integer> maxSeqNoMap;
+	private static Map<String,Integer> startNoMap;
 	
 	private static final Log LOG = LogFactory.getLog(BillFacade.class);
 
-	public String genBillNo(GenBillInput billInput) {
+	public String genBillNo(GenBillInput billInfo) {
 		LOG.info("method genBillNo");
 		
 		//检查参数
-		checkParam(billInput);
+		checkParam(billInfo);
 		
 		//获取当前10位序号		
-		String seqNo = getSeqNo(billInput);
+		String seqNo = getSeqNo(billInfo);
 		
 		//按规则生成单号
-		String billNo = setBillNo(billInput, seqNo);
+		String billNo = setBillNo(billInfo, seqNo);
 		
 		return billNo;
 	}
@@ -57,14 +58,14 @@ public class BillFacadeImpl implements BillFacade {
 	 * @param billNo
 	 * @return
 	 */
-	private String setBillNo(GenBillInput billInput, String seqNo) {		
+	private String setBillNo(GenBillInput billInfo, String seqNo) {		
 		StringBuffer billNo = new StringBuffer();
-		String listType = billInput.getListType();
+		String listType = billInfo.getListType();
 		
 		if("0".equals(listType)){
 			billNo.append(seqNo) ;
 		} else {			
-			String spId = billInput.getSpId();
+			String spId = billInfo.getSpId();
 			String curDate = CommonUtil.formatDate(new Date(), "yyyyMMdd");
 			billNo.append(listType).append(spId).append(curDate).append(seqNo);
 		}		
@@ -74,11 +75,11 @@ public class BillFacadeImpl implements BillFacade {
 
 	/**
 	 * 获取当前10位序号,1位机器号+9位自增序号,线程锁定保证准确性
-	 * @param billInput
+	 * @param billInfo
 	 * @return
 	 */
-	private synchronized String getSeqNo(GenBillInput billInput) {
-		String appId = billInput.getAppId();	
+	private synchronized String getSeqNo(GenBillInput billInfo) {
+		String appId = billInfo.getAppId();	
 	
 		boolean needSave = true;
 		if(null != curSeqNoMap && null != maxSeqNoMap){
@@ -99,16 +100,20 @@ public class BillFacadeImpl implements BillFacade {
 		}
 		
 		if(needSave){
-			saveMaxSeqNoToFile(billInput);
+			saveMaxSeqNoToFile(billInfo);
 		}
 		
 		int curSeqNo = curSeqNoMap.get(appId);
-		if(curSeqNo > 600000000){
-			throw new BillServiceRetException(BillServiceRetException.SEQ_LIMIT_ERROR, "最大序号不能超过6亿");
+		if(curSeqNo >= 600000000){
+			throw new BillServiceRetException(BillServiceRetException.SEQ_LIMIT_ERROR, "最大序号不能大于等于6亿");
 		}
 		
 		// 从配置中取1位机器号，最多支持10台机器
 		String macNo = CommonUtil.getWebConfig("macNo");
+		if(null == macNo || macNo.length() != 1 ||  !"0123456789".contains(macNo)){
+			throw new BillServiceRetException(BillServiceRetException.MAC_NO_ERROR, "机器号配置错误");
+		}
+		
 		String seqNo = macNo + formatSeqNo(curSeqNo);
 		
 		return seqNo;
@@ -119,8 +124,8 @@ public class BillFacadeImpl implements BillFacade {
 	 * 更新文件最大序号
 	 * @param appId
 	 */
-	private void saveMaxSeqNoToFile(GenBillInput billInput){		
-		String appId = billInput.getAppId();	
+	private void saveMaxSeqNoToFile(GenBillInput billInfo){		
+		String appId = billInfo.getAppId();	
 		String appIdFilePath = CommonUtil.getWebConfig("appIdFilePath");// 从配置中取文件路径
 		String appIdFileName = new StringBuffer(appIdFilePath).append("/").append(appId).append(".txt").toString();
 		
@@ -134,7 +139,7 @@ public class BillFacadeImpl implements BillFacade {
 					fileDir.mkdirs();
 				}			
 				
-				maxSeqNo += billInput.getAppIdInfo().getStartNo();
+				maxSeqNo += startNoMap.get(appId);
 				
 			} else{
 				BufferedReader br = new BufferedReader(new FileReader(appIdFile));
@@ -155,18 +160,18 @@ public class BillFacadeImpl implements BillFacade {
 			throw new BillServiceRetException(BillServiceRetException.SYSTEM_ERROR, "获取单号失败");
 		}
 		
-		curSeqNoMap.put(appId, maxSeqNo - 999);
+		curSeqNoMap.put(appId, maxSeqNo - 1000);
 		maxSeqNoMap.put(appId, maxSeqNo);	
 	}
 
 	/**
 	 * 检查参数
-	 * @param billInput
+	 * @param billInfo
 	 */
-	private void checkParam(GenBillInput billInput) {
-		String listType = billInput.getListType();
-		String spId = billInput.getSpId();
-		String appId = billInput.getAppId();
+	private void checkParam(GenBillInput billInfo) {
+		String listType = billInfo.getListType();
+		String spId = billInfo.getSpId();
+		String appId = billInfo.getAppId();
 		if (null == CommonUtil.trimString(listType)) {
 			throw new ParameterInvalidException("类型不能为空");
 		} else if (!listType.matches("0|101|102|103|104|105")) {
@@ -181,8 +186,11 @@ public class BillFacadeImpl implements BillFacade {
 		AppIdInfo appIdInfo = billDAO.queryAppIdInfo(appId);
 		if(null == appIdInfo){
 			throw new ParameterInvalidException("应用ID不合法");
-		}		
-		billInput.setAppIdInfo(appIdInfo);
+		}				
+		if(null == startNoMap){
+			startNoMap = new HashMap<String,Integer>();
+		}
+		startNoMap.put(appId, appIdInfo.getStartNo());
 	}
 	
 	/**

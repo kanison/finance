@@ -5,186 +5,340 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class UserAccountRollDO implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 508297065780636331L;
-	public static final int TYPE_SAVE = 1;//入
-	public static final int TYPE_DRAW = 2;//出
-	public static final int TYPE_FREEZE =3;//冻结
-	public static final int TYPE_UNFREEZE = 4; //解冻
+import com.app.utils.CommonUtil;
 
-	private long bkid;
-	private long acctid;
-	private long uid; // 用户uid
-	private int account_type = 1;// 1 余额账户（默认） 其他未定义
-	private int curtype = 156;// 人民币 -- 156(默认)
+public class UserAccountRollDO implements Serializable {
+	private static final long serialVersionUID = 508297065780636331L;
+
+	private long pkid;
 	private String listid;
-	private String freeze_id;
-	private String coding;
-	private int subject;
-	private int type;
-	private BigDecimal balance;// 用户账户总金额（不包括授信金额，只是储蓄余额）金额保留两位小数
-	private BigDecimal freeze_balance;// 冻结金额,金额保留两位小数
-	private BigDecimal paynum;// 本次交易变更金额
-	private BigDecimal freezenum;// 本次交易变更冻结金额
-	private int state;// 用户状态
+	private long acctid;
+	private long uid;
+	private String userid;
+	private int acct_type;
+	private int cur_type;
+	private long to_uid;
+	private String to_userid;
+	private BigDecimal pay_amt;
+	private BigDecimal payfreeze_amt;
+	private BigDecimal balance;
+	private BigDecimal freeze_balance;
+	private int action_type;
+	private int trans_type;
+	private int type;//记账类型
+	private Date trade_acc_time;
 	private Date create_time;// 创建时间
 	private Date modify_time;// 修改时间
-	private String trade_time; //交易时间，分库分表字段
 	private String memo;
-
-	public int getState() {
-		return state;
+	private String sign;
+	private String rela_list;//交易关联的其他单号
+	private String client_ip;
+	
+	private String db_idx;//分库名索引
+	private String tb_idx;//分表名索引
+	
+	public long getPkid() {
+		return pkid;
 	}
 
-	public void setState(int state) {
-		this.state = state;
+
+
+	public void setPkid(long pkid) {
+		this.pkid = pkid;
 	}
 
-	public long getBkid() {
-		return bkid;
-	}
 
-	public void setBkid(long bkid) {
-		this.bkid = bkid;
-	}
-
-	public long getAcctid() {
-		return acctid;
-	}
-
-	public void setAcctid(long acctid) {
-		this.acctid = acctid;
-	}
-
-	public int getCurtype() {
-		return curtype;
-	}
-
-	public void setCurtype(int curtype) {
-		this.curtype = curtype;
-	}
-
-	public String getCoding() {
-		return coding;
-	}
-
-	public void setCoding(String coding) {
-		this.coding = coding;
-	}
-
-	public BigDecimal getPaynum() {
-		return paynum;
-	}
-
-	public void setPaynum(BigDecimal paynum) {
-		this.paynum = paynum;
-	}
-
-	public BigDecimal getFreezenum() {
-		return freezenum;
-	}
-
-	public void setFreezenum(BigDecimal freezenum) {
-		this.freezenum = freezenum;
-	}
-
-	public String getMemo() {
-		return memo;
-	}
-
-	public void setMemo(String memo) {
-		this.memo = memo;
-	}
-
-	public long getUid() {
-		return uid;
-	}
-
-	public void setUid(long uid) {
-		this.uid = uid;
-	}
-
-	public int getAccount_type() {
-		return account_type;
-	}
-
-	public void setAccount_type(int accountType) {
-		account_type = accountType;
-	}
 
 	public String getListid() {
 		return listid;
 	}
 
+
+
 	public void setListid(String listid) {
 		this.listid = listid;
 	}
 
-	public String getFreeze_id() {
-		return freeze_id;
+
+
+	public long getAcctid() {
+		return acctid;
 	}
 
-	public void setFreeze_id(String freezeId) {
-		freeze_id = freezeId;
+
+
+	public void setAcctid(long acctid) {
+		this.acctid = acctid;
 	}
 
-	public int getSubject() {
-		return subject;
+
+
+	public long getUid() {
+		return uid;
 	}
 
-	public void setSubject(int subject) {
-		this.subject = subject;
+
+
+	public void setUid(long uid) {
+		this.uid = uid;
 	}
 
-	public int getType() {
-		return type;
+
+
+	public String getUserid() {
+		return userid;
 	}
 
-	public void setType(int type) {
-		this.type = type;
+
+
+	public void setUserid(String userid) {
+		this.userid = userid;
 	}
+
+
+
+	public int getAcct_type() {
+		return acct_type;
+	}
+
+
+
+	public void setAcct_type(int acct_type) {
+		this.acct_type = acct_type;
+	}
+
+
+
+	public int getCur_type() {
+		return cur_type;
+	}
+
+
+
+	public void setCur_type(int cur_type) {
+		this.cur_type = cur_type;
+	}
+
+
+
+	public long getTo_uid() {
+		return to_uid;
+	}
+
+
+
+	public void setTo_uid(long to_uid) {
+		this.to_uid = to_uid;
+	}
+
+
+
+	public String getTo_userid() {
+		return to_userid;
+	}
+
+
+
+	public void setTo_userid(String to_userid) {
+		this.to_userid = to_userid;
+	}
+
+
+
+	public BigDecimal getPay_amt() {
+		return pay_amt;
+	}
+
+
+
+	public void setPay_amt(BigDecimal pay_amt) {
+		this.pay_amt = pay_amt;
+	}
+
+
+
+	public BigDecimal getPayfreeze_amt() {
+		return payfreeze_amt;
+	}
+
+
+
+	public void setPayfreeze_amt(BigDecimal payfreeze_amt) {
+		this.payfreeze_amt = payfreeze_amt;
+	}
+
+
 
 	public BigDecimal getBalance() {
 		return balance;
 	}
 
+
+
 	public void setBalance(BigDecimal balance) {
 		this.balance = balance;
 	}
+
+
 
 	public BigDecimal getFreeze_balance() {
 		return freeze_balance;
 	}
 
-	public void setFreeze_balance(BigDecimal freezeBalance) {
-		freeze_balance = freezeBalance;
+
+
+	public void setFreeze_balance(BigDecimal freeze_balance) {
+		this.freeze_balance = freeze_balance;
 	}
+
+
+
+	public int getAction_type() {
+		return action_type;
+	}
+
+
+
+	public void setAction_type(int action_type) {
+		this.action_type = action_type;
+	}
+
+
+
+	public int getTrans_type() {
+		return trans_type;
+	}
+
+
+
+	public void setTrans_type(int trans_type) {
+		this.trans_type = trans_type;
+	}
+
+
+
+	public int getType() {
+		return type;
+	}
+
+
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+
+
+	public Date getTrade_acc_time() {
+		return trade_acc_time;
+	}
+
+
+
+	public void setTrade_acc_time(Date trade_acc_time) {
+		this.trade_acc_time = trade_acc_time;
+	}
+
+
 
 	public Date getCreate_time() {
 		return create_time;
 	}
 
-	public void setCreate_time(Date createTime) {
-		create_time = createTime;
+
+
+	public void setCreate_time(Date create_time) {
+		this.create_time = create_time;
 	}
+
+
 
 	public Date getModify_time() {
 		return modify_time;
 	}
 
-	public void setModify_time(Date modifyTime) {
-		modify_time = modifyTime;
+
+
+	public void setModify_time(Date modify_time) {
+		this.modify_time = modify_time;
 	}
 
-	public String getTrade_time() {
-		return trade_time;
+
+
+	public String getMemo() {
+		return memo;
 	}
 
-	public void setTrade_time(String tradeTime) {
-		trade_time = tradeTime;
+
+
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+
+
+
+	public String getSign() {
+		return sign;
+	}
+
+
+
+	public void setSign(String sign) {
+		this.sign = sign;
+	}
+
+
+
+	public String getRela_list() {
+		return rela_list;
+	}
+
+
+
+	public void setRela_list(String rela_list) {
+		this.rela_list = rela_list;
+	}
+
+
+
+	public String getClient_ip() {
+		return client_ip;
+	}
+
+
+
+	public void setClient_ip(String client_ip) {
+		this.client_ip = client_ip;
+	}
+
+
+
+	public String getDb_idx() {
+		return db_idx;
+	}
+
+
+
+	public void setDb_idx(String db_idx) {
+		this.db_idx = db_idx;
+	}
+
+
+
+	public String getTb_idx() {
+		return tb_idx;
+	}
+
+
+
+	public void setTb_idx(String tb_idx) {
+		this.tb_idx = tb_idx;
+	}
+
+	public void genDataTableIndex()
+	{
+		this.db_idx = CommonUtil.getDbIndexByUid(this.uid);
+		this.tb_idx = CommonUtil.getTbIndexByUid(this.uid);		
 	}
 
 	public static void main(String[] args) {

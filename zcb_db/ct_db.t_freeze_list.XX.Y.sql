@@ -1,0 +1,37 @@
+﻿create database if not exists ct_db_$XX;
+use ct_db_$XX;
+
+CREATE TABLE t_freeze_list_$Y(
+	Fpkid	bigint(20) AUTO_INCREMENT,
+	Flistid varchar(64) NOT NULL,
+	Fuid bigint(20) NOT NULL COMMENT '用户id',
+	Fuserid varchar(64) default NULL COMMENT '用户名',
+	Fcur_type	smallint(6)	NOT NULL COMMENT '币种',
+	Ffreeze_amt decimal(18,2)	NOT NULL,
+	Funfreeze_amt decimal(18,2)	NOT NULL default '0.00',
+	Faction_type	smallint(6) 	NOT NULL COMMENT '操作类型',
+	Freason	smallint(6) 	NOT NULL COMMENT '冻结原因',
+	Frela_list varchar(64) default NULL,
+	Fmemo  varchar(255) default NULL,
+	Fip  varchar(32) default '',
+	Fstate smallint(6) 	NOT NULL COMMENT '冻结状态',
+	Flstate smallint(6) NOT NULL default 1,
+	Funfreeze_time datetime default NULL,
+	Funfreeze_memo varchar(255) default NULL,
+	Funfreeze_ip varchar(32) default '',
+	Fcreate_time    datetime NOT NULL,
+	Fmodify_time    datetime NOT NULL,
+	Fsign	varchar(32) NOT NULL default '' COMMENT '防串改签名',	
+	Fstandby1    int(11)    default NULL,
+	Fstandby2    int(11)    default NULL,
+	Fstandby3    bigint(20)    default NULL,
+	Fstandby4    decimal(18,2) NOT NULL default '0',
+	Fstandby5    datetime   default NULL,
+	Fstandby6    varchar(64) default NULL,
+	Fstandby7    varchar(128) default NULL,
+	Fstandby8    varchar(255) default NULL,
+  PRIMARY KEY (`Fpkid`),
+  UNIQUE KEY `idx_listid` (`Flistid`),
+  KEY `idx_uid` (`Fuid`),
+  KEY `idx_mtime` (`Fmodify_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
