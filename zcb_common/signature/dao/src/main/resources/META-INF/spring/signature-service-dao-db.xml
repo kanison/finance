@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		 http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/osgi
+         http://www.springframework.org/schema/osgi/spring-osgi.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd"
+	default-autowire="byName">
+
+
+	<bean id="signatureDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+		<property name="jdbcUrl" value="${signature.databaseURL}" />
+		<property name="user" value="${signature.databaseUserName}" />
+		<property name="password" value="${signature.databasePassword}" />
+		<property name="autoCommitOnClose" value="false" />
+		<property name="idleConnectionTestPeriod" value="${signature.cpool.idleConnectionTestPeriod}" />
+		<property name="testConnectionOnCheckout" value="${signature.cpool.testConnectionOnCheckout}" />
+		<property name="acquireRetryAttempts" value="${signature.cpool.acquireRetryAttempts}" />
+		<property name="checkoutTimeout" value="${signature.cpool.checkoutTimeout}" />
+		<property name="unreturnedConnectionTimeout" value="${signature.cpool.unreturnedConnectionTimeout}" />
+		<property name="initialPoolSize" value="${signature.cpool.minPoolSize}" />
+		<property name="minPoolSize" value="${signature.cpool.minPoolSize}" />
+		<property name="maxPoolSize" value="${signature.cpool.maxPoolSize}" />
+		<property name="maxIdleTime" value="${signature.cpool.maxIdleTime}" />
+		<property name="acquireIncrement" value="${signature.cpool.acquireIncrement}" />
+		<property name="maxIdleTimeExcessConnections" value="${signature.cpool.maxIdleTimeExcessConnections}" />
+	</bean>
+
+	<!--
+		========================================================================
+	-->
+	<!--
+		iBatis SQL map定义。
+	-->
+	<!--
+		========================================================================
+	-->
+	<bean id="signatureSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>classpath:META-INF/ibatis/sqlmap-signature.xml</value>
+		</property>
+		<property name="dataSource" ref="signatureDataSource" />
+	</bean>
+
+
+</beans>

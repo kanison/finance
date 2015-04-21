@@ -20,6 +20,13 @@
 			<artifactId>sm-platform-web</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.zhaocb.common.signature</groupId>
+  			<artifactId>zcb_common-signature-facade</artifactId>
+  			<version>1.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+  		</dependency>
+		<dependency>
 			<groupId>com.tenpay.sm.platform</groupId>
 			<artifactId>sm-platform-client</artifactId>
 		</dependency>

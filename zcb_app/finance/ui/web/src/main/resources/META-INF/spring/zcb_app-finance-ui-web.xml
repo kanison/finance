@@ -40,7 +40,10 @@
 			</list>
 		</property>
 	</bean>	
-	
+	<bean id="signatureServiceFacade" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+        <property name="serviceUrl" value="${signatureServiceUrl}"/>
+        <property name="serviceInterface" value="com.zhaocb.common.signature.facade.SignatureServiceFacade"/> 
+    </bean>
     <bean id="fundFacade" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
         <property name="serviceUrl" value="${fundServiceUrl}"/>
         <property name="serviceInterface" value="com.zhaocb.zcb_app.finance.service.facade.FundFacade"/> 

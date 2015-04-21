@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		 http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/osgi
+         http://www.springframework.org/schema/osgi/spring-osgi.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd"
+	default-autowire="byName">
+
+
+	<bean id="signatureRSA" class="com.zhaocb.common.signature.imp.SignatureRSAImpl"></bean>
+	<bean id="signatureMD5" class="com.zhaocb.common.signature.imp.SignatureMD5Impl"></bean>
+
+	<bean id="signatureManager" class="com.zhaocb.common.signature.imp.SignatureManager">
+		<property name="signatures">
+			<map>
+				<entry key="RSA">
+					<ref bean="signatureRSA" />
+				</entry>
+				<entry key="MD5">
+					<ref bean="signatureMD5" />
+				</entry>
+				
+			</map>
+		</property>
+	</bean>
+	<bean id="signKeyManager" class="com.zhaocb.common.signature.imp.SignKeyManagerImpl" />
+	<bean id="signatureDefaultSettingManager"
+		class="com.zhaocb.common.signature.imp.SignatureDefaultSettingManager" />
+	
+</beans>
