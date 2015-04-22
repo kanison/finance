@@ -29,7 +29,6 @@ public class SignatureRSAImpl implements Signature {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.tenpay.i18npay.common.signature.Signature#sign(byte[])
 	 */
 	public String sign(String content, String charset, Key privateKey) {
 

@@ -12,6 +12,8 @@
 	<modules>
 		<module>base-common</module>
 		<module>signature</module>
+		<module>authentication</module>
+		<module>aop</module>
 	</modules>
 	<build>
 		<plugins>
@@ -472,6 +474,13 @@
 				<version>1.0</version>
 				<scope>compile</scope>
 			</dependency>
+			<dependency>
+				<groupId>com.zhaocb.common.authentication</groupId>
+				<artifactId>zcb_common-authentication-facade</artifactId>
+				<version>1.0</version>
+				<scope>compile</scope>
+			</dependency>
+			
 		</dependencies>
 	</dependencyManagement>
 </project>

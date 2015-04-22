@@ -1,0 +1,67 @@
+package com.app.aop.aspect;
+
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.core.Ordered;
+
+import com.app.common.exception.AuthException;
+import com.zhaocb.common.authentication.facade.AuthDispatcherFacade;
+
+
+
+/**
+ * 检查登录态切面
+ * 
+ * 
+ */
+@Aspect
+public class AuthApiWithoutCertAspect implements Ordered {
+	private static final Log LOG = LogFactory.getLog(AuthApiWithoutCertAspect.class);
+	private AuthDispatcherFacade authDispatcher;
+
+	/***
+	 * 　　 * 切点 　　
+	 */
+	@Pointcut("@annotation(com.app.aop.annotation.AuthApiWithoutCert)")
+	public void allAddMethod() {
+	};
+
+	/***
+	 * 执行方法
+	 * 
+	 * @throws Throwable
+	 */
+	@Around("allAddMethod()")
+	public Object auth(ProceedingJoinPoint joinPoint) throws Throwable {
+		Object args[] = joinPoint.getArgs();
+		LOG.info("================in auth==================");
+		int authType = authDispatcher.commonAuth(AuthDispatcherFacade.API_MASK,
+				0, args);
+		if (authType > 0) {
+			Object retObj = joinPoint.proceed();
+			if ((authType & AuthDispatcherFacade.API_MASK) > 0)
+				authDispatcher.signRetObj(retObj);
+			return retObj;
+		} else {
+			throw new AuthException("鉴权失败");
+		}
+	}
+
+	public int getOrder() {
+		return 1;
+	}
+
+	public AuthDispatcherFacade getAuthDispatcher() {
+		return authDispatcher;
+	}
+
+	public void setAuthDispatcher(AuthDispatcherFacade authDispatcher) {
+		this.authDispatcher = authDispatcher;
+	}
+
+}

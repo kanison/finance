@@ -35,5 +35,10 @@
 				<version>1.1</version>
 				<scope>compile</scope>
 			</dependency>
+			<dependency>
+				<groupId>com.zhaocb.common.authentication</groupId>
+				<artifactId>zcb_common-authentication-facade</artifactId>
+			</dependency>
+			
 	</dependencies>
 </project>

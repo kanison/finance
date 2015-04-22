@@ -1,4 +1,4 @@
-package com.app.aop.annotation;
+package com.zhaocb.common.aop.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -7,8 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 鉴权
- * 商户系统登陆(不带证书)或API签名(不带证书)
+ * 基于函数参数缓存函数结果。不严谨，仅适用于数据变化较少的查询接口
  * 
  * @author eniacli
  * 
@@ -16,6 +15,6 @@ import java.lang.annotation.Target;
 @Target( { ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface AuthMchWithoutCertOrApiWithoutCert {
+public @interface CacheMethod30S {
 
 }
