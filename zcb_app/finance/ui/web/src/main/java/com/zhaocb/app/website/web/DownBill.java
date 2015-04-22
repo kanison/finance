@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.app.aop.annotation.AuthMchWithoutCertOrApiWithoutCert;
 import com.app.aop.annotation.LogMethod;
 import com.app.common.exception.ParameterInvalidException;
 import com.app.utils.CommonUtil;
@@ -37,7 +36,6 @@ public class DownBill {
 
 	@RequestMapping(method = { RequestMethod.GET, RequestMethod.POST })
 	@LogMethod	
-	@AuthMchWithoutCertOrApiWithoutCert
 	public CommonOutput handleDownBill(DownBillInput downBillInput)
 			throws IOException {
 

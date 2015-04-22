@@ -13,6 +13,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.app.aop.annotation.AuthApiWithoutCert;
+import com.app.aop.annotation.LogMethod;
 import com.app.utils.CommonConstants;
 import com.app.utils.CommonUtil;
 import com.zhaocb.app.website.web.model.CommonOutput;
@@ -29,6 +31,8 @@ public class VerifySignValues {
 	private SignatureServiceFacade signatureServiceFacade;
 
 	@RequestMapping(method = { RequestMethod.GET, RequestMethod.POST })
+	@LogMethod
+	@AuthApiWithoutCert
 	public CommonOutput handleSignValues() throws NoSuchAlgorithmException,
 			IOException {
 		CommonOutput commonOutput = new CommonOutput();

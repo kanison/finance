@@ -85,14 +85,14 @@ public class UseFinanceDirectly {
 		UserAccountRollDO fromAccount = new UserAccountRollDO();
 		fromAccount.setUid(financeSpConfig.getUid());
 		fromAccount.setListid(useFinanceInput.getListid());
-		fromAccount.setCoding(useFinanceInput.getOutTradeNo());
-		fromAccount.setPaynum(useFinanceInput.getTotalFee());
+		//fromAccount.setCoding(useFinanceInput.getOutTradeNo());
+		//fromAccount.setPaynum(useFinanceInput.getTotalFee());
 		
 		UserAccountRollDO toAccount = new UserAccountRollDO();
 		toAccount.setUid(fetchSpConfig.getUid());
 		toAccount.setListid(useFinanceInput.getListid());
-		toAccount.setCoding(useFinanceInput.getOutTradeNo());
-		toAccount.setPaynum(useFinanceInput.getTotalFee());
+		//toAccount.setCoding(useFinanceInput.getOutTradeNo());
+		//toAccount.setPaynum(useFinanceInput.getTotalFee());
 		
 		financeFacade.c2cTransferDirectly(fromAccount,toAccount);
 	}

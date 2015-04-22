@@ -16,5 +16,7 @@
 	<import resource="classpath:META-INF/spring/sm-platform-client.xml"/>
 	<import resource="classpath:META-INF/spring/zcb_app-finance-ui-web.xml"/>
 	<import resource="classpath:META-INF/spring/base_common-web.xml"/>
+	<import resource="classpath:META-INF/spring/zcb_common-aop.xml" />
+	<import resource="classpath:META-INF/spring/zcb_common-authentication-imp.xml" />
 	
 </beans>

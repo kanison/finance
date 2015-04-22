@@ -14,7 +14,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.app.aop.annotation.AuthMchWithoutCertOrApiWithoutCert;
 import com.app.aop.annotation.LogMethod;
 import com.app.common.exception.ParameterInvalidException;
 import com.app.utils.CommonUtil;
@@ -34,7 +33,6 @@ public class UploadBill {
 
 	@RequestMapping(method = { RequestMethod.GET, RequestMethod.POST })
 	@LogMethod
-	@AuthMchWithoutCertOrApiWithoutCert
 	public CommonOutput  handleUploadBill(UploadBillInput uploadBillInput)
 			throws IOException, NoSuchAlgorithmException {
 		
