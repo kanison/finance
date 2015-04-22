@@ -32,6 +32,7 @@ public class BillFacadeImpl implements BillFacade {
 	private static Map<String,Integer> curSeqNoMap;
 	private static Map<String,Integer> maxSeqNoMap;
 	private static Map<String,Integer> startNoMap;
+	private static String macNo;
 	
 	private static final Log LOG = LogFactory.getLog(BillFacade.class);
 
@@ -106,13 +107,7 @@ public class BillFacadeImpl implements BillFacade {
 		int curSeqNo = curSeqNoMap.get(appId);
 		if(curSeqNo >= 600000000){
 			throw new BillServiceRetException(BillServiceRetException.SEQ_LIMIT_ERROR, "最大序号不能大于等于6亿");
-		}
-		
-		// 从配置中取1位机器号，最多支持10台机器
-		String macNo = CommonUtil.getWebConfig("macNo");
-		if(null == macNo || macNo.length() != 1 ||  !"0123456789".contains(macNo)){
-			throw new BillServiceRetException(BillServiceRetException.MAC_NO_ERROR, "机器号配置错误");
-		}
+		}		
 		
 		String seqNo = macNo + formatSeqNo(curSeqNo);
 		
@@ -181,6 +176,12 @@ public class BillFacadeImpl implements BillFacade {
 		} else if (!"0".equals(listType) && (null == spId || spId.length() != 10)) {
 			throw new ParameterInvalidException("商户号不合法");
 		} 
+		
+		// 从配置中取1位机器号，最多支持10台机器
+		macNo = CommonUtil.getWebConfig("macNo");
+		if(null == macNo || macNo.length() != 1 ||  !"0123456789".contains(macNo)){
+			throw new BillServiceRetException(BillServiceRetException.MAC_NO_ERROR, "机器号配置错误");
+		}
 		
 		//效验appid,并获取对应的appid起始自增序号
 		AppIdInfo appIdInfo = billDAO.queryAppIdInfo(appId);
