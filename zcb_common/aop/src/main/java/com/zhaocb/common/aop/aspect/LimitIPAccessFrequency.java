@@ -96,7 +96,7 @@ public class LimitIPAccessFrequency implements Ordered {
 	/***
 	 * ¡¡¡¡ * ÇÐµã ¡¡¡¡
 	 */
-	@Pointcut("@annotation(com.tenpay.common.aop.annotation.LimitIPAccessFrequency)")
+	@Pointcut("@annotation(com.zhaocb.common.aop.annotation.LimitIPAccessFrequency)")
 	public void allAddMethod() {
 	};
 

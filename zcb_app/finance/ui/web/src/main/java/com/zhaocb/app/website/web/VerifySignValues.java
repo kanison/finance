@@ -13,12 +13,12 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.app.aop.annotation.AuthApiWithoutCert;
-import com.app.aop.annotation.LogMethod;
 import com.app.utils.CommonConstants;
 import com.app.utils.CommonUtil;
 import com.zhaocb.app.website.web.model.CommonOutput;
 import com.zhaocb.app.website.web.model.SignValuesOutput;
+import com.zhaocb.common.aop.annotation.AuthApiWithoutCert;
+import com.zhaocb.common.aop.annotation.LogMethod;
 import com.zhaocb.common.signature.facade.SignatureServiceFacade;
 import com.zhaocb.common.signature.facade.VerifySignatureParams;
 

@@ -23,7 +23,7 @@ public class SetHeaderCacheControlAspect {
 	 * ÇÐµã ¡¡¡¡
 	 * @throws Exception 
 	 */
-	@Pointcut("@annotation(com.tenpay.common.aop.annotation.SetHeaderCacheControl)")
+	@Pointcut("@annotation(com.zhaocb.common.aop.annotation.SetHeaderCacheControl)")
 	public void allAddMethod() {
 	};
 	

@@ -480,7 +480,12 @@
 				<version>1.0</version>
 				<scope>compile</scope>
 			</dependency>
-			
+			<dependency>
+				<groupId>com.zhaocb.common</groupId>
+				<artifactId>zcb_common-aop</artifactId>
+				<version>1.0</version>
+				<scope>compile</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 </project>

@@ -30,7 +30,7 @@ public class WriteParamsToCookieAspect implements Ordered {
 	/***
 	 * ¡¡¡¡ * ÇÐµã ¡¡¡¡
 	 */
-	@Pointcut("@annotation(com.tenpay.common.aop.annotation.WriteParamsToCookie)")
+	@Pointcut("@annotation(com.zhaocb.common.aop.annotation.WriteParamsToCookie)")
 	public void allAddMethod() {
 	};
 

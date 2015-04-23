@@ -4,7 +4,7 @@ import java.security.Key;
 
 import org.apache.log4j.Logger;
 
-import com.app.aop.annotation.LogMethod;
+import com.zhaocb.common.aop.annotation.LogMethod;
 import com.zhaocb.common.signature.facade.SignParams;
 import com.zhaocb.common.signature.facade.SignResult;
 import com.zhaocb.common.signature.facade.SignatureServiceFacade;

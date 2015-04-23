@@ -13,7 +13,7 @@ public class CacheMethodAspect implements Ordered {
 	/***
 	 * ¡¡¡¡ * ÇÐµã ¡¡¡¡
 	 */
-	@Pointcut("@annotation(com.tenpay.common.aop.annotation.CacheMethod)")
+	@Pointcut("@annotation(com.zhaocb.common.aop.annotation.CacheMethod)")
 	public void allAddMethod() {
 	};
 

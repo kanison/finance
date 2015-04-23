@@ -22,7 +22,7 @@ public class AuthApiWithCertAspect implements Ordered {
 	/***
 	 * ¡¡¡¡ * ÇÐµã ¡¡¡¡
 	 */
-	@Pointcut("@annotation(com.tenpay.common.aop.annotation.AuthApiWithCert)")
+	@Pointcut("@annotation(com.zhaocb.common.aop.annotation.AuthApiWithCert)")
 	public void allAddMethod() {
 	};
 

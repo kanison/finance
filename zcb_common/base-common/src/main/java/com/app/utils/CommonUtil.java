@@ -963,7 +963,6 @@ public class CommonUtil {
 		//retrun getSerialNO();
 		return "1234567890";
 	}
-	
 	public static String getDbIndexByLisid(String listid){
 		int len = listid.length();
 		if (len < 3)

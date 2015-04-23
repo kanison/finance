@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.app.aop.annotation.LogMethod;
 import com.app.common.exception.ParameterInvalidException;
 import com.app.utils.CommonUtil;
 import com.app.utils.URLEncoder;
@@ -23,6 +22,7 @@ import com.tenpay.sm.web.context.WebModuleContext;
 import com.zhaocb.app.website.web.exception.FundMchapiWebRetException;
 import com.zhaocb.app.website.web.model.CommonOutput;
 import com.zhaocb.app.website.web.model.DownBillInput;
+import com.zhaocb.common.aop.annotation.LogMethod;
 
 /**
  * ÎÄ¼þÏÂÔØ

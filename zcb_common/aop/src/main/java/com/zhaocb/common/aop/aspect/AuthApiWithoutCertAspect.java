@@ -1,7 +1,5 @@
 package com.zhaocb.common.aop.aspect;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -23,7 +21,7 @@ public class AuthApiWithoutCertAspect implements Ordered {
 	/***
 	 * ¡¡¡¡ * ÇÐµã ¡¡¡¡
 	 */
-	@Pointcut("@annotation(com.app.aop.annotation.AuthApiWithoutCert)")
+	@Pointcut("@annotation(com.zhaocb.common.aop.annotation.AuthApiWithoutCert)")
 	public void allAddMethod() {
 	};
 

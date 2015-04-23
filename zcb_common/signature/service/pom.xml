@@ -34,6 +34,10 @@
 			<groupId>com.caucho</groupId>
 			<artifactId>hessian</artifactId>
 	</dependency>
+	<dependency>
+		<groupId>com.zhaocb.common</groupId>
+		<artifactId>zcb_common-aop</artifactId>
+	</dependency>
   </dependencies>
 
 </project>

@@ -95,7 +95,7 @@ public class MerchantLimitIpAccessFrequencyAspect implements Ordered {
 	/***
 	 * ¡¡¡¡ * ÇÐµã ¡¡¡¡
 	 */
-	@Pointcut("@annotation(com.tenpay.common.aop.annotation.MerchantLimitIpAccessFrequency)")
+	@Pointcut("@annotation(com.zhaocb.common.aop.annotation.MerchantLimitIpAccessFrequency)")
 	public void allAddMethod() {
 	};
 
