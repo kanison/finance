@@ -12,5 +12,6 @@
   <modules>
   	<module>ui</module>
 	<module>service</module>
+	<module>fep</module>
   </modules>
 </project>
