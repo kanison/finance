@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<settings cacheModelsEnabled="true" enhancementEnabled="false" lazyLoadingEnabled="false" maxRequests="1000"
+		maxSessions="1000" maxTransactions="100" useStatementNamespaces="false" defaultStatementTimeout="12" />
+
+	<sqlMap resource="META-INF/ibatis/sqlmap/MerchantRequestKey-sqlmap-mapping.xml" />
+	<sqlMap resource="META-INF/ibatis/sqlmap/TenpayResponeKey-sqlmap-mapping.xml" />
+	<sqlMap resource="META-INF/ibatis/sqlmap/defaultsetting-sqlmap-mapping.xml" />
+</sqlMapConfig>

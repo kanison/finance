@@ -963,4 +963,48 @@ public class CommonUtil {
 		//retrun getSerialNO();
 		return "1234567890";
 	}
+	public static String getDbIndexByLisid(String listid){
+		int len = listid.length();
+		if (len < 3)
+			return "";
+		
+		//为防止sql注入，强制检查是否为数字
+		char chAarray[] = new char[2];
+		chAarray[0] = listid.charAt(len-2);
+		chAarray[1] = listid.charAt(len-1);
+		
+		if (chAarray[0] > '9' || chAarray[0] < '0')
+			return "";
+		
+		if (chAarray[1] > '9' || chAarray[1] < '0')
+			return "";
+		
+		return String.valueOf(chAarray);
+	}
+	
+	public static String getTbIndexByLisid(String listid){
+		int len = listid.length();
+		if (len < 3)
+			return "";
+		
+		//为防止sql注入，强制检查是否为数字
+		char ch1 = listid.charAt(len-3);
+		if (ch1 > '9' || ch1 < '0')
+			return "";
+		return String.valueOf(ch1);
+	}
+	
+	public static String getDbIndexByUid(long uid){
+		if (uid < 100L)
+			return "";
+		else
+			return String.format("%02d", uid%100);
+	}
+	
+	public static String getTbIndexByUid(long uid){
+		if (uid < 100L)
+			return "";
+		else 
+			return String.format("%d", (uid%1000)/100);
+	}
 }

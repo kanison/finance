@@ -20,6 +20,13 @@
 			<artifactId>sm-platform-web</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.zhaocb.common.signature</groupId>
+  			<artifactId>zcb_common-signature-facade</artifactId>
+  			<version>1.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+  		</dependency>
+		<dependency>
 			<groupId>com.tenpay.sm.platform</groupId>
 			<artifactId>sm-platform-client</artifactId>
 		</dependency>
@@ -81,6 +88,20 @@
 		<dependency>
 			<groupId>com.zhaocb.zcb_app.finance</groupId>
 			<artifactId>zcb_app-finance-service-impl</artifactId>
+			<version>1.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.zhaocb.common</groupId>
+			<artifactId>zcb_common-aop</artifactId>
+			<version>1.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.zhaocb.common.authentication</groupId>
+			<artifactId>zcb_common-authentication-imp</artifactId>
 			<version>1.0</version>
 			<type>jar</type>
 			<scope>compile</scope>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+	<!-- ==========================================================  -->
+	<!-- Configuration for ibatis sqlmap mapping.                    -->
+	<!-- ==========================================================  -->
+
+<sqlMap namespace="user">
+	<!-- ============================================= -->
+	<!-- RESULT MAPS                                   -->
+	<!-- ============================================= -->
+	<resultMap id="merchantRequestKeyResult" class="com.zhaocb.common.signature.po.MerchantRequestKeyPO">
+		<result property="merchantID" column="merchantID" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="requestPublicKey" column="requestPublicKey" javaType="java.lang.String" jdbcType="text" />
+		<result property="requestKeyIndex" column="requestKeyIndex" javaType="int" jdbcType="int" />
+	</resultMap>
+
+	<select id="selectMerchantRequestKeyByMerchantIdAndKeyIndex" resultMap="merchantRequestKeyResult">
+		select
+		Fsp_id as merchantID,Fsp_public_key
+		as
+		requestPublicKey,Fsp_key_index as requestKeyIndex
+		from
+		t_sp_request_rsa_public_key
+		where Fsp_id =
+		#merchantID#
+		and Fsp_key_index = #requestKeyIndex#
+	</select>
+	<select id="querySpMD5SignKey" 
+		resultClass="com.zhaocb.common.signature.po.MD5KeyPO">
+		SELECT Fspid spId,
+		FsignKey md5Key
+		FROM finance_sign_db.t_sp_md5key_config WHERE  Fspid=#spId# and FkeyIndex=#keyIndex# and Flstate=1;
+	</select>
+	
+	
+	
+</sqlMap>

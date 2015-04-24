@@ -1,0 +1,46 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion><properties><project.build.sourceEncoding>GBK</project.build.sourceEncoding><maven.compiler.encoding>GBK</maven.compiler.encoding></properties>
+	<parent>
+		<artifactId>zcb_common-signature</artifactId>
+		<groupId>com.zhaocb.common.signature</groupId>
+		<version>1.0</version>
+	</parent>
+	<groupId>com.zhaocb.common.signature</groupId>
+	<artifactId>zcb_common-signature-war</artifactId>
+	<version>1.0</version>
+	<packaging>war</packaging>
+	<name>zcb_common-signature-war</name>
+	<dependencies>
+		<dependency>
+			<groupId>com.zhaocb.common.signature</groupId>
+			<artifactId>zcb_common-signature-service</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.zhaocb.common.base-common</groupId>
+  			<artifactId>zcb_common_base-common</artifactId>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1-beta-1</version>
+				<configuration>
+					<webResources>
+						<resource>
+							<!-- this is relative to the pom.xml directory -->
+							<directory>WebRoot</directory>
+						</resource>
+					</webResources>
+					<warName>signature</warName>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

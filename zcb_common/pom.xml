@@ -11,6 +11,9 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>base-common</module>
+		<module>signature</module>
+		<module>authentication</module>
+		<module>aop</module>
 	</modules>
 	<build>
 		<plugins>
@@ -254,6 +257,12 @@
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>1.3</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
 				<groupId>com.tenpay.toolkit.common</groupId>
 				<artifactId>toolkit-common-lang</artifactId>
 				<version>1.0</version>
@@ -421,7 +430,62 @@
 				<type>jar</type>
 				<scope>compile</scope>
 			</dependency>
-			
+			<dependency>
+  				<groupId>com.zhaocb.common.signature</groupId>
+  				<artifactId>zcb_common-signature-imp</artifactId>
+  				<version>1.0</version>
+				<scope>compile</scope>
+  			</dependency>
+  	 		<dependency>
+  				<groupId>com.zhaocb.common.signature</groupId>
+  				<artifactId>zcb_common-signature-facade</artifactId>
+  				<version>1.0</version>
+				<scope>compile</scope>
+  			</dependency>
+  			
+  			<dependency>
+				<groupId>com.zhaocb.common.base-common</groupId>
+  				<artifactId>zcb_common_base-common</artifactId>
+  				<version>1.0</version>
+				<scope>compile</scope>
+			</dependency>
+  			<dependency>
+				<groupId>com.zhaocb.common.signature</groupId>
+				<artifactId>zcb_common-signature-dao</artifactId>
+				<version>1.0</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.tenpay.common</groupId>
+				<artifactId>zcb_common-aop</artifactId>
+				<version>1.0</version>
+				<scope>compile</scope>
+			</dependency>
+		
+			<dependency>
+				<artifactId>zcb_common-signature</artifactId>
+    			<groupId>com.zhaocb.common.signature</groupId>
+    			<version>1.0</version>
+				<scope>compile</scope>
+    		</dependency>
+  			<dependency>
+				<groupId>com.zhaocb.common.signature</groupId>
+				<artifactId>zcb_common-signature-service</artifactId>
+				<version>1.0</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.zhaocb.common.authentication</groupId>
+				<artifactId>zcb_common-authentication-facade</artifactId>
+				<version>1.0</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.zhaocb.common</groupId>
+				<artifactId>zcb_common-aop</artifactId>
+				<version>1.0</version>
+				<scope>compile</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 </project>

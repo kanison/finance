@@ -45,7 +45,7 @@ public class FinanceFacadeImp implements FinanceFacade {
 	}
 	
 	public void c2cTransferDirectly(UserAccountRollDO fromUser,UserAccountRollDO toUser){
-		userAccountFacade.userAccountTranfer(fromUser, toUser);
+		//userAccountFacade.userAccountTranfer(fromUser, toUser);
 	}
 	
 	public void bindUser(UserBindDO userBindDO){

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="user">
+
+	<resultMap id="tenpayResponeKeyResult" class="com.zhaocb.common.signature.po.TenpayResponeKeyPO">
+		<result property="merchantID" column="merchantID" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="responePrivateKey" column="responePrivateKey" javaType="java.lang.String" jdbcType="text" />
+		<result property="responePublicKey" column="responePublicKey" javaType="java.lang.String" jdbcType="text" />
+	</resultMap>
+
+	<select id="selectTenpayResponeKeyByMerchantIdAndKeyIndex" resultMap="tenpayResponeKeyResult">
+		select
+		Fsp_id as
+		merchantID,Fcft_reply_private_key
+		as
+		responePrivateKey,Fcft_reply_public_key as responePublicKey
+		from
+		t_cft_reply_key
+		where Fsp_id =
+		#merchantID#
+	</select>
+</sqlMap>

@@ -14,14 +14,13 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.app.aop.annotation.AuthMchWithoutCertOrApiWithoutCert;
-import com.app.aop.annotation.LogMethod;
 import com.app.common.exception.ParameterInvalidException;
 import com.app.utils.CommonUtil;
 import com.zhaocb.app.website.web.exception.FundMchapiWebRetException;
 import com.zhaocb.app.website.web.model.CommonOutput;
 import com.zhaocb.app.website.web.model.UploadBillInput;
 import com.zhaocb.app.website.web.util.FundWebCommon;
+import com.zhaocb.common.aop.annotation.LogMethod;
 
 /**
  * 上传文件
@@ -34,7 +33,6 @@ public class UploadBill {
 
 	@RequestMapping(method = { RequestMethod.GET, RequestMethod.POST })
 	@LogMethod
-	@AuthMchWithoutCertOrApiWithoutCert
 	public CommonOutput  handleUploadBill(UploadBillInput uploadBillInput)
 			throws IOException, NoSuchAlgorithmException {
 		

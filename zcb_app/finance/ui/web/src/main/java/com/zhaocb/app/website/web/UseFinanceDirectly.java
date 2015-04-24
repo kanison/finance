@@ -10,15 +10,14 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.app.aop.annotation.LogMethod;
 import com.app.utils.CommonUtil;
 import com.zcb_app.account.service.facade.dataobject.UserAccountRollDO;
 import com.zhaocb.app.website.web.exception.WebServiceRetException;
 import com.zhaocb.app.website.web.model.UseFinanceInput;
 import com.zhaocb.app.website.web.model.UseFinanceOutput;
 import com.zhaocb.app.website.web.util.FinanceWebComm;
+import com.zhaocb.common.aop.annotation.LogMethod;
 import com.zhaocb.zcb_app.finance.service.facade.FinanceFacade;
-import com.zhaocb.zcb_app.finance.service.facade.FundFacade;
 import com.zhaocb.zcb_app.finance.service.facade.dataobject.SpConfigDO;
 import com.zhaocb.zcb_app.finance.service.facade.dataobject.TradeOrderDO;
 import com.zhaocb.zcb_app.finance.service.facade.dataobject.UserBindDO;
@@ -85,14 +84,14 @@ public class UseFinanceDirectly {
 		UserAccountRollDO fromAccount = new UserAccountRollDO();
 		fromAccount.setUid(financeSpConfig.getUid());
 		fromAccount.setListid(useFinanceInput.getListid());
-		fromAccount.setCoding(useFinanceInput.getOutTradeNo());
-		fromAccount.setPaynum(useFinanceInput.getTotalFee());
+		//fromAccount.setCoding(useFinanceInput.getOutTradeNo());
+		//fromAccount.setPaynum(useFinanceInput.getTotalFee());
 		
 		UserAccountRollDO toAccount = new UserAccountRollDO();
 		toAccount.setUid(fetchSpConfig.getUid());
 		toAccount.setListid(useFinanceInput.getListid());
-		toAccount.setCoding(useFinanceInput.getOutTradeNo());
-		toAccount.setPaynum(useFinanceInput.getTotalFee());
+		//toAccount.setCoding(useFinanceInput.getOutTradeNo());
+		//toAccount.setPaynum(useFinanceInput.getTotalFee());
 		
 		financeFacade.c2cTransferDirectly(fromAccount,toAccount);
 	}
