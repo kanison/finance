@@ -21,7 +21,7 @@ public class AccountServiceRetException  extends ErrorCodeException{
 	//业务参数，20029001~20029999为统一的业务错误码
 	public static final String INPUT_PARAMS_ERROR="20029001";//参数错误
 	public static final String ERR_REENTY_INCONSISTENT = "20029002";//重入参数不一致
-	public static final String ERR_REENTY_OK = "20029002";//重入错误码，参数一致
+	public static final String ERR_REENTY_OK = "20029003";//重入错误码，参数一致
 	
 	public static final String USER_EXIST="20020001";//用户已存在
 	public static final String USER_NOT_EXIST="20020002";//用户未注册

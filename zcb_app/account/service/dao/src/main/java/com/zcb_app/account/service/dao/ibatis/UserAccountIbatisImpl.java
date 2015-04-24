@@ -1,7 +1,6 @@
 package com.zcb_app.account.service.dao.ibatis;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -13,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.app.utils.CommonUtil;
 import com.app.utils.MoneyType;
 import com.zcb_app.account.service.dao.UserAccountDAO;
+import com.zcb_app.account.service.dao.type.AcctFreezeBalanParams;
 import com.zcb_app.account.service.dao.type.AcctTransParams;
 import com.zcb_app.account.service.dao.type.SpUserInfo;
 import com.zcb_app.account.service.exception.AccountServiceRetException;
@@ -458,4 +458,68 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 				"queryUserAccountRoll", userAccountRollDO);
 	}
 
+	/**
+	 * 操作冻结金额
+	 * 1、	查询加锁用户交易账户
+	 * 2、	判断用户的可用金额(非冻结余额)是否足够，不够报余额不足错误
+	 * 3、	增加冻结金额
+	 * 4、	记录冻结单
+	 * 5、	记录交易凭证流水
+	 * @param params
+	 * @author Gu.Dongying 
+	 * @date 2015年4月24日 上午11:49:08
+	 */
+	@Transactional
+	public void freezeUserBalance(AcctFreezeBalanParams params){
+		UserAccountDO user = new UserAccountDO();
+		user.setUid(params.getUid());
+		user.setAccttype(params.getAcct_type());
+		user.setCurtype(params.getCur_type());
+		user.setQuerylock(true);
+		//查询加锁用户交易账户
+		user = queryUserAccount(user);
+		//判断用户的可用金额(非冻结余额)是否足够，不够报余额不足错误
+		if(params.getFreeze_amt().compareTo(user.getBalance()) == -1){
+			throw new AccountServiceRetException(
+					AccountServiceRetException.BALANCE_NOT_ENOUGH, "账户余额不足");
+		}
+		
+		//增加冻结金额
+		user.setBalance(user.getBalance().subtract(params.getFreeze_amt()));
+		user.setFreeze_balance(user.getFreeze_balance().add(params.getFreeze_amt()));
+		updateUserAccountBalance(user);
+		
+		//记录冻结单
+		FreezeListDO flistObj = new FreezeListDO();
+		flistObj.setUid(user.getUid());
+		flistObj.setUserid(user.getUserid());
+		flistObj.setListid(params.getListid());
+		flistObj.setFreeze_amt(params.getFreeze_amt());
+		flistObj.setCur_type(params.getCur_type());
+		flistObj.setAction_type(params.getAction_type());
+		flistObj.setRela_list(params.getListid());
+		flistObj.setReason(params.getFreeze_reason());	
+		flistObj.setMemo(params.getMemo());
+		flistObj.setIp(params.getClient_ip());
+		insertFreezeList(flistObj);
+		
+		//记录交易凭证流水
+		TransVoucherDO voucher = new TransVoucherDO();
+		voucher.setVoucher(params.getListid());
+		voucher.setListid(params.getListid());
+		//数据库必填，暂时设置为""；
+		voucher.setReq_no("");
+		voucher.setCur_type(params.getCur_type());
+		voucher.setTrans_amt(params.getFreeze_amt());
+		voucher.setFrozen_amt(params.getFreeze_amt());
+		voucher.setTrans_type(params.getTrans_type());
+		voucher.setAction_type(params.getAction_type());
+		voucher.setFrom_userid(params.getUserid());
+		voucher.setFrom_uid(params.getUid());
+		voucher.setTo_userid(params.getUserid());
+		voucher.setTo_uid(params.getUid());
+		voucher.setTrade_acc_time(params.getTrade_acc_time());
+		voucher.setMemo(params.getMemo());
+		insertTransVoucher(voucher);
+	}
 }

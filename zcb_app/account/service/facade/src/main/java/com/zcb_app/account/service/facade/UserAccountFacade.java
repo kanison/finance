@@ -1,8 +1,8 @@
 package com.zcb_app.account.service.facade;
 
 import com.zcb_app.account.service.facade.dataobject.C2CTransParams;
+import com.zcb_app.account.service.facade.dataobject.FreezeBalanceParams;
 import com.zcb_app.account.service.facade.dataobject.UserAccountDO;
-import com.zcb_app.account.service.facade.dataobject.UserAccountRollDO;
 
 
 
@@ -21,6 +21,16 @@ public interface UserAccountFacade {
 	 * @param params
 	 */
 	public void noPwdC2cTransfer(C2CTransParams params);
+	
+	/**
+	 * 冻结接口
+	 * @param params
+	 * @return 返回结果
+	 * @Return String
+	 * @author Gu.Dongying 
+	 * @Date 2015年4月24日 上午9:59:59
+	 */
+	public String freezeUserBalance(FreezeBalanceParams params);
 	
 	/**
 	 * 解冻接口

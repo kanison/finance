@@ -10,6 +10,7 @@ public class FreezeType {
 	public static final int FR_TRANS_FREEZE = 1; //交易冻结
 	public static final int FR_CSO_FREEZE = 2; //客服（Customer Service officer）冻结
 	public static final int FR_RISK_FREEZE = 3; //风控冻结
+	public static final int FR_FETCH_FREEZE = 4; //提现冻结
 	
 	//冻结单状态
 	public static final int FS_INIT = 1; //初始

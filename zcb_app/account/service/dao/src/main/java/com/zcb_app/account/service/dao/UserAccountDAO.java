@@ -1,12 +1,10 @@
 package com.zcb_app.account.service.dao;
 
-import java.util.List;
-
+import com.zcb_app.account.service.dao.type.AcctFreezeBalanParams;
 import com.zcb_app.account.service.dao.type.AcctTransParams;
 import com.zcb_app.account.service.dao.type.SpUserInfo;
 import com.zcb_app.account.service.facade.dataobject.TransVoucherDO;
 import com.zcb_app.account.service.facade.dataobject.UserAccountDO;
-import com.zcb_app.account.service.facade.dataobject.UserAccountRollDO;
 
 public interface UserAccountDAO {
 	public void createUserAccount(UserAccountDO userAccountDO);
@@ -30,6 +28,17 @@ public interface UserAccountDAO {
 	public TransVoucherDO queryTransVoucher(TransVoucherDO obj);
 	
 	public void c2cTransfer(AcctTransParams params);
+
+	/**
+	 * 操作冻结金额
+	 * 1、	增加冻结金额（建议步骤6、7封装在同一个函数中实现，因为增加冻结金额必然要记录一条冻结单）
+	 * 2、	记录冻结单
+	 * 3、	记录交易凭证流水
+	 * @param params
+	 * @author Gu.Dongying 
+	 * @date 2015年4月24日 上午11:49:08
+	 */
+	public void freezeUserBalance(AcctFreezeBalanParams params);
 	
 	//public UserAccountRollDO drawUserAccountFreeze(
 	//		UserAccountRollDO userAccountRollDO);
