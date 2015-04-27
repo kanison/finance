@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		 http://www.springframework.org/schema/beans/spring-beans.xsd
+		 http://www.springframework.org/schema/tx 
+		 http://www.springframework.org/schema/tx/spring-tx.xsd
+         http://www.springframework.org/schema/osgi
+         http://www.springframework.org/schema/osgi/spring-osgi.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd"
+	default-autowire="byName">
+	
+	<bean id="fepTransactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="fepDataSource" />
+	</bean>
+
+	<bean id="fepTransactionTemplate"
+		class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="fepTransactionManager" />
+	</bean>
+
+	<!--用于declare transaction -->
+	<bean id="fepTransactionProxyTemplate" lazy-init="true"
+		abstract="true"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">
+			<ref bean="fepTransactionManager" />
+		</property>
+	</bean>
+	
+	<tx:annotation-driven transaction-manager="fepTransactionManager"/>
+
+	<bean id="fepDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+		<property name="jdbcUrl" value="${fundapi.databaseURL}" />
+		<property name="user" value="${fundapi.databaseUserName}" />
+		<property name="password" value="${fundapi.databasePassword}" />
+		<property name="autoCommitOnClose" value="false" />
+		<property name="idleConnectionTestPeriod" value="${fundapi.cpool.idleConnectionTestPeriod}" />
+		<property name="testConnectionOnCheckout" value="${fundapi.cpool.testConnectionOnCheckout}" />
+		<property name="initialPoolSize" value="${fundapi.cpool.minPoolSize}" />
+		<property name="minPoolSize" value="${fundapi.cpool.minPoolSize}" />
+		<property name="maxPoolSize" value="${fundapi.cpool.maxPoolSize}" />
+		<property name="maxIdleTime" value="${fundapi.cpool.maxIdleTime}" />
+		<property name="acquireIncrement" value="${fundapi.cpool.acquireIncrement}" />
+		<property name="acquireRetryAttempts" value="${fundapi.cpool.acquireRetryAttempts}" />
+		<property name="maxIdleTimeExcessConnections" value="${fundapi.cpool.maxIdleTimeExcessConnections}" />
+	</bean>
+	
+	<!--
+		========================================================================
+	-->
+	<!--
+		iBatis SQL map定义。
+	-->
+	<!--
+		========================================================================
+	-->
+	<bean id="fepSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>classpath:META-INF/ibatis/sqlmap-app.xml
+			</value>
+		</property>
+		<property name="dataSource" ref="fepDataSource" />
+	</bean>
+	
+</beans>

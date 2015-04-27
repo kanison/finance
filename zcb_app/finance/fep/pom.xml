@@ -1,0 +1,19 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>zcb_app-finance</artifactId>
+    <groupId>com.zhaocb.zcb_app.finance</groupId>
+    <version>1.0</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion><properties><project.build.sourceEncoding>GBK</project.build.sourceEncoding><maven.compiler.encoding>GBK</maven.compiler.encoding></properties>
+  <groupId>com.zhaocb.zcb_app.finance</groupId>
+  <artifactId>zcb_app-finance-fep</artifactId>
+  <packaging>pom</packaging>
+  <name>zcb_app-finance-fep</name>
+  <version>1.0</version>
+  <modules>
+  	<module>dao</module>
+  	<module>impl</module>
+  	<module>facade</module>
+  	<module>war</module>
+  </modules>
+</project>
