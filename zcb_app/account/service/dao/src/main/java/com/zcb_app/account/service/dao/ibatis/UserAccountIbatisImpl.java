@@ -520,6 +520,6 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 		voucher.setTo_uid(params.getUid());
 		voucher.setTrade_acc_time(params.getTrade_acc_time());
 		voucher.setMemo(params.getMemo());
-		insertTransVoucher(voucher); 
+		insertTransVoucher(voucher);
 	}
 }
