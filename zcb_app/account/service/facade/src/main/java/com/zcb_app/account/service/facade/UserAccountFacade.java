@@ -2,6 +2,7 @@ package com.zcb_app.account.service.facade;
 
 import com.zcb_app.account.service.facade.dataobject.C2CTransParams;
 import com.zcb_app.account.service.facade.dataobject.FreezeBalanceParams;
+import com.zcb_app.account.service.facade.dataobject.UnFreezeBalanceParams;
 import com.zcb_app.account.service.facade.dataobject.UserAccountDO;
 
 
@@ -32,7 +33,15 @@ public interface UserAccountFacade {
 	 */
 	public String freezeUserBalance(FreezeBalanceParams params);
 	
-	public String unfreezeUserBalance();
+	/**
+	 * 解冻接口
+	 * @param params
+	 * @return 返回解冻结果
+	 * @Return String
+	 * @author Gu.Dongying 
+	 * @Date 2015年4月27日 上午10:34:13
+	 */
+	public String unfreezeUserBalance(UnFreezeBalanceParams params);
 	
 	/**
 	 * 解冻接口
