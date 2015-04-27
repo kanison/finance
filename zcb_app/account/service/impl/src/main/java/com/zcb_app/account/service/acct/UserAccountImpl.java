@@ -231,9 +231,9 @@ public class UserAccountImpl implements UserAccountFacade {
 		//校验op_code是否正确
 		checkOpCode(params);
 		//查询冻结单号的交易凭证流水是否已存在，如果已存在检查关键参数是否相同。相同则返回重入错误码。
-		/*if(checkFrListTransactionFlow(afbParams)){
+		if(checkFrListTransactionFlow(afbParams)){
 			return AccountServiceRetException.INPUT_PARAMS_ERROR;
-		}*/
+		}
 		
 		//检查冻结账户的用户信息
 		long uid = checkUserInfo(params.getUserid(), params.getAcct_type());
@@ -331,4 +331,6 @@ public class UserAccountImpl implements UserAccountFacade {
 					AccountServiceRetException.INPUT_PARAMS_ERROR, "账户类型不能为银行账户");
 		}
 	}
+	
+	
 }
