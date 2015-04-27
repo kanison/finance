@@ -32,6 +32,8 @@ public interface UserAccountFacade {
 	 */
 	public String freezeUserBalance(FreezeBalanceParams params);
 	
+	public String unfreezeUserBalance();
+	
 	/**
 	 * ½â¶³½Ó¿Ú
 	 * @param userAccountRollDO
