@@ -7,5 +7,34 @@
 
 <sqlMap namespace="user">
 
+	<select id="queryBankInfoByCode"
+		resultClass="com.zhaocb.zcb_app.finance.fep.facade.dataobject.BankInfo">
+		SELECT
+		FbankType bankType,
+		FbankCode bankCode,
+		FareaRequest_pub areaRequestPub,
+		FareaRequest_priv areaRequestPriv,
+		FsubbankRequest_pub subBankRequestPub,
+		FsubbankRequest_priv
+		subBankRequestPriv
+		FROM
+		t_cft_bank
+		WHERE
+		FbankCode = #bankCode# AND
+		FbankState = 1
+	</select>
+
+	<select id="queryAreaCityByCode" resultClass="java.lang.Long">
+		SELECT CASE WHEN(
+		SELECT
+		1
+		FROM
+		t_cft_city
+		WHERE FareaCode = #areaCode#
+		AND FcityCode =
+		#cityCode#
+		AND FareaState = 1
+		) = 1 THEN 1 ELSE 0 END AS result
+	</select>
 
 </sqlMap>
