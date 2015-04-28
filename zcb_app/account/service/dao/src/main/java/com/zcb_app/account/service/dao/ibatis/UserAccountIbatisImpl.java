@@ -14,6 +14,7 @@ import com.app.utils.MoneyType;
 import com.zcb_app.account.service.dao.UserAccountDAO;
 import com.zcb_app.account.service.dao.type.AcctFreezeBalanParams;
 import com.zcb_app.account.service.dao.type.AcctTransParams;
+import com.zcb_app.account.service.dao.type.AcctUnFreezeBalanceParams;
 import com.zcb_app.account.service.dao.type.SpUserInfo;
 import com.zcb_app.account.service.exception.AccountServiceRetException;
 import com.zcb_app.account.service.facade.dataobject.FreezeListDO;
@@ -459,11 +460,11 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 	}
 
 	/**
-	 * 操作冻结金额
-	 * 1、	查询加锁用户交易账户
-	 * 2、	判断用户的可用金额(非冻结余额)是否足够，不够报余额不足错误
-	 * 3、	增加冻结金额
-	 * 4、	记录冻结单
+	 * 操作冻结金额<br>
+	 * 1、	查询加锁用户交易账户<br>
+	 * 2、	判断用户的可用金额(非冻结余额)是否足够，不够报余额不足错误<br>
+	 * 3、	增加冻结金额<br>
+	 * 4、	记录冻结单<br>
 	 * 5、	记录交易凭证流水
 	 * @param params
 	 * @author Gu.Dongying 
@@ -481,7 +482,7 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 		//判断用户的可用金额(非冻结余额)是否足够，不够报余额不足错误
 		if(params.getFreeze_amt().compareTo(user.getBalance()) == -1){
 			throw new AccountServiceRetException(
-					AccountServiceRetException.BALANCE_NOT_ENOUGH, "账户余额不足");
+					AccountServiceRetException.BALANCE_NOT_ENOUGH, "账户余额不足！");
 		}
 		
 		//增加冻结金额
@@ -520,6 +521,100 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 		voucher.setTo_uid(params.getUid());
 		voucher.setTrade_acc_time(params.getTrade_acc_time());
 		voucher.setMemo(params.getMemo());
+		insertTransVoucher(voucher);
+	}
+	
+	/**
+	 * 解冻金额接口<br>
+	 * 1、 查询加锁用户交易账户<br>
+	 * 2、 判断用户的冻结金额是否足够，不够报余额不足错误<br>
+	 * 3、 查询冻结单信息，并校验状态和金额是否正确<br>
+	 * 4、 修改冻结单的解冻金额和状态<br>
+	 * 5、 记录用户账户流水<br>
+	 * 6、 记录交易凭证流水
+	 * @param unFreeze
+	 * @Return void
+	 * @author Gu.Dongying 
+	 * @Date 2015年4月27日 上午11:41:13
+	 */
+	@Transactional
+	public void unfreezeUserBalance(AcctUnFreezeBalanceParams unFreeze){
+		UserAccountDO user = new UserAccountDO();
+		user.setUid(unFreeze.getUid());
+		user.setAccttype(unFreeze.getAcct_type());
+		user.setCurtype(unFreeze.getCur_type());
+		user.setQuerylock(true);
+		//查询加锁用户交易账户
+		user = queryUserAccount(user);
+		//判断用户的冻结余额是否足够，不够报余额不足错误
+		if(unFreeze.getUnfreeze_amt().compareTo(user.getFreeze_balance()) == -1){
+			throw new AccountServiceRetException(
+					AccountServiceRetException.FREEZE_BALANCE_ERROR, "账户冻结余额不足！");
+		}
+		
+		//查询冻结单信息，并校验状态和金额是否正确
+		FreezeListDO freezeList = new FreezeListDO();
+		freezeList.setListid(unFreeze.getFreeze_list());
+		freezeList.setUid(unFreeze.getUid());
+		freezeList.setCur_type(unFreeze.getCur_type());
+		freezeList = queryFreezeList(freezeList);
+		//若冻结单信息状态为全部冻结，则抛出异常
+		if(freezeList.getState() == FreezeType.FS_ALL_UFREEZE){
+			throw new AccountServiceRetException(
+					AccountServiceRetException.FREEZE_STATUS_ERROR, "原冻结单状态错误！");
+		}
+		int freezeStatus = FreezeType.FS_FROZEN;
+		//判断冻结单金额：冻结金额-解冻金额>=需解冻金额 
+		switch (freezeList.getFreeze_amt().subtract(freezeList.getUnfreeze_amt())
+				.compareTo(unFreeze.getUnfreeze_amt())) {
+		case 0:
+			freezeStatus = FreezeType.FS_ALL_UFREEZE;
+			break;
+		case 1:
+			freezeStatus = FreezeType.FS_PARTLY_UFREEZE;
+			break;
+		default:
+			throw new AccountServiceRetException(
+					AccountServiceRetException.FREEZE_BALANCE_ERROR, "金额错误！");
+		}
+		
+		//修改冻结单的解冻金额和状态
+		freezeList.setUnfreeze_amt(freezeList.getUnfreeze_amt().add(unFreeze.getUnfreeze_amt()));
+		freezeList.setState(freezeStatus);
+		updateFreezeList(freezeList);
+		
+		//修改用户的冻结金额
+		user.setBalance(user.getBalance().add(unFreeze.getUnfreeze_amt()));
+		user.setFreeze_balance(user.getFreeze_balance().subtract(unFreeze.getUnfreeze_amt()));
+		updateUserAccountBalance(user);
+		
+		//记录用户账户流水
+		UserAccountRollDO acctRoll = new UserAccountRollDO();
+		acctRoll.setUid(unFreeze.getUid());
+		acctRoll.setUserid(unFreeze.getUserid());
+		acctRoll.setAcct_type(unFreeze.getAcct_type());
+		acctRoll.setType(TransType.BKT_NOT_IN_OUT);
+		acctRoll.setAcctid(user.getAcctid());
+		acctRoll.setBalance(user.getBalance());
+		acctRoll.setFreeze_balance(user.getFreeze_balance());
+		createUserAccountRoll(acctRoll);
+		
+		//记录交易凭证流水
+		TransVoucherDO voucher = new TransVoucherDO();
+		voucher.setVoucher(unFreeze.getListid());
+		voucher.setListid(unFreeze.getListid());
+		voucher.setReq_no("");
+		voucher.setCur_type(unFreeze.getCur_type());
+		voucher.setTrans_amt(unFreeze.getUnfreeze_amt());
+		voucher.setFrozen_amt(unFreeze.getUnfreeze_amt());
+		voucher.setTrans_type(unFreeze.getTrans_type());
+		voucher.setAction_type(unFreeze.getAction_type());
+		voucher.setFrom_userid(unFreeze.getUserid());
+		voucher.setFrom_uid(unFreeze.getUid());
+		voucher.setTo_userid(unFreeze.getUserid());
+		voucher.setTo_uid(unFreeze.getUid());
+		voucher.setTrade_acc_time(unFreeze.getTrade_acc_time());
+		voucher.setMemo(unFreeze.getMemo());
 		insertTransVoucher(voucher);
 	}
 }

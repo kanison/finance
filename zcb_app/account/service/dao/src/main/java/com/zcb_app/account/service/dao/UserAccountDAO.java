@@ -2,6 +2,7 @@ package com.zcb_app.account.service.dao;
 
 import com.zcb_app.account.service.dao.type.AcctFreezeBalanParams;
 import com.zcb_app.account.service.dao.type.AcctTransParams;
+import com.zcb_app.account.service.dao.type.AcctUnFreezeBalanceParams;
 import com.zcb_app.account.service.dao.type.SpUserInfo;
 import com.zcb_app.account.service.facade.dataobject.TransVoucherDO;
 import com.zcb_app.account.service.facade.dataobject.UserAccountDO;
@@ -30,15 +31,32 @@ public interface UserAccountDAO {
 	public void c2cTransfer(AcctTransParams params);
 
 	/**
-	 * 操作冻结金额
-	 * 1、	增加冻结金额（建议步骤6、7封装在同一个函数中实现，因为增加冻结金额必然要记录一条冻结单）
-	 * 2、	记录冻结单
-	 * 3、	记录交易凭证流水
+	 * 操作冻结金额<br>
+	 * 1、	查询加锁用户交易账户<br>
+	 * 2、	判断用户的可用金额(非冻结余额)是否足够，不够报余额不足错误<br>
+	 * 3、	增加冻结金额<br>
+	 * 4、	记录冻结单<br>
+	 * 5、	记录交易凭证流水
 	 * @param params
 	 * @author Gu.Dongying 
 	 * @date 2015年4月24日 上午11:49:08
 	 */
 	public void freezeUserBalance(AcctFreezeBalanParams params);
+
+	/**
+	 * 解冻金额接口<br>
+	 * 1、 查询加锁用户交易账户<br>
+	 * 2、 判断用户的冻结金额是否足够，不够报余额不足错误<br>
+	 * 3、 查询冻结单信息，并校验状态和金额是否正确<br>
+	 * 4、 修改冻结单的解冻金额和状态<br>
+	 * 5、 记录用户账户流水<br>
+	 * 6、 记录交易凭证流水
+	 * @param unFreeze
+	 * @Return void
+	 * @author Gu.Dongying 
+	 * @Date 2015年4月27日 上午11:41:13
+	 */
+	public void unfreezeUserBalance(AcctUnFreezeBalanceParams unFreeze);
 	
 	//public UserAccountRollDO drawUserAccountFreeze(
 	//		UserAccountRollDO userAccountRollDO);
