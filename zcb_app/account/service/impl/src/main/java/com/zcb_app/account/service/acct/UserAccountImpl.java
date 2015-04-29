@@ -266,7 +266,8 @@ public class UserAccountImpl implements UserAccountFacade {
 		sb.append(afbParams.getFreeze_amt());
 		LOG.debug(sb.toString());
 		
-		throw new AccountServiceRetException(AccountServiceRetException.ERR_REENTY_OK, "金额冻结成功！");
+		throw new AccountServiceRetException(
+				AccountServiceRetException.ERR_REENTY_OK, "交易已经成功！");
 	}
 	
 	/**
@@ -276,19 +277,25 @@ public class UserAccountImpl implements UserAccountFacade {
 	 * @author Gu.Dongying 
 	 * @Date 2015年4月24日 上午11:52:53
 	 */
-	private void checkFrListTransactionFlow(AcctFreezeBalanParams params){
+	private void checkFrListTransactionFlow(AcctFreezeBalanParams params) {
 		TransVoucherDO voucher = new TransVoucherDO();
 		voucher.setListid(params.getListid());
 		voucher = userAccountDAO.queryTransVoucher(voucher);
-		//如果已存在检查关键参数是否相同
-		if(voucher != null){
-			//检查用户、交易类型、操作类型等关键参数
-			if(params.getUserid().equals(voucher.getFrom_userid()) 
+		// 如果已存在检查关键参数是否相同
+		if (voucher != null) {
+			// 检查用户、交易类型、操作类型等关键参数
+			if (params.getUserid().equals(voucher.getFrom_userid())
 					&& voucher.getTrans_type() == params.getTrans_type()
 					&& voucher.getAction_type() == params.getAction_type()
 					&& voucher.getCur_type() == params.getCur_type()
-					&& params.getFreeze_amt().compareTo(voucher.getFrozen_amt()) == 0){				
-				throw new AccountServiceRetException(AccountServiceRetException.INPUT_PARAMS_ERROR, "交易凭证流水已存在！");
+					&& params.getFreeze_amt()
+							.compareTo(voucher.getFrozen_amt()) == 0) {
+				throw new AccountServiceRetException(
+						AccountServiceRetException.ERR_REENTY_OK, "交易已经成功!");
+			} else {
+				throw new AccountServiceRetException(
+						AccountServiceRetException.ERR_REENTY_INCONSISTENT,
+						"重入参数不一致!");
 			}
 		}
 	}
@@ -318,28 +325,33 @@ public class UserAccountImpl implements UserAccountFacade {
 	 * @Date 2015年4月24日 上午11:03:13
 	 */
 	private void checkFreezeTransParams(AcctFreezeBalanParams params) {
-		if(StringUtils.isBlank(params.getUserid()) || StringUtils.isEmpty(params.getUserid())){
+		if (StringUtils.isBlank(params.getUserid())
+				|| StringUtils.isEmpty(params.getUserid())) {
 			throw new AccountServiceRetException(
-					AccountServiceRetException.ERR_USER_NOT_EXSIT, "未指定冻结金额的用户!");
+					AccountServiceRetException.ERR_USER_NOT_EXSIT,
+					"未指定冻结金额的用户!");
 		}
-		if(StringUtils.isBlank(params.getListid()) || StringUtils.isEmpty(params.getListid())){
+		if (StringUtils.isBlank(params.getListid())
+				|| StringUtils.isEmpty(params.getListid())) {
 			throw new AccountServiceRetException(
 					AccountServiceRetException.LISTID_NOT_EXIST, "冻结单不存在!");
 		}
-		if (params.getFreeze_amt() == null || params.getFreeze_amt().scale() != 2){
+		if (params.getFreeze_amt() == null
+				|| params.getFreeze_amt().scale() != 2) {
 			throw new AccountServiceRetException(
 					AccountServiceRetException.INPUT_PARAMS_ERROR, "冻结金额格式不正确!");
 		}
-		if (params.getAcct_type() <= 0){
+		if (params.getAcct_type() <= 0) {
 			throw new AccountServiceRetException(
 					AccountServiceRetException.INPUT_PARAMS_ERROR, "未指定用户账户类型!");
 		}
-		if (params.getAcct_type() == AccountType.UAT_BANK){
+		if (params.getAcct_type() == AccountType.UAT_BANK) {
 			throw new AccountServiceRetException(
-					AccountServiceRetException.INPUT_PARAMS_ERROR, "账户类型不能为银行账户!");
+					AccountServiceRetException.INPUT_PARAMS_ERROR,
+					"账户类型不能为银行账户!");
 		}
-		
-		if (params.getTrade_acc_time() == null){
+
+		if (params.getTrade_acc_time() == null) {
 			throw new AccountServiceRetException(
 					AccountServiceRetException.INPUT_PARAMS_ERROR, "交易时间不能为空!");
 		}
@@ -393,7 +405,8 @@ public class UserAccountImpl implements UserAccountFacade {
 		sb.append(unFreeze.getUnfreeze_amt());
 		LOG.debug(sb.toString());
 		
-		throw new AccountServiceRetException(AccountServiceRetException.ERR_REENTY_OK, "金额解冻成功！");
+		throw new AccountServiceRetException(
+				AccountServiceRetException.ERR_REENTY_OK, "交易已经成功！");
 	}
 	
 	/**
@@ -403,34 +416,41 @@ public class UserAccountImpl implements UserAccountFacade {
 	 * @author Gu.Dongying 
 	 * @Date 2015年4月27日 上午11:34:10
 	 */
-	private void checkUnFreezeTransParam(UnFreezeBalanceParams params){
-		if(StringUtils.isBlank(params.getUserid()) || StringUtils.isEmpty(params.getUserid())){
+	private void checkUnFreezeTransParam(UnFreezeBalanceParams params) {
+		if (StringUtils.isBlank(params.getUserid())
+				|| StringUtils.isEmpty(params.getUserid())) {
 			throw new AccountServiceRetException(
-					AccountServiceRetException.ERR_USER_NOT_EXSIT, "未指定解冻金额的用户!");
+					AccountServiceRetException.ERR_USER_NOT_EXSIT,
+					"未指定解冻金额的用户!");
 		}
-		if(StringUtils.isBlank(params.getListid()) || StringUtils.isEmpty(params.getListid())){
+		if (StringUtils.isBlank(params.getListid())
+				|| StringUtils.isEmpty(params.getListid())) {
 			throw new AccountServiceRetException(
 					AccountServiceRetException.FREEZE_ID_ERROR, "解冻单不存在!");
 		}
-		if (params.getUnfreeze_amt() == null || params.getUnfreeze_amt().scale() != 2){
+		if (params.getUnfreeze_amt() == null
+				|| params.getUnfreeze_amt().scale() != 2) {
 			throw new AccountServiceRetException(
-					AccountServiceRetException.FREEZE_BALANCE_ERROR, "解冻金额格式不正确!");
+					AccountServiceRetException.FREEZE_BALANCE_ERROR,
+					"解冻金额格式不正确!");
 		}
-		if (params.getAcct_type() <= 0){
+		if (params.getAcct_type() <= 0) {
 			throw new AccountServiceRetException(
 					AccountServiceRetException.INPUT_PARAMS_ERROR, "未指定用户账户类型!");
 		}
-		if (params.getAcct_type() == AccountType.UAT_BANK){
+		if (params.getAcct_type() == AccountType.UAT_BANK) {
 			throw new AccountServiceRetException(
-					AccountServiceRetException.INPUT_PARAMS_ERROR, "账户类型不能为银行账户!");
+					AccountServiceRetException.INPUT_PARAMS_ERROR,
+					"账户类型不能为银行账户!");
 		}
-		
-		if(StringUtils.isBlank(params.getFreeze_list()) || StringUtils.isEmpty(params.getFreeze_list())){
+
+		if (StringUtils.isBlank(params.getFreeze_list())
+				|| StringUtils.isEmpty(params.getFreeze_list())) {
 			throw new AccountServiceRetException(
 					AccountServiceRetException.INPUT_PARAMS_ERROR, "原冻结单不能为空!");
 		}
-		
-		if (params.getTrade_acc_time() == null){
+
+		if (params.getTrade_acc_time() == null) {
 			throw new AccountServiceRetException(
 					AccountServiceRetException.INPUT_PARAMS_ERROR, "交易时间不能为空!");
 		}
@@ -443,19 +463,25 @@ public class UserAccountImpl implements UserAccountFacade {
 	 * @author Gu.Dongying 
 	 * @Date 2015年4月24日 上午11:52:53
 	 */
-	private void checkUnFrListTransactionFlow(AcctUnFreezeBalanceParams unFreeze){
+	private void checkUnFrListTransactionFlow(AcctUnFreezeBalanceParams unFreeze) {
 		TransVoucherDO voucher = new TransVoucherDO();
 		voucher.setListid(unFreeze.getListid());
 		voucher = userAccountDAO.queryTransVoucher(voucher);
-		//如果已存在检查关键参数是否相同
-		if(voucher != null){
-			//检查用户、交易类型、操作类型等关键参数
-			if(unFreeze.getUserid().equals(voucher.getFrom_userid()) 
+		// 如果已存在检查关键参数是否相同
+		if (voucher != null) {
+			// 检查用户、交易类型、操作类型等关键参数
+			if (unFreeze.getUserid().equals(voucher.getFrom_userid())
 					&& voucher.getTrans_type() == unFreeze.getTrans_type()
 					&& voucher.getAction_type() == unFreeze.getAction_type()
 					&& voucher.getCur_type() == unFreeze.getCur_type()
-					&& unFreeze.getUnfreeze_amt().compareTo(voucher.getFrozen_amt()) == 0){				
-				throw new AccountServiceRetException(AccountServiceRetException.INPUT_PARAMS_ERROR, "交易凭证流水已存在！");
+					&& unFreeze.getUnfreeze_amt().compareTo(
+							voucher.getFrozen_amt()) == 0) {
+				throw new AccountServiceRetException(
+						AccountServiceRetException.ERR_REENTY_OK, "交易已经成功!");
+			} else {
+				throw new AccountServiceRetException(
+						AccountServiceRetException.ERR_REENTY_INCONSISTENT,
+						"重入参数不一致!");
 			}
 		}
 	}
