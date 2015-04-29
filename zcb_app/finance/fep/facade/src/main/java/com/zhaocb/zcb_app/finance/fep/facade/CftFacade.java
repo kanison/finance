@@ -2,6 +2,7 @@ package com.zhaocb.zcb_app.finance.fep.facade;
 
 import com.zhaocb.zcb_app.finance.fep.facade.dataobject.BatchDrawDO;
 import com.zhaocb.zcb_app.finance.fep.facade.dataobject.BatchDrawQueryDO;
+import com.zhaocb.zcb_app.finance.fep.facade.dataobject.CftCommOutput;
 
 public interface CftFacade {
 
@@ -13,7 +14,7 @@ public interface CftFacade {
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
 	 */
-	public String batchDraw(BatchDrawDO batchDrawDO) throws Exception;
+	public CftCommOutput batchDraw(BatchDrawDO batchDrawDO) throws Exception;
 
 	/**
 	 * 查询批量付款结果

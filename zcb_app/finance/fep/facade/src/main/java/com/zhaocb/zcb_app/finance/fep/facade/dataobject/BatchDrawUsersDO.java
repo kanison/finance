@@ -10,7 +10,7 @@ public class BatchDrawUsersDO implements Serializable {
 	public String rec_bankacc;// 收款方银行帐号
 	public String bank_type;// 银行类型
 	public String rec_name;// 收款方真实姓名
-	public int pay_amt;// 付款金额
+	public Integer pay_amt;// 付款金额
 	public String acc_type;// 账户类型(1为个人账户,2为公司账户)
 	public String area;// 开户地区
 	public String city;// 开户城市
@@ -50,11 +50,11 @@ public class BatchDrawUsersDO implements Serializable {
 		this.rec_name = rec_name;
 	}
 
-	public int getPay_amt() {
+	public Integer getPay_amt() {
 		return pay_amt;
 	}
 
-	public void setPay_amt(int pay_amt) {
+	public void setPay_amt(Integer pay_amt) {
 		this.pay_amt = pay_amt;
 	}
 
