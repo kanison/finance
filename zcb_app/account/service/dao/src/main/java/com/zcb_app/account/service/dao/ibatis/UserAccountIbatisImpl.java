@@ -509,7 +509,7 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 		voucher.setVoucher(params.getListid());
 		voucher.setListid(params.getListid());
 		//数据库必填，暂时设置为""；
-		//voucher.setReq_no("");
+		//voucher.setReq_no(""); 
 		voucher.setCur_type(params.getCur_type());
 		voucher.setTrans_amt(params.getFreeze_amt());
 		voucher.setFrozen_amt(params.getFreeze_amt());
