@@ -459,6 +459,12 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 				"queryUserAccountRoll", userAccountRollDO);
 	}
 
+	public static void main(String[] args) {
+		BigDecimal a = new BigDecimal(1);
+		BigDecimal b = new BigDecimal(2);
+		System.out.println(a.compareTo(b));
+	}
+	
 	/**
 	 * 操作冻结金额<br>
 	 * 1、	查询加锁用户交易账户<br>
@@ -479,14 +485,14 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 		user.setQuerylock(true);
 		//查询加锁用户交易账户
 		user = queryUserAccount(user);
-		//判断用户的可用金额(非冻结余额)是否足够，不够报余额不足错误
-		if(params.getFreeze_amt().compareTo(user.getBalance()) == -1){
+		//判断用户的可用金额(非冻结余额)是否足够，不够报余额不足错误(总额减去已冻结金额必须大于等于冻结金额)
+		if(params.getFreeze_amt().compareTo(user.getBalance().subtract(user.getFreeze_balance())) > -1){
 			throw new AccountServiceRetException(
 					AccountServiceRetException.BALANCE_NOT_ENOUGH, "账户余额不足！");
 		}
 		
 		//增加冻结金额
-		user.setBalance(user.getBalance().subtract(params.getFreeze_amt()));
+		//user.setBalance(user.getBalance().subtract(params.getFreeze_amt()));
 		user.setFreeze_balance(user.getFreeze_balance().add(params.getFreeze_amt()));
 		updateUserAccountBalance(user);
 		
@@ -584,7 +590,7 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 		updateFreezeList(freezeList);
 		
 		//修改用户的冻结金额
-		user.setBalance(user.getBalance().add(unFreeze.getUnfreeze_amt()));
+		//user.setBalance(user.getBalance().add(unFreeze.getUnfreeze_amt()));
 		user.setFreeze_balance(user.getFreeze_balance().subtract(unFreeze.getUnfreeze_amt()));
 		updateUserAccountBalance(user);
 		
