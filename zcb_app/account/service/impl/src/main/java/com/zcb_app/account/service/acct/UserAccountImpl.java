@@ -283,20 +283,24 @@ public class UserAccountImpl implements UserAccountFacade {
 		voucher = userAccountDAO.queryTransVoucher(voucher);
 		// 如果已存在检查关键参数是否相同
 		if (voucher != null) {
-			// 检查用户、交易类型、操作类型等关键参数
-			if (params.getUserid().equals(voucher.getFrom_userid())
-					&& voucher.getTrans_type() == params.getTrans_type()
-					&& voucher.getAction_type() == params.getAction_type()
-					&& voucher.getCur_type() == params.getCur_type()
-					&& params.getFreeze_amt()
-							.compareTo(voucher.getFrozen_amt()) == 0) {
-				throw new AccountServiceRetException(
-						AccountServiceRetException.ERR_REENTY_OK, "交易已经成功!");
-			} else {
+			// 检查用户、币种、冻结金额等关键参数
+			if(!params.getUserid().equals(voucher.getFrom_userid())){
 				throw new AccountServiceRetException(
 						AccountServiceRetException.ERR_REENTY_INCONSISTENT,
-						"重入参数不一致!");
+						"UserID参数不一致!");
 			}
+			if(voucher.getCur_type() != params.getCur_type()){
+				throw new AccountServiceRetException(
+						AccountServiceRetException.ERR_REENTY_INCONSISTENT, "交易币种不一致");
+			}
+			if(params.getFreeze_amt().compareTo(
+					voucher.getFrozen_amt()) != 0){
+				throw new AccountServiceRetException(
+						AccountServiceRetException.ERR_REENTY_INCONSISTENT,
+						"冻结金额不一致!");
+			}
+			throw new AccountServiceRetException(
+					AccountServiceRetException.ERR_REENTY_OK, "交易已经成功!");
 		}
 	}
 	
@@ -469,20 +473,24 @@ public class UserAccountImpl implements UserAccountFacade {
 		voucher = userAccountDAO.queryTransVoucher(voucher);
 		// 如果已存在检查关键参数是否相同
 		if (voucher != null) {
-			// 检查用户、交易类型、操作类型等关键参数
-			if (unFreeze.getUserid().equals(voucher.getFrom_userid())
-					&& voucher.getTrans_type() == unFreeze.getTrans_type()
-					&& voucher.getAction_type() == unFreeze.getAction_type()
-					&& voucher.getCur_type() == unFreeze.getCur_type()
-					&& unFreeze.getUnfreeze_amt().compareTo(
-							voucher.getFrozen_amt()) == 0) {
-				throw new AccountServiceRetException(
-						AccountServiceRetException.ERR_REENTY_OK, "交易已经成功!");
-			} else {
+			// 检查用户、币种、解冻金额等关键参数
+			if(!unFreeze.getUserid().equals(voucher.getFrom_userid())){
 				throw new AccountServiceRetException(
 						AccountServiceRetException.ERR_REENTY_INCONSISTENT,
-						"重入参数不一致!");
+						"UserID参数不一致!");
 			}
+			if(voucher.getCur_type() != unFreeze.getCur_type()){
+				throw new AccountServiceRetException(
+						AccountServiceRetException.ERR_REENTY_INCONSISTENT, "交易币种不一致");
+			}
+			if(unFreeze.getUnfreeze_amt().compareTo(
+					voucher.getFrozen_amt()) != 0){
+				throw new AccountServiceRetException(
+						AccountServiceRetException.ERR_REENTY_INCONSISTENT,
+						"解冻金额不一致!");
+			}
+			throw new AccountServiceRetException(
+					AccountServiceRetException.ERR_REENTY_OK, "交易已经成功!");
 		}
 	}
 	
