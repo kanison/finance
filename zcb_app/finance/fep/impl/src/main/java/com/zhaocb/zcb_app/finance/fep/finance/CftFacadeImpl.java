@@ -3,15 +3,12 @@ package com.zhaocb.zcb_app.finance.fep.finance;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
+import java.security.KeyStore;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,10 +18,10 @@ import java.util.Set;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 
 import com.app.common.exception.CommonException;
 import com.app.common.exception.ParameterInvalidException;
@@ -47,26 +44,29 @@ import com.zhaocb.zcb_app.finance.fep.facade.dataobject.CftCommOutput;
  */
 public class CftFacadeImpl implements CftFacade {
 
-	private static final String CHAR_SET = "GBK";
+	private static final String CHAR_SET = "GB2312";
 	private static final String BATCH_DRAW_OP_CODE = "1013";
 	private static final String BATCH_DRAW_OP_NAME = "batch_draw";
+
+	private static final String BATCH_DRAW_QUERY_OP_CODE = "1014";
+	private static final String BATCH_DRAW_QUERY_OP_NAME = "batch_draw_query";
+
+	private static enum BusType {
+		BATCH_DRAW, BATCH_DRAW_QUERY, REFUND_QUERY
+	};
+
+	private static String MERCHANT_KEY;
+	private static String CFT_URL;
+	private static String CLIENT_KEY_STORE;
+	private static String CLIENT_TRUST_KEY_STORE;
+	private static String CLIENT_KEY_STORE_PASSWORD;
+	private static String CLIENT_TRUST_KEY_STORE_PASSWORD;
+
 	private FepDAO fepDAO;
 
 	public CftCommOutput batchDraw(BatchDrawDO batchDrawDO) throws Exception {
 		// 检查输入参数
 		checkParam(batchDrawDO);
-
-		// 读取商户key
-		String merchantKey = CommonUtil.getWebConfig("merchantKey");
-		if (null == merchantKey) {
-			throw new CommonException(CommonException.SYSTEM_ERROR, "商户key未配置");
-		}
-
-		// 获取财付通url
-		String cftUrl = CommonUtil.getWebConfig("cftUrl");
-		if (null == cftUrl) {
-			throw new CommonException(CommonException.SYSTEM_ERROR, "财付通url未配置");
-		}
 
 		// 把输入对象解析成xml
 		String reqXml = setRequestXml(batchDrawDO);
@@ -76,7 +76,7 @@ public class CftFacadeImpl implements CftFacade {
 
 		// 加密生成参数abstract
 		String abstct = MD5Util.getMD5(
-				MD5Util.getMD5(content, CHAR_SET).toLowerCase() + merchantKey,
+				MD5Util.getMD5(content, CHAR_SET).toLowerCase() + MERCHANT_KEY,
 				CHAR_SET).toLowerCase();
 
 		// 连接参数params
@@ -84,10 +84,15 @@ public class CftFacadeImpl implements CftFacade {
 				.append("&abstract=").append(abstct);
 
 		// 提交付款申请
-		// String respXml = submitBatchDraw(cftUrl, params.toString());
+		String respXml = connect(CFT_URL, params.toString());
 
 		// 返回解析结果
-		return parseResponseXml("");
+		return (CftCommOutput) parseResponseXml(BusType.BATCH_DRAW, respXml);
+	}
+
+	public String batchDrawQuery(BatchDrawQueryDO batchDrawQueryDO) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**
@@ -97,9 +102,34 @@ public class CftFacadeImpl implements CftFacade {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 */
-	@SuppressWarnings("unchecked")
 	private void checkParam(BatchDrawDO draw) throws IllegalArgumentException,
 			IllegalAccessException {
+		// 检查商户key
+		MERCHANT_KEY = CommonUtil.getWebConfig("mer_key");
+		if (null == MERCHANT_KEY) {
+			throw new CommonException(CommonException.SYSTEM_ERROR, "商户key未配置");
+		}
+
+		// 检查财付通url
+		CFT_URL = CommonUtil.getWebConfig("cft_url");
+		if (null == CFT_URL) {
+			throw new CommonException(CommonException.SYSTEM_ERROR, "财付通url未配置");
+		}
+
+		// 检查财付通证书验证相关文件路径和密码
+		CLIENT_KEY_STORE = CommonUtil.getWebConfig("kclient.keystore");
+		CLIENT_TRUST_KEY_STORE = CommonUtil.getWebConfig("tclient.keystore");
+		CLIENT_KEY_STORE_PASSWORD = CommonUtil.getWebConfig("kclient.password");
+		CLIENT_TRUST_KEY_STORE_PASSWORD = CommonUtil
+				.getWebConfig("tclient.password");
+		if (null == CLIENT_KEY_STORE || null == CLIENT_TRUST_KEY_STORE
+				|| null == CLIENT_KEY_STORE_PASSWORD
+				|| null == CLIENT_TRUST_KEY_STORE_PASSWORD) {
+			throw new CommonException(CommonException.SYSTEM_ERROR,
+					"财付通验证证书文件路径或密码未配置");
+		}
+
+		// 检查付款明细参数
 		int totalNum = draw.getTotal_num();
 		if (totalNum != draw.getUsers_set().size()) {
 			throw new ParameterInvalidException("总记录数必须与明细记录数相同");
@@ -279,94 +309,120 @@ public class CftFacadeImpl implements CftFacade {
 
 		System.out.println(xmlStr);
 
-		return xmlStr.toString();
+		return xmlStr.toString().replaceAll("\n|\t", "");
 	}
 
 	/**
-	 * 提交付款
+	 * 连接财付通
 	 * 
 	 * @param url
 	 * @param content
 	 * @return
-	 * @throws NoSuchAlgorithmException
-	 * @throws KeyManagementException
-	 * @throws IOException
 	 */
-	private String submitBatchDraw(String url, String content)
-			throws NoSuchAlgorithmException, KeyManagementException,
-			IOException {
-		SSLContext sc = SSLContext.getInstance("SSL");
-		sc.init(null, new TrustManager[] { new TrustAnyTrustManager() },
-				new java.security.SecureRandom());
+	private String connect(String url, String content) {
+		SSLContext ctx = getSSLInstance();
+		try {
+			URL console = new URL(url);
+			HttpsURLConnection conn = (HttpsURLConnection) console
+					.openConnection();
+			conn.setSSLSocketFactory(ctx.getSocketFactory());
+			conn.setHostnameVerifier(new TrustAnyHostnameVerifier());
+			conn.setDoOutput(true);
+			conn.connect();
+			DataOutputStream out = new DataOutputStream(conn.getOutputStream());
+			out.write(content.getBytes(CHAR_SET));
 
-		URL console = new URL(url);
-		HttpsURLConnection conn = (HttpsURLConnection) console.openConnection();
-		conn.setSSLSocketFactory(sc.getSocketFactory());
-		conn.setHostnameVerifier(new TrustAnyHostnameVerifier());
-		conn.setDoOutput(true);
-		conn.connect();
-		DataOutputStream out = new DataOutputStream(conn.getOutputStream());
-		out.write(content.getBytes("GBK"));
-
-		// 刷新、关闭
-		out.flush();
-		out.close();
-		InputStream is = conn.getInputStream();
-		if (is != null) {
-			ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-			byte[] buffer = new byte[1024];
-			int len = 0;
-			while ((len = is.read(buffer)) != -1) {
-				outStream.write(buffer, 0, len);
+			// 刷新、关闭
+			out.flush();
+			out.close();
+			InputStream is = conn.getInputStream();
+			if (is != null) {
+				ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+				byte[] buffer = new byte[1024];
+				int len = 0;
+				while ((len = is.read(buffer)) != -1) {
+					outStream.write(buffer, 0, len);
+				}
+				is.close();
+				return new String(outStream.toByteArray(), CHAR_SET);
 			}
-			is.close();
-			// return outStream.toByteArray();
-			return outStream.toByteArray().toString();
+		} catch (Exception e) {
+			/*
+			 * return "<?xml version=\"1.0\" encoding=\"GB2312\" ?>" + "<root>"
+			 * + "<charset>GB2312</charset>" + "<op_code>1013</op_code>" +
+			 * "<op_name>batch_draw</op_name>" + "<op_user>提交人ID</op_user>" +
+			 * "<op_time>操作时间（yyyyMMddHHmmssSSS）</op_time>" +
+			 * "<package_id>包序列ID（YYYYMMDDXXX）</package_id>" +
+			 * "<result>(本接口result恒为空)</result>" +
+			 * "<retcode>返回码：0或00-提交成功，其他见5.11的说明。对于返回非0或00的错误码，商户必须调用查询接口确认批次状态。</retcode>"
+			 * + "<retmsg>错误内容描述</retmsg>" + "</root>";
+			 */
+
+			throw new CommonException(CommonException.SYSTEM_ERROR, "连接财付通异常");
 		}
 
-		return "";
-	}
-
-	private CftCommOutput parseResponseXml(String xml) {
-		xml = "<?xml version=\"1.0\" encoding=\"GB2312\" ?>"
-				+ "<root>"
-				+ "<charset>GB2312</charset>"
-				+ "<op_code>1013</op_code>"
-				+ "<op_name>batch_draw</op_name>"
-				+ "<op_user>提交人ID</op_user>"
-				+ "<op_time>操作时间（yyyyMMddHHmmssSSS）</op_time>"
-				+ "<package_id>包序列ID（YYYYMMDDXXX）</package_id>"
-				+ "<result>(本接口result恒为空)</result>"
-				+ "<retcode>返回码：0或00-提交成功，其他见5.11的说明。对于返回非0或00的错误码，商户必须调用查询接口确认批次状态。</retcode>"
-				+ "<retmsg>错误内容描述</retmsg>" + "</root>";
-
-		Map<String, String> xmlMap = XmlParseUtil.xmlToMap(new BufferedReader(
-				new StringReader(xml)));
-
-		CftCommOutput output = new CftCommOutput();
-		output.setRetcode(xmlMap.get("retcode"));
-		output.setRetmsg(xmlMap.get("retmsg"));
-		return output;
-	}
-
-	public String batchDrawQuery(BatchDrawQueryDO batchDrawQueryDO) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private static class TrustAnyTrustManager implements X509TrustManager {
+	/**
+	 * 加载验证证书
+	 * 
+	 * @return
+	 */
+	private SSLContext getSSLInstance() {
+		SSLContext ctx;
+		try {
+			ctx = SSLContext.getInstance("SSL");
+			KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+			TrustManagerFactory tmf = TrustManagerFactory
+					.getInstance("SunX509");
+			KeyStore ks = KeyStore.getInstance("JKS");
+			KeyStore tks = KeyStore.getInstance("JKS");
 
-		public void checkClientTrusted(X509Certificate[] chain, String authType)
-				throws CertificateException {
+			ks.load(new FileInputStream(CLIENT_KEY_STORE),
+					CLIENT_KEY_STORE_PASSWORD.toCharArray());
+			tks.load(new FileInputStream(CLIENT_TRUST_KEY_STORE),
+					CLIENT_TRUST_KEY_STORE_PASSWORD.toCharArray());
+
+			kmf.init(ks, CLIENT_KEY_STORE_PASSWORD.toCharArray());
+			tmf.init(tks);
+			ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+		} catch (Exception e) {
+			throw new CommonException(CommonException.SYSTEM_ERROR, "验证证书失败");
 		}
 
-		public void checkServerTrusted(X509Certificate[] chain, String authType)
-				throws CertificateException {
+		return ctx;
+	}
+
+	/**
+	 * 解析返回结果
+	 * 
+	 * @param xml
+	 * @return
+	 */
+	private Object parseResponseXml(BusType type, String xml) {
+		switch (type) {
+		case BATCH_DRAW: {
+			Map<String, String> xmlMap = XmlParseUtil
+					.xmlToMap(new BufferedReader(new StringReader(xml)));
+
+			CftCommOutput output = new CftCommOutput();
+			output.setRetcode(xmlMap.get("retcode"));
+			output.setRetmsg(xmlMap.get("retmsg"));
+			return output;
+		}
+		case BATCH_DRAW_QUERY: {
+
+		}
+		case REFUND_QUERY: {
+
+			return null;
+		}
+		default:
+			break;
 		}
 
-		public X509Certificate[] getAcceptedIssuers() {
-			return new X509Certificate[] {};
-		}
+		return null;
 	}
 
 	private static class TrustAnyHostnameVerifier implements HostnameVerifier {

@@ -7,8 +7,6 @@ public class BatchDrawQueryDO implements Serializable {
 
 	private static final long serialVersionUID = 7175564168798990868L;
 
-	public String service_version = "1.2";
-
 	public String op_user;// 操作员
 	public String op_passwd;// 操作员密码
 	public Date op_time;// 操作时间
@@ -62,10 +60,6 @@ public class BatchDrawQueryDO implements Serializable {
 
 	public void setClient_ip(String client_ip) {
 		this.client_ip = client_ip;
-	}
-
-	public String getService_version() {
-		return service_version;
 	}
 
 }
