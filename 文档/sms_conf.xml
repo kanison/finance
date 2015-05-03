@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<!--频率控制参数-->
+	<limit_ctrl>
+		<strategy>
+			<item timespan="60" mob_no_limit="3" ip_limit="1000000" blocktime="3600"></item>
+			<item timespan="3600" mob_no_limit="30" ip_limit="1000000" blocktime="7200"></item>
+			<item timespan="86400" mob_no_limit="40" ip_limit="1000000" blocktime="86400"></item>
+		</strategy>
+		<mob_no_whitelist>11111111111,2222222222</mob_no_whitelist>
+		<ip_whitelist>1270.0.0.1,1270.0.0.1</ip_whitelist>
+	</limit_ctrl>
+	<!--下发通知消息的IP白名单-->
+	<send_notify_sms_ips></send_notify_sms_ips>
+	<!--短信模板-->
+	<templates>
+		<item id="1" err_chk_times="3" succ_chk_times="1" expire_time="600" use_relakey="false" auth_code_len="6" tmpl_text="你于$time$发起注册，验证码为$auth_code$" ></item>
+	</templates>
+</root>
