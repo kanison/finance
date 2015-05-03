@@ -27,21 +27,19 @@ public interface UserAccountFacade {
 	 * 冻结接口
 	 * @param params
 	 * @return 返回结果
-	 * @Return String
 	 * @author Gu.Dongying 
 	 * @Date 2015年4月24日 上午9:59:59
 	 */
-	public String freezeUserBalance(FreezeBalanceParams params);
+	public void freezeUserBalance(FreezeBalanceParams params);
 	
 	/**
 	 * 解冻接口
 	 * @param params
 	 * @return 返回解冻结果
-	 * @Return String
 	 * @author Gu.Dongying 
 	 * @Date 2015年4月27日 上午10:34:13
 	 */
-	public String unfreezeUserBalance(UnFreezeBalanceParams params);
+	public void unfreezeUserBalance(UnFreezeBalanceParams params);
 	
 	/**
 	 * 解冻接口
