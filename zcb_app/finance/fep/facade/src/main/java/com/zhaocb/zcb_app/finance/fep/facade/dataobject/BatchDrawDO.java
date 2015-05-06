@@ -4,6 +4,12 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
+/**
+ * 财付通付款申请输入参数
+ * 
+ * @author zhl
+ *
+ */
 public class BatchDrawDO implements Serializable {
 
 	private static final long serialVersionUID = -8603556484294592594L;

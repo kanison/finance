@@ -2,10 +2,16 @@ package com.zhaocb.zcb_app.finance.fep.facade.dataobject;
 
 import java.io.Serializable;
 
+/**
+ * 财付通付款申请输入用户付款参数
+ * 
+ * @author zhl
+ *
+ */
 public class BatchDrawUsersDO implements Serializable {
 
 	private static final long serialVersionUID = -9128529925716767683L;
-	
+
 	public String serial;// 单笔序列号
 	public String rec_bankacc;// 收款方银行帐号
 	public String bank_type;// 银行类型

@@ -4,12 +4,11 @@ import com.tenpay.sm.lang.error.ErrorCodeException;
 
 public class FepServiceRetException extends ErrorCodeException {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -5296524740798554632L;
 
-	public static final String SYSTEM_ERROR = "20110000";// 系统错误
+	public static final String SYSTEM_ERROR = "20110001";// 系统错误
+	
+	public static final String CFT_ERROR = "20110002";// 财付通连接异常
 
 	public FepServiceRetException(String msg) {
 		super(msg);

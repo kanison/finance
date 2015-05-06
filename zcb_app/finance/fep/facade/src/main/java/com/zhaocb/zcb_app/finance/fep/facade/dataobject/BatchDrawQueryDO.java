@@ -3,6 +3,12 @@ package com.zhaocb.zcb_app.finance.fep.facade.dataobject;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 财付通付款查询输入参数
+ * 
+ * @author zhl
+ *
+ */
 public class BatchDrawQueryDO implements Serializable {
 
 	private static final long serialVersionUID = 7175564168798990868L;

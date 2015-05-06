@@ -1,8 +1,17 @@
 package com.zhaocb.zcb_app.finance.fep.facade.dataobject;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class BatchDrawOutput {
+/**
+ * 财付通付款申请输出参数
+ * 
+ * @author zhl
+ *
+ */
+public class BatchDrawOutput implements Serializable {
+
+	private static final long serialVersionUID = 8081107195106490393L;
 
 	private String op_code;
 	private String op_name;

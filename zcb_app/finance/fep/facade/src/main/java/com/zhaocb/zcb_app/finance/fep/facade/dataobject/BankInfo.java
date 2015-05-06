@@ -2,19 +2,22 @@ package com.zhaocb.zcb_app.finance.fep.facade.dataobject;
 
 import java.io.Serializable;
 
+/**
+ * 财付通银行信息
+ * 
+ * @author zhl
+ *
+ */
 public class BankInfo implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -6034451080500907632L;
 
-	public String bankType;
-	public String bankCode;
-	public String areaRequestPub;
-	public String areaRequestPriv;
-	public String subBankRequestPub;
-	public String subBankRequestPriv;
+	private String bankType;
+	private String bankCode;
+	private String areaRequestPub;
+	private String areaRequestPriv;
+	private String subBankRequestPub;
+	private String subBankRequestPriv;
 
 	public String getBankType() {
 		return bankType;

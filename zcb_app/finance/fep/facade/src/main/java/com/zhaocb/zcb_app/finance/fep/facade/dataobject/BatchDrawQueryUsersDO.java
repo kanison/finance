@@ -3,21 +3,27 @@ package com.zhaocb.zcb_app.finance.fep.facade.dataobject;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 财付通付款查询输出用户付款参数
+ * 
+ * @author zhl
+ *
+ */
 public class BatchDrawQueryUsersDO implements Serializable {
 
 	private static final long serialVersionUID = -5107781828341037944L;
 
-	public String serial;// 单笔序列号
-	public String rec_bankacc;// 收款方银行帐号
-	public String bank_type;// 银行类型
-	public String rec_name;// 收款方真实姓名
-	public Integer pay_amt;// 付款金额
-	public String acc_type;// 账户类型(1为个人账户,2为公司账户)
-	public String area;// 开户地区
-	public String city;// 开户城市
-	public String subbank_name;// 支行名称
-	public String desc;// 付款说明
-	public Date modify_time;// 最后修改时间
+	private String serial;// 单笔序列号
+	private String rec_bankacc;// 收款方银行帐号
+	private String bank_type;// 银行类型
+	private String rec_name;// 收款方真实姓名
+	private Integer pay_amt;// 付款金额
+	private String acc_type;// 账户类型(1为个人账户,2为公司账户)
+	private String area;// 开户地区
+	private String city;// 开户城市
+	private String subbank_name;// 支行名称
+	private String desc;// 付款说明
+	private Date modify_time;// 最后修改时间
 
 	public String getSerial() {
 		return serial;

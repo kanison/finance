@@ -1,8 +1,18 @@
 package com.zhaocb.zcb_app.finance.fep.facade.dataobject;
 
+import java.io.Serializable;
 import java.util.Set;
 
-public class BatchDrawQueryOutput extends BatchDrawOutput {
+/**
+ * 财付通付款查询输出参数
+ * 
+ * @author zhl
+ *
+ */
+public class BatchDrawQueryOutput extends BatchDrawOutput implements
+		Serializable {
+
+	private static final long serialVersionUID = -2872892447164410436L;
 
 	private String trade_state;// 批次状态
 	private Integer total_count;// 总笔数
