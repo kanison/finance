@@ -8,11 +8,7 @@ import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.SocketTimeoutException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
@@ -47,6 +43,7 @@ import com.zhaocb.zcb_app.finance.fep.facade.dataobject.PayRefundQueryOutput;
 import com.zhaocb.zcb_app.finance.fep.facade.dataobject.PayRefundQueryUsersDO;
 import com.zhaocb.zcb_app.finance.fep.utils.ConnectionUtil;
 import com.zhaocb.zcb_app.finance.fep.utils.SSLUtil;
+import com.zhaocb.zcb_app.finance.fep.utils.SignUtil;
 import com.zhaocb.zcb_app.finance.fep.utils.XMLUtil;
 
 /**
@@ -163,7 +160,7 @@ public class CftFacadeImpl implements CftFacade {
 			throw new ParameterInvalidException("签名长度应该为32位");
 		} else if (null == CommonUtil.trimString(partner)) {
 			throw new ParameterInvalidException("商户号不能为空");
-		} else if (!partner.matches("120[\\d]{7}")) {
+		} else if (!partner.matches("[\\d]{10}")) {
 			throw new ParameterInvalidException("商户号格式不正确");
 		} else if (null == startTime) {
 			throw new ParameterInvalidException("开始时间不能为空");
@@ -171,9 +168,12 @@ public class CftFacadeImpl implements CftFacade {
 			throw new ParameterInvalidException("结束时间不能为空");
 		}
 
-		// 验证银行编码
-		if (null == fepDAO.queryBankInfoByCode(payRefundQueryDO.getBank_type())) {
-			throw new ParameterInvalidException("银行编码不合法");
+		String bankType = payRefundQueryDO.getBank_type();
+		if (null != CommonUtil.trimString(bankType)) {
+			// 验证银行编码
+			if (null == fepDAO.queryBankInfoByCode(bankType)) {
+				throw new ParameterInvalidException("银行编码不合法");
+			}
 		}
 	}
 
@@ -389,10 +389,11 @@ public class CftFacadeImpl implements CftFacade {
 				CHAR_SET).toLowerCase();
 
 		// 连接成参数params
-		StringBuffer params = new StringBuffer("content=").append(content)
+		StringBuffer params = new StringBuffer("content=")
+				.append(URLEncoder.encode(content, CHAR_SET))
 				.append("&abstract=").append(abstct);
 
-		return URLEncoder.encode(params.toString(), CHAR_SET);
+		return params.toString();
 	}
 
 	/**
@@ -403,22 +404,28 @@ public class CftFacadeImpl implements CftFacade {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 * @throws UnsupportedEncodingException
+	 * @throws NoSuchAlgorithmException
 	 */
 	private String genParams(PayRefundQueryDO payRefundQuery)
 			throws IllegalArgumentException, IllegalAccessException,
-			UnsupportedEncodingException {
+			UnsupportedEncodingException, NoSuchAlgorithmException {
+		// 生成签名，测试用
+		//SignUtil.getSign(payRefundQuery, MERCHANT_KEY);
+
 		Field[] fields = payRefundQuery.getClass().getFields();
 		StringBuffer sb = new StringBuffer();
+		Object obj;
 		for (Field pf : fields) {
+			obj = pf.get(payRefundQuery);
 			sb.append(pf.getName())
 					.append("=")
 					.append(pf.getType() == java.util.Date.class ? CommonUtil
-							.formatDate((Date) pf.get(payRefundQuery),
-									"yyyyMMddHHmmss") : pf.get(payRefundQuery))
+							.formatDate((Date) obj, "yyyyMMddHHmmss")
+							: URLEncoder.encode((String) obj, CHAR_SET))
 					.append("&");
 		}
 
-		return URLEncoder.encode(sb.substring(0, sb.length() - 1), CHAR_SET);
+		return sb.substring(0, sb.length() - 1);
 	}
 
 	/**
@@ -526,6 +533,7 @@ public class CftFacadeImpl implements CftFacade {
 			if (is != null) {
 				String resContent = ConnectionUtil.InputStreamTOString(is,
 						CHAR_SET);
+				System.out.println(resContent);
 				is.close();
 				conn.disconnect();
 				return resContent;
@@ -533,115 +541,10 @@ public class CftFacadeImpl implements CftFacade {
 		} catch (SocketTimeoutException e) {
 			throw new FepServiceRetException(FepServiceRetException.CFT_ERROR,
 					"该批次正在处理中，请稍后查询结果");
+		} catch (IOException e) {
+			throw new FepServiceRetException(FepServiceRetException.CERT_ERROR,
+					"证书或密码验证不通过");
 		} catch (Exception e) {
-			// 测试用
-			e.printStackTrace();
-			switch (type) {
-			case BATCH_DRAW: {
-				return "<?xml version=\"1.0\" encoding=\"GB2312\" ?>"
-						+ "<root>" + "<charset>GB2312</charset>"
-						+ "<op_code>1013</op_code>"
-						+ "<op_name>batch_draw</op_name>"
-						+ "<op_user>提交人ID</op_user>"
-						+ "<op_time>20150501102231888</op_time>"
-						+ "<package_id>20150501786</package_id>"
-						+ "<result>(本接口result恒为空)</result>"
-						+ "<retcode>00</retcode>" + "<retmsg>错误内容描述</retmsg>"
-						+ "</root>";
-			}
-			case BATCH_DRAW_QUERY: {
-				return "<?xml version=\"1.0\" encoding=\"GB2312\" ?><root>"
-						+ "<op_code>1014</op_code><op_name>batch_draw_query</op_name>"
-						+ "<op_user>提交人ID</op_user><op_time>20141102232011333</op_time>"
-						+ "<package_id>20141102000</package_id><retcode>00</retcode>"
-						+ "<retmsg>错误内容描述</retmsg><result><trade_state>1</trade_state>"
-						+ "<total_count >1</total_count><total_fee>120000000</total_fee>"
-						+ "<succ_count>1</succ_count><succ_fee>50000</succ_fee>"
-						+ "<fail_count>1</fail_count><fail_fee>70</fail_fee>"
-						+ "<origin_set><origin_total>2</origin_total>"
-						+ "<origin_rec><serial>S000001</serial><rec_bankacc>62220000</rec_bankacc>"
-						+ "<bank_type>1</bank_type><rec_name>周红亮</rec_name>"
-						+ "<pay_amt>6545600</pay_amt><acc_type>2</acc_type>"
-						+ "<area>001</area><city>323</city><subbank_name>初始支行1</subbank_name>"
-						+ "<desc>初始付款说明</desc><modify_time>2015-01-22 22:10:33</modify_time>"
-						+ "</origin_rec>"
-						+ "<origin_rec><serial>S000002</serial><rec_bankacc>62220001</rec_bankacc>"
-						+ "<bank_type>2</bank_type><rec_name>周红亮</rec_name>"
-						+ "<pay_amt>332344</pay_amt><acc_type>2</acc_type>"
-						+ "<area>122</area><city>133</city><subbank_name>初始支行2</subbank_name>"
-						+ "<desc>初始付款说明</desc><modify_time>2015-01-22 22:10:33</modify_time>"
-						+ "</origin_rec>"
-						+ "</origin_set>"
-
-						+ "<success_set><origin_total>2</origin_total>"
-						+ "<suc_rec><serial>S000003</serial><rec_bankacc>62250000</rec_bankacc>"
-						+ "<bank_type>1</bank_type><rec_name>周红亮</rec_name>"
-						+ "<pay_amt>6545600</pay_amt><acc_type>2</acc_type>"
-						+ "<area>367</area><city>666</city><subbank_name>成功支行1</subbank_name>"
-						+ "<desc>成功付款说明</desc><modify_time>2015-04-22 22:10:33</modify_time>"
-						+ "</suc_rec>"
-						+ "<suc_rec><serial>S000004</serial><rec_bankacc>62250001</rec_bankacc>"
-						+ "<bank_type>2</bank_type><rec_name>周红亮</rec_name>"
-						+ "<pay_amt>332344</pay_amt><acc_type>2</acc_type>"
-						+ "<area>976</area><city>777</city><subbank_name>成功支行2</subbank_name>"
-						+ "<desc>成功付款说明</desc><modify_time>2015-04-22 22:10:33</modify_time>"
-						+ "</suc_rec>"
-						+ "</success_set>"
-
-						+ "<tobank_set><tobank_total>3</tobank_total>"
-						+ "<tobank_rec><serial>S000006</serial><rec_bankacc>62260000</rec_bankacc>"
-						+ "<bank_type>1</bank_type><rec_name>周红亮</rec_name>"
-						+ "<pay_amt>5555500</pay_amt><acc_type>2</acc_type>"
-						+ "<area>001</area><city>323</city><subbank_name>已提交银行支行7</subbank_name>"
-						+ "<desc>已提交银行付款说明</desc><modify_time>2015-05-27 22:10:33</modify_time>"
-						+ "</tobank_rec>"
-						+ "<tobank_rec><serial>S000007</serial><rec_bankacc>62260000</rec_bankacc>"
-						+ "<bank_type>1</bank_type><rec_name>周红亮</rec_name>"
-						+ "<pay_amt>77777700</pay_amt><acc_type>2</acc_type>"
-						+ "<area>001</area><city>323</city><subbank_name>已提交银行支行6</subbank_name>"
-						+ "<desc>已提交银行付款说明</desc><modify_time>2015-05-22 22:10:33</modify_time>"
-						+ "</tobank_rec>"
-						+ "<tobank_rec><serial>S000005</serial><rec_bankacc>62260001</rec_bankacc>"
-						+ "<bank_type>1</bank_type><rec_name>周红亮</rec_name>"
-						+ "<pay_amt>6666600</pay_amt><acc_type>2</acc_type>"
-						+ "<area>122</area><city>133</city><subbank_name>已提交银行支行5</subbank_name>"
-						+ "<desc>已提交银行付款说明</desc><modify_time>2015-05-05 22:10:33</modify_time>"
-						+ "</tobank_rec>" + "</tobank_set></result></root>";
-			}
-			case PAY_REFUND_QUERY: {
-				return "<?xml version=\"1.0\" encoding=\"GB2312\" ?>"
-						+ "<root>" + "<retcode>0</retcode>"
-						+ "<retmsg>错误内容描述</retmsg>"
-						+ "<sign_type>md5</sign_type>"
-						+ "<service_version>1.0</service_version>"
-						+ "<input_charset>gbk</input_charset>"
-						+ "<sign_key_index>1</sign_key_index>"
-						+ "<partner>1201111111</partner>"
-						+ "<cancel_count>2</cancel_count>"
-						+ "<sign>11111111112222222222333333333311</sign>"
-						+ "<cancel_set>" + "<cancel_rec>"
-						+ "<draw_id>P000001</draw_id>"
-						+ "<package_id>20150123888</package_id>"
-						+ "<serial>S000001</serial>"
-						+ "<pay_amt>111000</pay_amt>"
-						+ "<bank_type>1101</bank_type>"
-						+ "<draw_time>2015-04-05 11:08:23</draw_time>"
-						+ "<cancel_time>2015-04-06 12:18:21</cancel_time>"
-						+ "<cancel_res>退票原因1</cancel_res>" + "</cancel_rec>"
-						+ "<cancel_rec>" + "<draw_id>P000002</draw_id>"
-						+ "<package_id>20150123999</package_id>"
-						+ "<serial>S000002</serial>"
-						+ "<pay_amt>222000</pay_amt>"
-						+ "<bank_type>1102</bank_type>"
-						+ "<draw_time>2015-05-05 11:08:23</draw_time>"
-						+ "<cancel_time>2015-05-06 12:18:21</cancel_time>"
-						+ "<cancel_res>退票原因2</cancel_res>" + "</cancel_rec>"
-						+ "</cancel_set>" + "</root>";
-			}
-			default:
-				break;
-			}
-
 			throw new FepServiceRetException(
 					FepServiceRetException.SYSTEM_ERROR, "连接财付通异常");
 		}
@@ -692,11 +595,15 @@ public class CftFacadeImpl implements CftFacade {
 		output.setOp_code(xmlMap.get("op_code"));
 		output.setOp_name(xmlMap.get("op_name"));
 		output.setOp_user(xmlMap.get("op_user"));
-		output.setOp_time(CommonUtil.parseDate(xmlMap.get("op_time"),
-				"yyyyMMddHHmmssSSS"));
 		output.setPackage_id(xmlMap.get("package_id"));
 		output.setRetcode(xmlMap.get("retcode"));
 		output.setRetmsg(xmlMap.get("retmsg"));
+
+		if (null != xmlMap.get("op_time")) {
+			output.setOp_time(CommonUtil.parseDate(xmlMap.get("op_time"),
+					"yyyyMMddHHmmssSSS"));
+		}
+
 		return output;
 	}
 
@@ -714,24 +621,30 @@ public class CftFacadeImpl implements CftFacade {
 		PayRefundQueryUsersDO refundUser;
 		Map<String, String> xmlMap;
 		String setName;
+		String retCode = "";
 		for (Iterator<Map> ite = eleSet.iterator(); ite.hasNext();) {
 			xmlMap = ite.next();
 			setName = xmlMap.get("set_name");
 
 			if ("root".equals(setName)) {
+				retCode = xmlMap.get("retcode");
 				output.setSign_type(xmlMap.get("sign_type"));
 				output.setService_version(xmlMap.get("service_version"));
 				output.setInput_charset(xmlMap.get("input_charset"));
 				output.setSign(xmlMap.get("sign"));
 				output.setSign_key_index(xmlMap.get("sign_key_index"));
 				output.setPartner(xmlMap.get("partner"));
-				output.setRetcode(xmlMap.get("retcode"));
+				output.setRetcode(retCode);
 				output.setRetmsg(xmlMap.get("retmsg"));
-				output.setCancel_count(Integer.valueOf(xmlMap
-						.get("cancel_count")));
+
+				if (null != CommonUtil.trimString(xmlMap.get("cancel_count"))) {
+					output.setCancel_count(Integer.valueOf(xmlMap
+							.get("cancel_count")));
+				}
+
 			}
 
-			if ("cancel_rec".equals(setName)) {
+			if ("cancel_rec".equals(setName) && retCode.matches("0|00")) {
 				refundUser = new PayRefundQueryUsersDO();
 				refundUser.setDraw_id(xmlMap.get("draw_id"));
 				refundUser.setPackage_id(xmlMap.get("package_id"));
@@ -747,7 +660,7 @@ public class CftFacadeImpl implements CftFacade {
 
 				if (null != xmlMap.get("cancel_time")) {
 					refundUser.setCancel_time(CommonUtil.parseDate(
-							xmlMap.get("cancel_time"), "yyyy-MM-dd HH:mm:ss"));
+							xmlMap.get("cancel_time"), "yyyy-MM-dd"));// HH:mm:ss
 				}
 
 				output.getCancel_set().add(refundUser);
@@ -776,61 +689,72 @@ public class CftFacadeImpl implements CftFacade {
 		BatchDrawQueryUsersDO drawUser;
 		Map<String, String> xmlMap;
 		String setName;
+		String retCode = "";
 		for (Iterator<Map> ite = eleSet.iterator(); ite.hasNext();) {
 			xmlMap = ite.next();
 			setName = xmlMap.get("set_name");
 
 			if ("root".equals(setName)) {
+				retCode = xmlMap.get("retcode");
 				output.setOp_code(xmlMap.get("op_code"));
 				output.setOp_name(xmlMap.get("op_name"));
 				output.setOp_user(xmlMap.get("op_user"));
-				output.setOp_time(CommonUtil.parseDate(xmlMap.get("op_time"),
-						"yyyyMMddHHmmssSSS"));
 				output.setPackage_id(xmlMap.get("package_id"));
-				output.setRetcode(xmlMap.get("retcode"));
+				output.setRetcode(retCode);
 				output.setRetmsg(xmlMap.get("retmsg"));
+
+				if (null != xmlMap.get("op_time")) {
+					output.setOp_time(CommonUtil.parseDate(
+							xmlMap.get("op_time"), "yyyyMMddHHmmssSSS"));
+				}
 			}
 
-			if ("result".equals(setName)) {
-				output.setTrade_state(xmlMap.get("trade_state"));
-				output.setTotal_count(Integer.valueOf(xmlMap.get("total_count")));
-				output.setTotal_fee(Integer.valueOf(xmlMap.get("total_fee")));
-				output.setSucc_count(Integer.valueOf(xmlMap.get("succ_count")));
-				output.setSucc_fee(Integer.valueOf(xmlMap.get("succ_fee")));
-				output.setFail_count(Integer.valueOf(xmlMap.get("fail_count")));
-				output.setFail_fee(Integer.valueOf(xmlMap.get("fail_fee")));
-			}
-
-			if (setName.matches(".*_rec")) {
-				drawUser = new BatchDrawQueryUsersDO();
-				drawUser.setSerial(xmlMap.get("serial"));
-				drawUser.setRec_bankacc(xmlMap.get("rec_bankacc"));
-				drawUser.setBank_type(xmlMap.get("bank_type"));
-				drawUser.setRec_name(xmlMap.get("rec_name"));
-				drawUser.setPay_amt(Integer.valueOf(xmlMap.get("pay_amt")));
-				drawUser.setAcc_type(xmlMap.get("acc_type"));
-				drawUser.setArea(xmlMap.get("area"));
-				drawUser.setCity(xmlMap.get("city"));
-				drawUser.setSubbank_name(xmlMap.get("subbank_name"));
-				drawUser.setDesc(xmlMap.get("desc"));
-
-				if (null != xmlMap.get("modify_time")) {
-					drawUser.setModify_time(CommonUtil.parseDate(
-							xmlMap.get("modify_time"), "yyyy-MM-dd HH:mm:ss"));
+			if (retCode.matches("0|00")) {
+				if ("result".equals(setName)) {
+					output.setTrade_state(xmlMap.get("trade_state"));
+					output.setTotal_count(Integer.valueOf(xmlMap
+							.get("total_count")));
+					output.setTotal_fee(Integer.valueOf(xmlMap.get("total_fee")));
+					output.setSucc_count(Integer.valueOf(xmlMap
+							.get("succ_count")));
+					output.setSucc_fee(Integer.valueOf(xmlMap.get("succ_fee")));
+					output.setFail_count(Integer.valueOf(xmlMap
+							.get("fail_count")));
+					output.setFail_fee(Integer.valueOf(xmlMap.get("fail_fee")));
 				}
 
-				if ("origin_rec".equals(setName)) {
-					output.getOrigin_set().add(drawUser);
-				} else if ("suc_rec".equals(setName)) {
-					output.getSuccess_set().add(drawUser);
-				} else if ("tobank_rec".equals(setName)) {
-					output.getTobank_set().add(drawUser);
-				} else if ("fail_rec".equals(setName)) {
-					output.getFail_set().add(drawUser);
-				} else if ("handling_rec".equals(setName)) {
-					output.getHandling_set().add(drawUser);
-				} else if ("ret_ticket_rec".equals(setName)) {
-					output.getReturn_ticket_set().add(drawUser);
+				if (setName.matches(".*_rec")) {
+					drawUser = new BatchDrawQueryUsersDO();
+					drawUser.setSerial(xmlMap.get("serial"));
+					drawUser.setRec_bankacc(xmlMap.get("rec_bankacc"));
+					drawUser.setBank_type(xmlMap.get("bank_type"));
+					drawUser.setRec_name(xmlMap.get("rec_name"));
+					drawUser.setPay_amt(Integer.valueOf(xmlMap.get("pay_amt")));
+					drawUser.setAcc_type(xmlMap.get("acc_type"));
+					drawUser.setArea(xmlMap.get("area"));
+					drawUser.setCity(xmlMap.get("city"));
+					drawUser.setSubbank_name(xmlMap.get("subbank_name"));
+					drawUser.setDesc(xmlMap.get("desc"));
+
+					if (null != xmlMap.get("modify_time")) {
+						drawUser.setModify_time(CommonUtil.parseDate(
+								xmlMap.get("modify_time"),
+								"yyyy-MM-dd HH:mm:ss"));
+					}
+
+					if ("origin_rec".equals(setName)) {
+						output.getOrigin_set().add(drawUser);
+					} else if ("suc_rec".equals(setName)) {
+						output.getSuccess_set().add(drawUser);
+					} else if ("tobank_rec".equals(setName)) {
+						output.getTobank_set().add(drawUser);
+					} else if ("fail_rec".equals(setName)) {
+						output.getFail_set().add(drawUser);
+					} else if ("handling_rec".equals(setName)) {
+						output.getHandling_set().add(drawUser);
+					} else if ("ret_ticket_rec".equals(setName)) {
+						output.getReturn_ticket_set().add(drawUser);
+					}
 				}
 			}
 		}

@@ -9,6 +9,8 @@ public class FepServiceRetException extends ErrorCodeException {
 	public static final String SYSTEM_ERROR = "20110001";// 系统错误
 	
 	public static final String CFT_ERROR = "20110002";// 财付通连接异常
+	
+	public static final String CERT_ERROR = "20110003";// 财付通连接异常
 
 	public FepServiceRetException(String msg) {
 		super(msg);

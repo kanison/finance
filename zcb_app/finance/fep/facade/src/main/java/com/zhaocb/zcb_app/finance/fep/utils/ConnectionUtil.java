@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URL;
 
 import javax.net.ssl.HostnameVerifier;
@@ -28,6 +29,27 @@ public class ConnectionUtil {
 	private static final String CONTENT_TYPE = "application/x-www-form-urlencoded";
 
 	/**
+	 * get HttpURLConnection
+	 * 
+	 * @param strUrl
+	 *            url地址
+	 * @return HttpURLConnection
+	 * @throws Exception
+	 */
+	public static HttpURLConnection getHttpURLConnection(String strUrl)
+			throws Exception {
+		URL url = new URL(strUrl);
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+		// 设置请求默认属性
+		setHttpRequest(conn);
+
+		conn.connect();
+
+		return conn;
+	}
+
+	/**
 	 * 
 	 * @param strUrl
 	 * @param sslContext
@@ -47,9 +69,6 @@ public class ConnectionUtil {
 		HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
 		conn.setSSLSocketFactory(sslContext.getSocketFactory());
 
-		// 以post方式通信
-		conn.setRequestMethod("POST");
-
 		// 设置请求默认属性
 		setHttpRequest(conn);
 
@@ -62,8 +81,11 @@ public class ConnectionUtil {
 	 * 设置http请求默认属性
 	 * 
 	 * @param httpConnection
+	 * @throws Exception
 	 */
-	public static void setHttpRequest(HttpURLConnection conn) {
+	public static void setHttpRequest(HttpURLConnection conn) throws Exception {
+		// 以post方式通信
+		conn.setRequestMethod("POST");
 
 		// 设置连接超时时间
 		conn.setConnectTimeout(timeOut * 1000);
