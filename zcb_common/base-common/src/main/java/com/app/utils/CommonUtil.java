@@ -1066,4 +1066,16 @@ public class CommonUtil {
 		sb.append(currDate.get(Calendar.MONTH) + 1);
 		return sb.toString();
 	}
+	
+	 /**
+     * 补齐不足长度
+     * @param length 长度
+     * @param number 数字
+     * @return String
+     */
+    public static String lpad(int length, int number) {
+        String f = "%0" + length + "d";
+        return String.format(f, number);
+    }
+   
 }

@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import com.app.utils.CommonUtil;
+import com.tenpay.sm.common.lang.StringUtil;
 
 public class TransVoucherDO implements Serializable {
 	private static final long serialVersionUID = 1671854126487406757L;
@@ -150,6 +151,18 @@ public class TransVoucherDO implements Serializable {
 	}
 	public void setTb_idx(String tb_idx) {
 		this.tb_idx = tb_idx;
+	}
+	
+	/**
+	 * 交易凭证单，Faction_type作为前缀(4位长度)+Flistid
+	 * 
+	 * @author Gu.Dongying 
+	 * @Date 2015年5月8日 上午11:20:35
+	 */
+	public void genVoucher(){
+		if(StringUtil.isNotBlank(this.listid) && StringUtil.isNotEmpty(this.listid)){
+			this.setVoucher(CommonUtil.lpad(4, this.action_type) + this.voucher);
+		}
 	}
 	
 	public void genDataTableIndex()

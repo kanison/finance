@@ -447,7 +447,8 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 		voobj.setTrade_acc_time(params.getTrade_acc_time());
 		voobj.setRela_list(params.getRela_list());
 		voobj.setMemo(params.getMemo());
-
+		//交易凭证单，Faction_type作为前缀(4位长度)+Flistid
+		voobj.genVoucher();
 		insertTransVoucher(voobj);
 	}
 	
@@ -527,6 +528,8 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 		voucher.setTo_uid(params.getUid());
 		voucher.setTrade_acc_time(params.getTrade_acc_time());
 		voucher.setMemo(params.getMemo());
+		//交易凭证单，Faction_type作为前缀(4位长度)+Flistid
+		voucher.genVoucher();
 		insertTransVoucher(voucher);
 	}
 	
@@ -553,7 +556,7 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 		//查询加锁用户交易账户
 		user = queryUserAccount(user);
 		//判断用户的冻结余额是否足够，不够报余额不足错误
-		if(unFreeze.getUnfreeze_amt().compareTo(user.getFreeze_balance()) == -1){
+		if(unFreeze.getUnfreeze_amt().compareTo(user.getFreeze_balance()) == 1){
 			throw new AccountServiceRetException(
 					AccountServiceRetException.FREEZE_BALANCE_ERROR, "账户冻结余额不足！");
 		}
@@ -620,6 +623,8 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 		voucher.setTo_uid(unFreeze.getUid());
 		voucher.setTrade_acc_time(unFreeze.getTrade_acc_time());
 		voucher.setMemo(unFreeze.getMemo());
+		//交易凭证单，Faction_type作为前缀(4位长度)+Flistid
+		voucher.genVoucher();
 		insertTransVoucher(voucher);
 	}
 }
