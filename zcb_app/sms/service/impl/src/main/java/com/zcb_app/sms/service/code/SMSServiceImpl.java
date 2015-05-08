@@ -211,7 +211,7 @@ public class SMSServiceImpl implements SMSServiceFacade {
 			throw new SMSServiceRetException(SMSServiceRetException.ERR_MOBILE_PARAMS, "手机号码错误!");
 		}
 		if (params.getTmpl_id() == null) {
-			throw new SMSServiceRetException(SMSServiceRetException.ERR_TEMPLATE_PARAMS, "短信模板ID!");
+			throw new SMSServiceRetException(SMSServiceRetException.ERR_TEMPLATE_PARAMS, "短信模板ID错误!");
 		}
 		if (StringUtils.isEmpty(params.getClient_ip()) || StringUtils.isBlank(params.getClient_ip())) {
 			throw new SMSServiceRetException(SMSServiceRetException.ERR_CLIENT_IP_PARAMS, "用户IP不能为空!");
