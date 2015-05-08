@@ -460,12 +460,6 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 				"queryUserAccountRoll", userAccountRollDO);
 	}
 
-	public static void main(String[] args) {
-		BigDecimal a = new BigDecimal(1);
-		BigDecimal b = new BigDecimal(2);
-		System.out.println(a.compareTo(b));
-	}
-	
 	/**
 	 * 操作冻结金额<br>
 	 * 1、	查询加锁用户交易账户<br>
