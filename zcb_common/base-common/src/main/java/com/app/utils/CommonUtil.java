@@ -25,12 +25,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,7 +40,6 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.app.utils.CommonUtil;
 import com.tenpay.sm.context.Context;
 import com.tenpay.sm.context.ContextUtil;
 import com.tenpay.sm.lang.error.ErrorCode;
@@ -1006,5 +1005,65 @@ public class CommonUtil {
 			return "";
 		else 
 			return String.format("%d", (uid%1000)/100);
+	}
+	public static String getDbIndexByMobile(String mobileNO){
+		int len = mobileNO.length();
+		if (len < 4)
+			return "";
+		
+		//为防止sql注入，强制检查是否为数字
+		char chAarray[] = new char[3];
+		chAarray[0] = mobileNO.charAt(len-3);
+		chAarray[1] = mobileNO.charAt(len-2);
+		chAarray[2] = mobileNO.charAt(len-1);
+		
+		if (chAarray[0] > '9' || chAarray[0] < '0')
+			return "";
+		
+		if (chAarray[1] > '9' || chAarray[1] < '0')
+			return "";
+		
+		if (chAarray[2] > '9' || chAarray[2] < '0')
+			return "";
+		
+		return String.valueOf(chAarray);
+	}
+	public static String getTbIndexByMobile(String mobileNO){
+		int len = mobileNO.length();
+		if (len < 4)
+			return "";
+		
+		//为防止sql注入，强制检查是否为数字
+		char chAarray[] = new char[3];
+		chAarray[0] = mobileNO.charAt(len-3);
+		chAarray[1] = mobileNO.charAt(len-2);
+		chAarray[2] = mobileNO.charAt(len-1);
+		
+		if (chAarray[0] > '9' || chAarray[0] < '0')
+			return "";
+		
+		if (chAarray[1] > '9' || chAarray[1] < '0')
+			return "";
+		
+		if (chAarray[2] > '9' || chAarray[2] < '0')
+			return "";
+		
+		return String.valueOf(chAarray);
+	}
+
+	/**
+	 * @return String TbIndex
+	 * @author Gu.Dongying 
+	 * @Date 2015年5月4日 下午3:34:36
+	 */
+	public static String getTbIndexByMonth() {
+		StringBuilder sb = new StringBuilder();
+		Calendar currDate = Calendar.getInstance();
+		sb.append(currDate.get(Calendar.YEAR));
+		if(currDate.get(Calendar.MONTH) < 9){
+			sb.append("0");
+		}
+		sb.append(currDate.get(Calendar.MONTH) + 1);
+		return sb.toString();
 	}
 }

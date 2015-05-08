@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<!-- ========================================================== -->
+<!-- Configuration for ibatis sqlmap mapping. -->
+<!-- ========================================================== -->
+
+<sqlMap namespace="user">
+
+	<select id="queryMobileLimit"
+		resultClass="com.zcb_app.sms.service.facade.dataobject.MobileLimitDO">
+		SELECT
+		Fpkid fpkid,
+		Fmobile_no fmobile_no,
+		Ftmpl_id ftmpl_id,
+		Fblock_stime fblock_stime,
+		Fblock_timespan fblock_timespan
+		FROM mv_db.t_mobile_limit
+		WHERE
+		Fmobile_no=#fmobile_no# 
+		AND Ftmpl_id=#ftmpl_id#
+		AND UNIX_TIMESTAMP(Fblock_stime) + Fblock_timespan <![CDATA[<]]> UNIX_TIMESTAMP(NOW())
+		ORDER BY Fpkid DESC
+		LIMIT 1
+	</select>
+
+	<select id="queryIPLimit"
+		resultClass="com.zcb_app.sms.service.facade.dataobject.IPLimitDO">
+		SELECT
+		Fpkid fpkid,
+		Fclient_ip fclient_ip,
+		Ftmpl_id ftmpl_id,
+		Fblock_stime fblock_stime,
+		Fblock_timespan fblock_timespan
+		FROM mv_db.t_ip_limit
+		WHERE
+		Fclient_ip=#fclient_ip# 
+		AND Ftmpl_id=#ftmpl_id#
+		AND UNIX_TIMESTAMP(Fblock_stime) + Fblock_timespan <![CDATA[<]]> UNIX_TIMESTAMP(NOW())
+		ORDER BY Fpkid DESC
+		LIMIT 1
+	</select>
+
+	<select id="queryVerifyCodeInfo"
+		resultClass="com.zcb_app.sms.service.facade.dataobject.VerifyCodeInfoDO">
+		SELECT
+		Fmobile_no fmobile_no,
+		Ftmpl_id ftmpl_id,
+		Fverify_code fverify_code,
+		Frela_key frela_key,
+		Frela_info frela_info,
+		Fchk_suc_times fchk_suc_times,
+		Fchk_err_times fchk_err_times,
+		Fclient_ip fclient_ip,
+		Fsend_time fsend_time,
+		Fcheck_time fcheck_time,
+		Fexpired_time fexpired_time,
+		Fstandby1 fstandby1,
+		Fstandby1 fstandby2
+		FROM sms_db_$db_idx$.t_mvcode_info_$tb_idx$
+		where
+		Fmobile_no=#fmobile_no# AND Ftmpl_id=#ftmpl_id#
+		<isEqual  property="querylock" compareValue="true">
+			FOR UPDATE
+		</isEqual>
+	</select>
+
+	<select id="querySendCodeInfoCount" resultClass="int">
+		SELECT COUNT(1) 
+		FROM sms_db_$db_idx$.t_send_info_$tb_idx$
+		WHERE 
+		<isNotEmpty prepend="AND" property="fmobile_no" removeFirstPrepend="true">
+			Fmobile_no = #fmobile_no#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="fclient_ip" removeFirstPrepend="true">
+			Fclient_ip = #fclient_ip#
+		</isNotEmpty>
+		<dynamic>
+			AND UNIX_TIMESTAMP(Fsend_time) + #timespan# <![CDATA[>=]]> UNIX_TIMESTAMP(NOW())
+			AND Ftmpl_id = #ftmpl_id#
+		</dynamic>
+	</select>
+
+</sqlMap>

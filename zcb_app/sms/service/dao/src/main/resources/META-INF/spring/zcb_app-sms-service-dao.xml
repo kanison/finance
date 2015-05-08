@@ -11,7 +11,7 @@
          http://www.springframework.org/schema/context/spring-context.xsd"
 	default-autowire="byName">
 	
-	<bean id="fundDAO" class="com.zhaocb.zcb_app.finance.service.dao.ibatis.FundIbatisImpl">
+	<bean id="smsServiceDAO" class="com.zcb_app.sms.service.dao.ibatis.SMSServiceIbatisImpl">
 		<property name="sqlMapClient" ref="fundSqlMapClient"></property>
 	</bean>
 </beans>

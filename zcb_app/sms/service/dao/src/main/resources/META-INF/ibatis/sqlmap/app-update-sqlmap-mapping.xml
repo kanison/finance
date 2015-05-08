@@ -7,16 +7,15 @@
 
 
 <sqlMap namespace="user">
-
-	<update id="updateDeviceInfo" parameterClass="com.zhaocb.zcb_app.finance.service.facade.dataobject.DeviceInfoDO">
-		update
-		t_device_info set
-		<isNotEqual property="state" compareValue="0">
-			Fstate = #state# ,
-		</isNotEqual>
-			FModifyTime = NOW()
-		where
-			FdeviceId = #deviceId#
+	
+	<update id="updateVerifyCodeInfo"
+		parameterClass="com.zcb_app.sms.service.facade.dataobject.VerifyCodeInfoDO">
+		UPDATE sms_db_$db_idx$.t_mvcode_info_$tb_idx$
+		SET 
+			Fchk_suc_times = #fchk_suc_times#,
+			Fchk_err_times = #fchk_err_times#,
+			Fcheck_time = NOW()
+		WHERE Fmobile_no=#fmobile_no# AND Ftmpl_id=#ftmpl_id#
 	</update>
 	
 </sqlMap>

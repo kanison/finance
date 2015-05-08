@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<!-- ========================================================== -->
+<!-- Configuration for ibatis sqlmap mapping. -->
+<!-- ========================================================== -->
+
+<sqlMap namespace="user">
+
+	<insert id="insertVerifyCode"
+		parameterClass="com.zcb_app.sms.service.facade.dataobject.VerifyCodeInfoDO">
+		insert into sms_db_$db_idx$.t_mvcode_info_$tb_idx$(
+		Fmobile_no,
+		Ftmpl_id,
+		Fverify_code,
+		Frela_key,
+		Frela_info,
+		Fchk_suc_times,
+		Fchk_err_times,
+		Fclient_ip,
+		Fsend_time,
+		Fcheck_time,
+		Fexpired_time,
+		Fstandby1,
+		Fstandby1
+		) values (
+		#fmobile_no#,
+		#ftmpl_id#,
+		#fverify_code#,
+		#frela_key#,
+		#frela_info#,
+		#fchk_suc_times#,
+		#fchk_err_times#,
+		#fclient_ip#,
+		NOW(),
+		#fcheck_time#,
+		ADDTIME(NOW(), #i_expired_time#),
+		#fstandby1#,
+		#fstandby1#
+		)
+		on duplicate key
+		update
+		Fmobile_no = #fmobile_no#,
+		Ftmpl_id = #ftmpl_id#,
+		Fverify_code = #fverify_code#,
+		Frela_key = #frela_key#,
+		Frela_info = #frela_info#,
+		Fchk_suc_times = #fchk_suc_times#,
+		Fchk_err_times = #fchk_err_times#,
+		Fclient_ip = #fclient_ip#,
+		Fsend_time = NOW(),
+		Fcheck_time = #fcheck_time#,
+		Fexpired_time = ADDTIME(NOW(), #i_expired_time#),
+		Fstandby1 = #fstandby1#,
+		Fstandby1 = #fstandby1#
+	</insert>
+
+	<insert id="insertMsgLog"
+		parameterClass="com.zcb_app.sms.service.facade.dataobject.MsgLogDO">
+		INSERT INTO sms_db.t_mvcode_log_$tb_idx$
+		(Fpkid,Fmobile_no,Ftmpl_id,Fverify_code,
+		Frela_key,Frela_info,Fchk_suc_times,
+		Fchk_err_times,Fclient_ip,Fsend_time,
+		Fcheck_time,
+		Fexpired_time,Fstandby1,Fstandby1)
+		VALUES
+		(#fpkid#,#fmobile_no#,#ftmpl_id#,#fverify_code#,
+		#frela_key#,#frela_info#,#fchk_suc_times#,
+		#fchk_err_times#,#fclient_ip#,NOW(),
+		#fcheck_time#,#fexpired_time#,#fstandby1#,#fstandby1#)
+	</insert>
+
+	<insert id="insertMobileLimit"
+		parameterClass="com.zcb_app.sms.service.facade.dataobject.MobileLimitDO">
+		INSERT INTO mv_db.t_mobile_limit
+		(Fmobile_no,Ftmpl_id,Fblock_stime,Fblock_timespan)
+		VALUES
+		(#fmobile_no#,#ftmpl_id#,NOW(),#fblock_timespan#)
+	</insert>
+
+	<insert id="insertIPLimit"
+		parameterClass="com.zcb_app.sms.service.facade.dataobject.IPLimitDO">
+		INSERT INTO mv_db.t_ip_limit
+		(Fclient_ip,Ftmpl_id,Fblock_stime,Fblock_timespan)
+		VALUES
+		(#fclient_ip#,#ftmpl_id#,NOW(),#fblock_timespan#)
+	</insert>
+
+	<insert id="insertSendInfo"
+		parameterClass="com.zcb_app.sms.service.facade.dataobject.SendInfoDO">
+		INSERT INTO sms_db_$db_idx$.t_send_info_$tb_idx$
+		(Fmobile_no,Fclient_ip,Fsend_time,Ftmpl_id)
+		VALUES
+		(#fmobile_no#,#fclient_ip#,NOW(),#ftmpl_id#)
+	</insert>
+
+</sqlMap>

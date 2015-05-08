@@ -1,0 +1,29 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>zcb_app-sms-service</artifactId>
+    <groupId>com.zhaocb.zcb_app</groupId>
+    <version>1.0</version>
+  </parent>
+  <groupId>com.zhaocb.zcb_app</groupId>
+  <artifactId>zcb_app-sms-service-facade</artifactId>
+  <version>1.0</version>
+  <name>zcb_app-sms-service-facade</name>
+  <dependencies>
+  	<dependency>
+  		<groupId>com.tenpay.sm.platform</groupId>
+  		<artifactId>sm-platform-lang</artifactId>
+  	</dependency>
+  	<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+	</dependency>
+
+	<dependency>
+		<groupId>com.zhaocb.common.base-common</groupId>
+		<artifactId>zcb_common_base-common</artifactId>
+		<version>1.0</version>
+		<scope>compile</scope>
+		</dependency>
+  </dependencies>
+</project>

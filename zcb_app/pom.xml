@@ -13,6 +13,7 @@
 		<module>finance</module>
 		<module>account</module>
 		<module>bill</module>
+		<module>sms</module>
 	</modules>
 	<build>  
 		<plugins>
