@@ -16,7 +16,7 @@ public class SendMessageParams implements Serializable {
 	
 	private int use_bak_port;//是否使用备用渠道发送
 	
-	private Map<String, String>tmpl_value;//短信模板的参数值，以key=value的形式传递
+	private Map<String, String> tmpl_value;//短信模板的参数值，以key=value的形式传递 
 	
 	private String op_code;//内部操码
 

@@ -34,7 +34,7 @@ public class VerifyCodeParams implements Serializable {
 	}
 
 	public String getVerify_code() {
-		return verify_code;
+		return verify_code; 
 	}
 
 	public void setVerify_code(String verify_code) {

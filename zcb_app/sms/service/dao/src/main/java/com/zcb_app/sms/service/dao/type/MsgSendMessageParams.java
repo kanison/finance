@@ -78,5 +78,4 @@ public class MsgSendMessageParams {
 		smsgParams.setTmpl_value(params.getTmpl_value());
 		return smsgParams;
 	}
-	
 }

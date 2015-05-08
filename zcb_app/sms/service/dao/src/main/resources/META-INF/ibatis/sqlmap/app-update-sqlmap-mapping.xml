@@ -5,7 +5,6 @@
 <!-- Configuration for ibatis sqlmap mapping. -->
 <!-- ========================================================== -->
 
-
 <sqlMap namespace="user">
 	
 	<update id="updateVerifyCodeInfo"

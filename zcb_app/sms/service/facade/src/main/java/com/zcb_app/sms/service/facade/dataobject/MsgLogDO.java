@@ -9,7 +9,6 @@ import com.app.utils.CommonUtil;
 /**
  * 对应短信验证码流水表：sms_db.t_mvcode_log_yyyymm
  * @author Gu.Dongying
- *
  */
 public class MsgLogDO implements Serializable {
 	

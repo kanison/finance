@@ -48,4 +48,5 @@ public interface SMSServiceFacade {
 	 * @Date 2015年5月4日 上午9:33:53
 	 */
 	public void sendSM(SendMessageParams params);
+	
 }

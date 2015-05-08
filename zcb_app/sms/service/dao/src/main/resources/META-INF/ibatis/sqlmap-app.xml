@@ -2,7 +2,6 @@
 <!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
 <sqlMapConfig>
     <settings cacheModelsEnabled="true" enhancementEnabled="false" lazyLoadingEnabled="false" maxRequests="3000" maxSessions="3000" maxTransactions="3000" useStatementNamespaces="false"/>
-    
     <sqlMap resource="META-INF/ibatis/common-sqlmap-mapping.xml"/>
     <sqlMap resource="META-INF/ibatis/sqlmap/app-insert-sqlmap-mapping.xml"/>
     <sqlMap resource="META-INF/ibatis/sqlmap/app-update-sqlmap-mapping.xml"/>

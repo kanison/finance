@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
 
+
 /**
  * 对应IP频率受限记录表：mv_db.t_ip_limit
  * @author Gu.Dongying

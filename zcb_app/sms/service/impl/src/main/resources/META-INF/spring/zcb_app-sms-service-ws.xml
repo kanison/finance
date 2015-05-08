@@ -32,7 +32,7 @@
        <property name="service" ref="smsFacade"/>
        <property name="serviceInterface" value="com.zcb_app.sms.service.facade.SMSServiceFacade"/>
     </bean>
-    <!--  end service api Exporter-->
+    <!-- end service api Exporter-->
     
     <bean id="simpleUrlHandlerMapping_Service" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping"> 
 		<property name="order" value="1"></property> 

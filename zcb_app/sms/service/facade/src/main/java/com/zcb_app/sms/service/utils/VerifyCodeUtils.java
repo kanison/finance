@@ -25,7 +25,6 @@ public class VerifyCodeUtils {
 				sb.append((char)(rand + 61));
 			}
 		}
-		
 		return sb.toString();
 	}
 	

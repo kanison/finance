@@ -3,6 +3,7 @@ package com.zcb_app.sms.service.facade.dataobject;
 import java.math.BigInteger;
 
 public class StrategyDO {
+	
 	private BigInteger timespan;//	频率控制的周期，以秒为单位
 	
 	private int mob_no_limit;//	手机号频率值，以条为单位

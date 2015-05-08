@@ -33,7 +33,6 @@ import com.zcb_app.sms.service.utils.VerifyCodeUtils;
 /**
  * 短信服务处理实现类
  * @author Gu.Dongying
- *
  */
 public class SMSServiceImpl implements SMSServiceFacade {
 

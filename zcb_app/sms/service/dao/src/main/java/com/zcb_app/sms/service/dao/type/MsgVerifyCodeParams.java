@@ -65,5 +65,4 @@ public class MsgVerifyCodeParams {
 		verify.setVerify_code(params.getVerify_code());
 		return verify;
 	}
-	
 }

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
 
+
 /**
  * 对应手机号频率受限记录表：mv_db.t_mobile_limit
  * @author Gu.Dongying

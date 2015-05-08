@@ -24,9 +24,7 @@ import com.zcb_app.sms.service.utils.SMSServiceTemplateUtils;
 
 public class SMSServiceIbatisImpl extends SqlMapClientDaoSupport implements
 		SMSServiceDAO {
-	
 	private static final Log LOG = LogFactory.getLog(SMSServiceIbatisImpl.class);
-	
 	/**
 	 * 保存下发的验证码
 	 * @param verifyCode

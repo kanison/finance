@@ -11,7 +11,6 @@
          http://www.springframework.org/schema/context
          http://www.springframework.org/schema/context/spring-context.xsd"
 	default-autowire="byName">
-
 	<import resource="classpath:META-INF/spring/sm-platform-web.xml"/>
 	<import resource="classpath:META-INF/spring/sm-platform-client.xml"/>
 	<import resource="classpath:META-INF/spring/zcb_app-sms-service.xml"/>

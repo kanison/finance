@@ -2,7 +2,6 @@ package com.zcb_app.sms.service.exception;
 
 import com.tenpay.sm.lang.error.ErrorCodeException;
 
-
 public class SMSServiceRetException  extends ErrorCodeException{
 	
 	private static final long serialVersionUID = 954043913218832333L;

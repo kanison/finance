@@ -7,7 +7,7 @@ import com.zcb_app.sms.service.facade.dataobject.SendCodeParams;
 
 public class MsgSendCodeParams {
 
-private String mobile;//手机号
+	private String mobile;//手机号
 	
 	private BigInteger tmpl_id;//短信模板ID
 	

@@ -50,7 +50,6 @@
 		<property name="acquireRetryAttempts" value="${fundapi.cpool.acquireRetryAttempts}" />
 		<property name="maxIdleTimeExcessConnections" value="${fundapi.cpool.maxIdleTimeExcessConnections}" />
 	</bean>
-	
 	<!--
 		========================================================================
 	-->

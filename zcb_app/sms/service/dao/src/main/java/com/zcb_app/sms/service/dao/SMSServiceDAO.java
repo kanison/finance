@@ -7,6 +7,9 @@ import com.zcb_app.sms.service.facade.dataobject.MobileLimitDO;
 import com.zcb_app.sms.service.facade.dataobject.SendInfoDO;
 import com.zcb_app.sms.service.facade.dataobject.VerifyCodeInfoDO;
 
+/**
+ * @author Gu.Dongying
+ */
 public interface SMSServiceDAO {
 	
 	/**

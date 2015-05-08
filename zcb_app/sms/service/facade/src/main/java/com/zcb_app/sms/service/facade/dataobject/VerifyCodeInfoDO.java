@@ -9,7 +9,6 @@ import com.app.utils.CommonUtil;
 /**
  * 对应短信验证码信息表:sms_db_xx.t_mvcode_info_y
  * @author Gu.Dongying
- *
  */
 public class VerifyCodeInfoDO implements Serializable {
 	

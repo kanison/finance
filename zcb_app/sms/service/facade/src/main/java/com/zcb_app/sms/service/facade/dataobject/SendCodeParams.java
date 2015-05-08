@@ -72,7 +72,7 @@ public class SendCodeParams implements Serializable {
 
 	public Map<String, String> getTmpl_value() {
 		return tmpl_value;
-	}
+	} 
 
 	public void setTmpl_value(Map<String, String> tmpl_value) {
 		this.tmpl_value = tmpl_value;

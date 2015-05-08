@@ -7,6 +7,10 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * ƒ£∞Â≈‰÷√–≈œ¢
+ * @author Gu.Dongying
+ */
 public class MsgSettingsDO {
 
 	private static final String SEMICOLON = ";";

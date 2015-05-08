@@ -2,7 +2,6 @@ package com.zcb_app.sms.service.utils;
 
 /**
  * @author Gu.Dongying
- *
  */
 public class SMSServiceCommonConstant {
 

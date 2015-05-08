@@ -9,7 +9,6 @@ import com.app.utils.CommonUtil;
 /**
  * 对应短信发送频率信息记录表：sms_db_xx.t_send_info_y
  * @author Gu.Dongying
- *
  */
 public class SendInfoDO implements Serializable {
 

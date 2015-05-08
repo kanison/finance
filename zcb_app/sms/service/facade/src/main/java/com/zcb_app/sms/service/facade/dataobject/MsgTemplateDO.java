@@ -1,6 +1,5 @@
 package com.zcb_app.sms.service.facade.dataobject;
 
-
 public class MsgTemplateDO {
 	
 	private String id;//	短信模板ID，不能重复，在使用时需要人工分配再配置
