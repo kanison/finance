@@ -271,6 +271,7 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 	{
 		TransVoucherDO tmptv = new TransVoucherDO();
 		tmptv.setListid(params.getListid());
+		tmptv.setAction_type(params.getAction_type());
 		TransVoucherDO tv = queryTransVoucher(tmptv);
 		if (null == tv)
 			return;
@@ -349,6 +350,7 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 	public TransVoucherDO queryTransVoucher(TransVoucherDO obj)
 	{
 		obj.genDataTableIndex();
+		obj.genVoucher();
 		SqlMapClientTemplate client = getSqlMapClientTemplate();
 		return (TransVoucherDO) client.queryForObject("queryTransVoucher",
 				obj);

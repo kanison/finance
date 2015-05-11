@@ -281,7 +281,6 @@ public class UserAccountImpl implements UserAccountFacade {
 		TransVoucherDO voucher = new TransVoucherDO();
 		voucher.setListid(params.getListid());
 		voucher.setAction_type(params.getAction_type());
-		voucher.genVoucher();
 		voucher = userAccountDAO.queryTransVoucher(voucher);
 		// 如果已存在检查关键参数是否相同
 		if (voucher != null) {
@@ -473,7 +472,6 @@ public class UserAccountImpl implements UserAccountFacade {
 		TransVoucherDO voucher = new TransVoucherDO();
 		voucher.setListid(unFreeze.getListid());
 		voucher.setAction_type(unFreeze.getAction_type());
-		voucher.genVoucher();
 		voucher = userAccountDAO.queryTransVoucher(voucher);
 		// 如果已存在检查关键参数是否相同
 		if (voucher != null) {
