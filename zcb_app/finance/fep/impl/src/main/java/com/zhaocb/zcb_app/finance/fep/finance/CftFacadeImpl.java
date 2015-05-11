@@ -20,6 +20,8 @@ import java.util.Set;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jdom.JDOMException;
 
 import com.app.common.exception.ParameterInvalidException;
@@ -43,7 +45,6 @@ import com.zhaocb.zcb_app.finance.fep.facade.dataobject.PayRefundQueryOutput;
 import com.zhaocb.zcb_app.finance.fep.facade.dataobject.PayRefundQueryUsersDO;
 import com.zhaocb.zcb_app.finance.fep.utils.ConnectionUtil;
 import com.zhaocb.zcb_app.finance.fep.utils.SSLUtil;
-import com.zhaocb.zcb_app.finance.fep.utils.SignUtil;
 import com.zhaocb.zcb_app.finance.fep.utils.XMLUtil;
 
 /**
@@ -53,6 +54,8 @@ import com.zhaocb.zcb_app.finance.fep.utils.XMLUtil;
  *
  */
 public class CftFacadeImpl implements CftFacade {
+
+	private static final Log LOG = LogFactory.getLog(CftFacadeImpl.class);
 
 	private static final String CHAR_SET = "GBK";
 
@@ -92,7 +95,7 @@ public class CftFacadeImpl implements CftFacade {
 		String params = genParams(reqXml);
 
 		// 提交付款申请
-		String respXml = connect(CFT_URL, params, BusType.BATCH_DRAW);
+		String respXml = connect(CFT_URL, params);
 
 		// 返回解析结果
 		return (BatchDrawOutput) getOutput(BusType.BATCH_DRAW, respXml);
@@ -113,7 +116,7 @@ public class CftFacadeImpl implements CftFacade {
 		String params = genParams(reqXml);
 
 		// 提交付款查询
-		String respXml = connect(CFT_URL, params, BusType.BATCH_DRAW_QUERY);
+		String respXml = connect(CFT_URL, params);
 
 		// 返回解析结果
 		return (BatchDrawQueryOutput) getOutput(BusType.BATCH_DRAW_QUERY,
@@ -132,7 +135,7 @@ public class CftFacadeImpl implements CftFacade {
 		String params = genParams(payRefundQueryDO);
 
 		// 提交退票查询
-		String respXml = connect(CFT_URL, params, BusType.PAY_REFUND_QUERY);
+		String respXml = connect(CFT_URL, params);
 
 		// 返回解析结果
 		return (PayRefundQueryOutput) getOutput(BusType.PAY_REFUND_QUERY,
@@ -500,7 +503,8 @@ public class CftFacadeImpl implements CftFacade {
 						.append(opName).append("</op_name>\n")
 						.append(serviceVersionElement)).append("</root>");
 
-		System.out.println(xmlStr);
+		// System.out.println(xmlStr);
+		LOG.info("request xml=" + xmlStr);
 
 		return xmlStr.toString().replaceAll("\n|\t", "");
 	}
@@ -512,7 +516,8 @@ public class CftFacadeImpl implements CftFacade {
 	 * @param content
 	 * @return
 	 */
-	private String connect(String url, String content, BusType type) {
+	private String connect(String url, String content) {
+		LOG.info("request content=" + content);
 		try {
 			// 证书验证
 			SSLContext ctx = SSLUtil.getSSLContext(CA_FILE, CERT_FILE,
@@ -533,9 +538,9 @@ public class CftFacadeImpl implements CftFacade {
 			if (is != null) {
 				String resContent = ConnectionUtil.InputStreamTOString(is,
 						CHAR_SET);
-				System.out.println(resContent);
 				is.close();
 				conn.disconnect();
+				LOG.info("response content=" + resContent);
 				return resContent;
 			}
 		} catch (SocketTimeoutException e) {
