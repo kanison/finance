@@ -486,7 +486,7 @@ public class UserAccountImpl implements UserAccountFacade {
 						AccountServiceRetException.ERR_REENTY_INCONSISTENT, "交易币种不一致");
 			}
 			if(unFreeze.getUnfreeze_amt().compareTo(
-					voucher.getFrozen_amt()) != 0){
+					voucher.getTrans_amt()) != 0){
 				throw new AccountServiceRetException(
 						AccountServiceRetException.ERR_REENTY_INCONSISTENT,
 						"解冻金额不一致!");
