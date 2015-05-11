@@ -161,7 +161,7 @@ public class TransVoucherDO implements Serializable {
 	 */
 	public void genVoucher(){
 		if(StringUtil.isNotBlank(this.listid) && StringUtil.isNotEmpty(this.listid)){
-			this.setVoucher(CommonUtil.lpad(4, this.action_type) + this.voucher);
+			this.setVoucher(CommonUtil.lpad(4, this.action_type) + this.listid);
 		}
 	}
 	
