@@ -582,7 +582,9 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 			throw new AccountServiceRetException(
 					AccountServiceRetException.FREEZE_BALANCE_ERROR, "金额错误！");
 		}
-		
+		UserAccountRollDO acctRoll = new UserAccountRollDO();
+		acctRoll.setPay_amt(freezeList.getUnfreeze_amt());
+		acctRoll.setPayfreeze_amt(new BigDecimal(0));
 		//修改冻结单的解冻金额和状态
 		freezeList.setUnfreeze_amt(freezeList.getUnfreeze_amt().add(unFreeze.getUnfreeze_amt()));
 		freezeList.setState(freezeStatus);
@@ -594,7 +596,6 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 		updateUserAccountBalance(user);
 		
 		//记录用户账户流水
-		UserAccountRollDO acctRoll = new UserAccountRollDO();
 		acctRoll.setUid(unFreeze.getUid());
 		acctRoll.setListid(unFreeze.getListid());
 		acctRoll.setUserid(unFreeze.getUserid());
@@ -603,6 +604,10 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 		acctRoll.setAcctid(user.getAcctid());
 		acctRoll.setBalance(user.getBalance());
 		acctRoll.setFreeze_balance(user.getFreeze_balance());
+		acctRoll.setAction_type(TransType.ACT_UNFREEZE);
+		acctRoll.setTrans_type(TransType.TT_UNFREEZ);
+		acctRoll.setTrade_acc_time(unFreeze.getTrade_acc_time());
+		acctRoll.setMemo(unFreeze.getMemo());
 		createUserAccountRoll(acctRoll);
 		
 		//记录交易凭证流水
