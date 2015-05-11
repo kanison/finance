@@ -598,7 +598,7 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 		acctRoll.setUid(unFreeze.getUid());
 		acctRoll.setListid(unFreeze.getListid());
 		acctRoll.setUserid(unFreeze.getUserid());
-		acctRoll.setAcct_type(unFreeze.getAcct_type());
+		acctRoll.setAcct_type(unFreeze.getAcct_type()); 
 		acctRoll.setType(TransType.BKT_NOT_IN_OUT);
 		acctRoll.setAcctid(user.getAcctid());
 		acctRoll.setBalance(user.getBalance());
