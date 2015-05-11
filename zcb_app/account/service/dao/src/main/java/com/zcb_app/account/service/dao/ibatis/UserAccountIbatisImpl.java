@@ -596,6 +596,7 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 		//记录用户账户流水
 		UserAccountRollDO acctRoll = new UserAccountRollDO();
 		acctRoll.setUid(unFreeze.getUid());
+		acctRoll.setListid(unFreeze.getListid());
 		acctRoll.setUserid(unFreeze.getUserid());
 		acctRoll.setAcct_type(unFreeze.getAcct_type());
 		acctRoll.setType(TransType.BKT_NOT_IN_OUT);
