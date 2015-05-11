@@ -613,7 +613,7 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 		voucher.setListid(unFreeze.getListid());
 		voucher.setCur_type(unFreeze.getCur_type());
 		voucher.setTrans_amt(unFreeze.getUnfreeze_amt());
-		voucher.setFrozen_amt(unFreeze.getUnfreeze_amt());
+		voucher.setFrozen_amt(new BigDecimal(0));
 		voucher.setTrans_type(unFreeze.getTrans_type());
 		voucher.setAction_type(unFreeze.getAction_type());
 		voucher.setFrom_userid(unFreeze.getUserid());
