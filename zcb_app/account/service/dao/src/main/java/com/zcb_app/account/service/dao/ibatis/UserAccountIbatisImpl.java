@@ -486,6 +486,10 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 					AccountServiceRetException.BALANCE_NOT_ENOUGH, "账户余额不足！");
 		}
 		
+		UserAccountRollDO acctRoll = new UserAccountRollDO();
+		acctRoll.setPay_amt(params.getFreeze_amt());
+		acctRoll.setPayfreeze_amt(params.getFreeze_amt());
+		
 		//增加冻结金额
 		//user.setBalance(user.getBalance().subtract(params.getFreeze_amt()));
 		user.setFreeze_balance(user.getFreeze_balance().add(params.getFreeze_amt()));
@@ -504,6 +508,25 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 		flistObj.setMemo(params.getMemo());
 		flistObj.setIp(params.getClient_ip());
 		insertFreezeList(flistObj);
+		
+		//记录用户账户流水
+		acctRoll.setUid(params.getUid());
+		acctRoll.setListid(params.getListid());
+		acctRoll.setUserid(params.getUserid());
+		acctRoll.setTo_uid(params.getUid());
+		acctRoll.setTo_userid(params.getUserid());
+		acctRoll.setCur_type(params.getCur_type());
+		acctRoll.setAcct_type(params.getAcct_type()); 
+		acctRoll.setType(TransType.BKT_NOT_IN_OUT);
+		acctRoll.setAcctid(user.getAcctid());
+		acctRoll.setBalance(user.getBalance());
+		acctRoll.setFreeze_balance(user.getFreeze_balance());
+		acctRoll.setAction_type(params.getAction_type());
+		acctRoll.setTrans_type(params.getTrans_type());
+		acctRoll.setTrade_acc_time(params.getTrade_acc_time());
+		acctRoll.setMemo(params.getMemo());
+		createUserAccountRoll(acctRoll);
+		
 		
 		//记录交易凭证流水
 		TransVoucherDO voucher = new TransVoucherDO();
@@ -605,8 +628,8 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 		acctRoll.setAcctid(user.getAcctid());
 		acctRoll.setBalance(user.getBalance());
 		acctRoll.setFreeze_balance(user.getFreeze_balance());
-		acctRoll.setAction_type(TransType.ACT_UNFREEZE);
-		acctRoll.setTrans_type(TransType.TT_UNFREEZ);
+		acctRoll.setAction_type(unFreeze.getAction_type());
+		acctRoll.setTrans_type(unFreeze.getTrans_type());
 		acctRoll.setTrade_acc_time(unFreeze.getTrade_acc_time());
 		acctRoll.setMemo(unFreeze.getMemo());
 		createUserAccountRoll(acctRoll);
