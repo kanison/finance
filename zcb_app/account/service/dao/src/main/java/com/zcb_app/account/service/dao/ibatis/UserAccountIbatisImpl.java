@@ -3,8 +3,6 @@ package com.zcb_app.account.service.dao.ibatis;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.orm.ibatis.SqlMapClientTemplate;
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +24,6 @@ import com.zcb_app.account.service.type.TransType;
 
 public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 		UserAccountDAO {
-	private static final Log LOG = LogFactory.getLog(UserAccountIbatisImpl.class);
 		
 	private void createUserAccountRoll(UserAccountRollDO userAccountRollDO) {
 		if (userAccountRollDO == null
