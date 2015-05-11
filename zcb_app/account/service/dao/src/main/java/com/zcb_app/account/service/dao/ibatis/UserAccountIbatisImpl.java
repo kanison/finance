@@ -31,6 +31,7 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 			throw new AccountServiceRetException(
 					AccountServiceRetException.LISTID_NOT_EXIST, "缺少交易单号");
 		}
+		
 		userAccountRollDO.genDataTableIndex();
 		SqlMapClientTemplate client = getSqlMapClientTemplate();
 		client.insert("insertUserAcctRoll", userAccountRollDO);
