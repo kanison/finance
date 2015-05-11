@@ -584,6 +584,12 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 		freezeList.setUid(unFreeze.getUid());
 		freezeList.setCur_type(unFreeze.getCur_type());
 		freezeList = queryFreezeList(freezeList);
+		//冻结单状态只能为冻结和部分冻结才能解冻
+		if(freezeList.getState() != FreezeType.FS_FROZEN 
+				&& freezeList.getState() != FreezeType.FS_PARTLY_UFREEZE){
+			throw new AccountServiceRetException(
+					AccountServiceRetException.FREEZE_STATUS_ERROR2, "改冻结单状态错误！");
+		}
 		//若冻结单信息状态为全部冻结，则抛出异常
 		if(freezeList.getState() == FreezeType.FS_ALL_UFREEZE){
 			throw new AccountServiceRetException(
