@@ -50,7 +50,7 @@
 			Fmodify_time modify_time,
 			Fmemo memo
 		FROM ct_db_$db_idx$.t_trans_voucher_$tb_idx$
-		where Flistid=#listid#
+		where Fvoucher=#voucher#
 	</select>
 	<select id="querySpInfo"
 		resultClass="com.zcb_app.account.service.dao.type.SpUserInfo">
