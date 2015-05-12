@@ -1008,47 +1008,34 @@ public class CommonUtil {
 	}
 	public static String getDbIndexByMobile(String mobileNO){
 		int len = mobileNO.length();
-		if (len < 4)
+		if (len < 2)
 			return "";
 		
 		//为防止sql注入，强制检查是否为数字
-		char chAarray[] = new char[3];
-		chAarray[0] = mobileNO.charAt(len-3);
-		chAarray[1] = mobileNO.charAt(len-2);
-		chAarray[2] = mobileNO.charAt(len-1);
+		char chAarray[] = new char[2];
+		chAarray[0] = mobileNO.charAt(0);
+		chAarray[1] = mobileNO.charAt(1);
 		
 		if (chAarray[0] > '9' || chAarray[0] < '0')
 			return "";
 		
 		if (chAarray[1] > '9' || chAarray[1] < '0')
-			return "";
-		
-		if (chAarray[2] > '9' || chAarray[2] < '0')
 			return "";
 		
 		return String.valueOf(chAarray);
 	}
 	public static String getTbIndexByMobile(String mobileNO){
 		int len = mobileNO.length();
-		if (len < 4)
+		if (len < 3)
 			return "";
 		
 		//为防止sql注入，强制检查是否为数字
-		char chAarray[] = new char[3];
-		chAarray[0] = mobileNO.charAt(len-3);
-		chAarray[1] = mobileNO.charAt(len-2);
-		chAarray[2] = mobileNO.charAt(len-1);
+		char ch1 = mobileNO.charAt(2);
 		
-		if (chAarray[0] > '9' || chAarray[0] < '0')
+		if (ch1 > '9' || ch1 < '0')
 			return "";
 		
-		if (chAarray[1] > '9' || chAarray[1] < '0')
-			return "";
-		
-		if (chAarray[2] > '9' || chAarray[2] < '0')
-			return "";
-		
-		return String.valueOf(chAarray);
+		return String.valueOf(ch1);
 	}
 
 	/**
