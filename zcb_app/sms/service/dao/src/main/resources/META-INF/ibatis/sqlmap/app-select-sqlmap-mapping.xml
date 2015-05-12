@@ -14,7 +14,7 @@
 		Ftmpl_id ftmpl_id,
 		Fblock_stime fblock_stime,
 		Fblock_timespan fblock_timespan
-		FROM mv_db.t_mobile_limit
+		FROM sms_db.t_mobile_limit
 		WHERE
 		Fmobile_no=#fmobile_no# 
 		AND Ftmpl_id=#ftmpl_id#
@@ -31,7 +31,7 @@
 		Ftmpl_id ftmpl_id,
 		Fblock_stime fblock_stime,
 		Fblock_timespan fblock_timespan
-		FROM mv_db.t_ip_limit
+		FROM sms_db.t_ip_limit
 		WHERE
 		Fclient_ip=#fclient_ip# 
 		AND Ftmpl_id=#ftmpl_id#
@@ -40,7 +40,7 @@
 		LIMIT 1
 	</select>
 
-	<select id="queryVerifyCodeInfo"
+	<select id="queryMsgInfo"
 		resultClass="com.zcb_app.sms.service.facade.dataobject.VerifyCodeInfoDO">
 		SELECT
 		Fmobile_no fmobile_no,
@@ -64,20 +64,22 @@
 		</isEqual>
 	</select>
 
-	<select id="querySendCodeInfoCount" resultClass="int">
+	<select id="querySendCodeInfoMoblieCount" resultClass="int">
 		SELECT COUNT(1) 
 		FROM sms_db_$db_idx$.t_send_info_$tb_idx$
 		WHERE 
-		<isNotEmpty prepend="AND" property="fmobile_no" removeFirstPrepend="true">
-			Fmobile_no = #fmobile_no#
-		</isNotEmpty>
-		<isNotEmpty prepend="AND" property="fclient_ip" removeFirstPrepend="true">
-			Fclient_ip = #fclient_ip#
-		</isNotEmpty>
-		<dynamic>
-			AND UNIX_TIMESTAMP(Fsend_time) + #timespan# <![CDATA[>=]]> UNIX_TIMESTAMP(NOW())
+			UNIX_TIMESTAMP(Fsend_time) + #timespan# <![CDATA[>=]]> UNIX_TIMESTAMP(NOW())
 			AND Ftmpl_id = #ftmpl_id#
-		</dynamic>
+			AND Fmobile_no = #fmobile_no#
+	</select>
+	
+	<select id="querySendCodeInfoIPCount" resultClass="int">
+		SELECT COUNT(1) 
+		FROM sms_db_$db_idx$.t_send_info_$tb_idx$
+		WHERE 
+			UNIX_TIMESTAMP(Fsend_time) + #timespan# <![CDATA[>=]]> UNIX_TIMESTAMP(NOW())
+			AND Ftmpl_id = #ftmpl_id#
+			AND Fclient_ip = #fclient_ip#
 	</select>
 
 </sqlMap>

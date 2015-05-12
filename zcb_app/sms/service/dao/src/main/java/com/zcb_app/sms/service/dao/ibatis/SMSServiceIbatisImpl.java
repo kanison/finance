@@ -31,13 +31,13 @@ public class SMSServiceIbatisImpl extends SqlMapClientDaoSupport implements
 	 * @author Gu.Dongying 
 	 * @Date 2015年5月4日 下午2:52:30
 	 */
-	private void createVerifyCode(VerifyCodeInfoDO verifyCode){
+	private void createMsgInfo(VerifyCodeInfoDO verifyCode){
 		if(verifyCode == null){
 			throw new SMSServiceRetException(SMSServiceRetException.ERR_SEND_CODE_PARAMS, "下发短信验证码参数错误!");
 		}
 		verifyCode.genDataTableIndex();
 		SqlMapClientTemplate client = getSqlMapClientTemplate();
-		client.insert("insertVerifyCode", verifyCode);
+		client.insert("insertMsgInfo", verifyCode);
 	}
 
 	/** 
@@ -65,39 +65,39 @@ public class SMSServiceIbatisImpl extends SqlMapClientDaoSupport implements
 	@Transactional
 	public void saveVerifyCodeInfo(MsgSendCodeParams params) {
 		
-		VerifyCodeInfoDO verifyCode = new VerifyCodeInfoDO();
+		VerifyCodeInfoDO info = new VerifyCodeInfoDO();
 		//查询出原有验证码信息
-		verifyCode.setFmobile_no(params.getMobile());
-		verifyCode.setFtmpl_id(params.getTmpl_id());
-		VerifyCodeInfoDO srcVerifyCode = queryVerifyCodeInfo(verifyCode);
+		info.setFmobile_no(params.getMobile());
+		info.setFtmpl_id(params.getTmpl_id());
+		VerifyCodeInfoDO historyInfo = queryMsgInfo(info);
 		//保存下发的验证码
-		verifyCode = new VerifyCodeInfoDO();
-		verifyCode.setFcheck_time(params.getCheck_time());
-		verifyCode.setFchk_err_times(params.getChk_err_times());
-		verifyCode.setFchk_suc_times(params.getChk_suc_times());
-		verifyCode.setFclient_ip(params.getClient_ip());
-		verifyCode.setI_expired_time(params.getExpired_time());
-		verifyCode.setFmobile_no(params.getMobile());
-		verifyCode.setFrela_info(params.getRelation_info());
-		verifyCode.setFrela_key(params.getRelation_key());
-		verifyCode.setFsend_time(params.getSend_time());
-		verifyCode.setFtmpl_id(params.getTmpl_id());
-		verifyCode.setFverify_code(params.getVerify_code());
-		createVerifyCode(verifyCode);
-		if(srcVerifyCode != null){			
+		info = new VerifyCodeInfoDO();
+		info.setFcheck_time(params.getCheck_time());
+		info.setFchk_err_times(params.getChk_err_times());
+		info.setFchk_suc_times(params.getChk_suc_times());
+		info.setFclient_ip(params.getClient_ip());
+		info.setI_expired_time(params.getExpired_time());
+		info.setFmobile_no(params.getMobile());
+		info.setFrela_info(params.getRelation_info());
+		info.setFrela_key(params.getRelation_key());
+		info.setFsend_time(params.getSend_time());
+		info.setFtmpl_id(params.getTmpl_id());
+		info.setFverify_code(params.getVerify_code());
+		createMsgInfo(info);
+		if(historyInfo != null){			
 			//将历史的验证码信息记录流水表中 
 			MsgLogDO msgLog = new MsgLogDO();
-			msgLog.setFcheck_time(srcVerifyCode.getFcheck_time());
-			msgLog.setFchk_err_times(srcVerifyCode.getFchk_err_times());
-			msgLog.setFchk_suc_times(srcVerifyCode.getFchk_suc_times());
-			msgLog.setFclient_ip(srcVerifyCode.getFclient_ip());
-			msgLog.setFexpired_time(srcVerifyCode.getFexpired_time());
-			msgLog.setFmobile_no(srcVerifyCode.getFmobile_no());
-			msgLog.setFrela_info(srcVerifyCode.getFrela_info());
-			msgLog.setFrela_key(srcVerifyCode.getFrela_key());
-			msgLog.setFsend_time(srcVerifyCode.getFsend_time());
-			msgLog.setFtmpl_id(srcVerifyCode.getFtmpl_id());
-			msgLog.setFverify_code(srcVerifyCode.getFverify_code());
+			msgLog.setFcheck_time(historyInfo.getFcheck_time());
+			msgLog.setFchk_err_times(historyInfo.getFchk_err_times());
+			msgLog.setFchk_suc_times(historyInfo.getFchk_suc_times());
+			msgLog.setFclient_ip(historyInfo.getFclient_ip());
+			msgLog.setFexpired_time(historyInfo.getFexpired_time());
+			msgLog.setFmobile_no(historyInfo.getFmobile_no());
+			msgLog.setFrela_info(historyInfo.getFrela_info());
+			msgLog.setFrela_key(historyInfo.getFrela_key());
+			msgLog.setFsend_time(historyInfo.getFsend_time());
+			msgLog.setFtmpl_id(historyInfo.getFtmpl_id());
+			msgLog.setFverify_code(historyInfo.getFverify_code());
 			createMsgLog(msgLog);
 		}
 	}
@@ -129,19 +129,36 @@ public class SMSServiceIbatisImpl extends SqlMapClientDaoSupport implements
 	}
 
 	/** 
-	 * 记录短信消息流水
+	 * 保存短信消息（将tmpl_value的值保存到Frela_info字段中），将历史的短信发送信息记录流水表中
 	 * @see com.zcb_app.mvcode.service.dao.SMSServiceDAO#saveMsgInfo(com.zcb_app.mvcode.service.dao.type.MsgSendMessageParams)
 	 * @author Gu.Dongying 
 	 * @Date 2015年5月5日 上午11:02:01
 	 */
 	@Transactional
 	public void saveMsgInfo(MsgSendMessageParams params) {
-		MsgLogDO msgLog = new MsgLogDO();
-		msgLog.setFclient_ip(params.getClient_ip());
-		msgLog.setFmobile_no(params.getMobile_no());
-		msgLog.setFrela_info(params.getTmpl_value_str());
-		msgLog.setFtmpl_id(params.getTmpl_id());
-		createMsgLog(msgLog);
+		//保存短信消息
+		VerifyCodeInfoDO info = new VerifyCodeInfoDO();
+		//查询出原有短信信息
+		info.setFmobile_no(params.getMobile_no());
+		info.setFtmpl_id(params.getTmpl_id());
+		VerifyCodeInfoDO historyInfo = queryMsgInfo(info);
+		//保存下发的验证码
+		info = new VerifyCodeInfoDO();
+		info.setFclient_ip(params.getClient_ip());
+		info.setFmobile_no(params.getMobile_no());
+		info.setFrela_info(params.getTmpl_value_str());
+		info.setFtmpl_id(params.getTmpl_id());
+		createMsgInfo(info);
+		
+		//将历史的短信发送信息记录流水表中
+		if(historyInfo != null){			
+			MsgLogDO msgLog = new MsgLogDO();
+			msgLog.setFclient_ip(historyInfo.getFclient_ip());
+			msgLog.setFmobile_no(historyInfo.getFmobile_no());
+			msgLog.setFrela_info(historyInfo.getFrela_info());
+			msgLog.setFtmpl_id(historyInfo.getFtmpl_id());
+			createMsgLog(msgLog);
+		}
 	}
 	
 	/**
@@ -151,10 +168,10 @@ public class SMSServiceIbatisImpl extends SqlMapClientDaoSupport implements
 	 * @author Gu.Dongying 
 	 * @Date 2015年5月5日 上午11:45:52
 	 */
-	public VerifyCodeInfoDO queryVerifyCodeInfo(VerifyCodeInfoDO codeInfo){
+	public VerifyCodeInfoDO queryMsgInfo(VerifyCodeInfoDO codeInfo){
 		SqlMapClientTemplate client = getSqlMapClientTemplate();
 		codeInfo.genDataTableIndex();
-		VerifyCodeInfoDO vCodeInfo = (VerifyCodeInfoDO)client.queryForObject("queryVerifyCodeInfo", codeInfo);
+		VerifyCodeInfoDO vCodeInfo = (VerifyCodeInfoDO)client.queryForObject("queryMsgInfo", codeInfo);
 		return vCodeInfo;
 	}
 	
@@ -168,7 +185,7 @@ public class SMSServiceIbatisImpl extends SqlMapClientDaoSupport implements
 	public void updateVerifyCodeInfo(VerifyCodeInfoDO codeInfo){
 		//锁住更新数据
 		codeInfo.setQuerylock(true);
-		queryVerifyCodeInfo(codeInfo);
+		queryMsgInfo(codeInfo);
 		
 		SqlMapClientTemplate client = getSqlMapClientTemplate();
 		int effected_rows = client.update("updateVerifyCodeInfo", codeInfo);
@@ -185,6 +202,7 @@ public class SMSServiceIbatisImpl extends SqlMapClientDaoSupport implements
 	 */
 	@Transactional
 	public void addSendInfo(SendInfoDO sendInfo) {
+		sendInfo.genDataTableIndex();
 		SqlMapClientTemplate client = getSqlMapClientTemplate();
 		client.insert("insertSendInfo", sendInfo);
 	}
@@ -231,6 +249,7 @@ public class SMSServiceIbatisImpl extends SqlMapClientDaoSupport implements
 			// IP频率
 			SendInfoDO ipSendInfo = new SendInfoDO();
 			ipSendInfo.setFclient_ip(scParams.getClient_ip());
+			ipSendInfo.setFmobile_no(scParams.getMobile());
 			ipSendInfo.setFtmpl_id(scParams.getTmpl_id());
 
 			MobileLimitDO mobileLimit;
@@ -239,7 +258,7 @@ public class SMSServiceIbatisImpl extends SqlMapClientDaoSupport implements
 				if (strategy != null) {
 					mobileSendInfo.setTimespan(strategy.getTimespan());
 					// 达到手机号频率受限峰值，添加受限记录
-					if (querySendCodeInfoCount(mobileSendInfo) >= strategy.getMob_no_limit()) {
+					if (querySendCodeInfoMoblieCount(mobileSendInfo) >= strategy.getMob_no_limit()) {
 						try {
 							mobileLimit = new MobileLimitDO();
 							mobileLimit.setFblock_timespan(strategy.getTimespan());
@@ -254,7 +273,7 @@ public class SMSServiceIbatisImpl extends SqlMapClientDaoSupport implements
 
 					ipSendInfo.setTimespan(strategy.getTimespan());
 					// 达到IP频率受限峰值，添加受限记录
-					if (querySendCodeInfoCount(ipSendInfo) >= strategy.getIp_limit()) {
+					if (querySendCodeInfoIPCount(ipSendInfo) >= strategy.getIp_limit()) {
 						try {
 							ipLimit = new IPLimitDO();
 							ipLimit.setFblock_timespan(strategy.getTimespan());
@@ -272,10 +291,17 @@ public class SMSServiceIbatisImpl extends SqlMapClientDaoSupport implements
 		
 	}
 	
-	private int querySendCodeInfoCount(SendInfoDO sendInfo){
+	private int querySendCodeInfoMoblieCount(SendInfoDO sendInfo){
 		SqlMapClientTemplate client = getSqlMapClientTemplate();
 		sendInfo.genDataTableIndex();
-		int count = (Integer)client.queryForObject("querySendCodeInfoCount", sendInfo);
+		int count = (Integer)client.queryForObject("querySendCodeInfoMoblieCount", sendInfo);
+		return count;
+	}
+	
+	private int querySendCodeInfoIPCount(SendInfoDO sendInfo){
+		SqlMapClientTemplate client = getSqlMapClientTemplate();
+		sendInfo.genDataTableIndex();
+		int count = (Integer)client.queryForObject("querySendCodeInfoIPCount", sendInfo);
 		return count;
 	}
 	

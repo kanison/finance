@@ -1,7 +1,6 @@
 package com.zcb_app.sms.service.facade.dataobject;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 
 import com.app.utils.CommonUtil;
@@ -22,7 +21,7 @@ public class VerifyCodeInfoDO implements Serializable {
 	/**
 	 * ¶ÌĞÅÄ£°åid
 	 */
-	private BigInteger ftmpl_id;
+	private Long ftmpl_id;
 	
 	/**
 	 * ÑéÖ¤Âë
@@ -77,7 +76,7 @@ public class VerifyCodeInfoDO implements Serializable {
 	/**
 	 * Ô¤Áô×Ö¶Î1
 	 */
-	private BigInteger fstandby1;
+	private Long fstandby1;
 	
 	/**
 	 * Ô¤Áô×Ö¶Î2
@@ -119,7 +118,7 @@ public class VerifyCodeInfoDO implements Serializable {
 	 * »ñÈ¡¶ÌĞÅÄ£°åid
 	 * @return ftmpl_id ¶ÌĞÅÄ£°åid
 	 */
-	public BigInteger getFtmpl_id() {
+	public Long getFtmpl_id() {
 		return ftmpl_id;
 	}
 
@@ -127,7 +126,7 @@ public class VerifyCodeInfoDO implements Serializable {
 	 * ÉèÖÃ¶ÌĞÅÄ£°åid
 	 * @param ftmpl_id the ¶ÌĞÅÄ£°åid to set
 	 */
-	public void setFtmpl_id(BigInteger ftmpl_id) {
+	public void setFtmpl_id(Long ftmpl_id) {
 		this.ftmpl_id = ftmpl_id;
 	}
 
@@ -295,7 +294,7 @@ public class VerifyCodeInfoDO implements Serializable {
 	 * »ñÈ¡Ô¤Áô×Ö¶Î1
 	 * @return fstandby1 Ô¤Áô×Ö¶Î1
 	 */
-	public BigInteger getFstandby1() {
+	public Long getFstandby1() {
 		return fstandby1;
 	}
 
@@ -303,7 +302,7 @@ public class VerifyCodeInfoDO implements Serializable {
 	 * ÉèÖÃÔ¤Áô×Ö¶Î1
 	 * @param fstandby1 the Ô¤Áô×Ö¶Î1 to set
 	 */
-	public void setFstandby1(BigInteger fstandby1) {
+	public void setFstandby1(Long fstandby1) {
 		this.fstandby1 = fstandby1;
 	}
 

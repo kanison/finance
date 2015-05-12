@@ -1,7 +1,6 @@
 package com.zcb_app.sms.service.facade.dataobject;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 
 import com.app.utils.CommonUtil;
@@ -18,7 +17,7 @@ public class MsgLogDO implements Serializable {
 	
 	private String fmobile_no;//手机号码
 	
-	private BigInteger ftmpl_id;//短信模板ID
+	private Long ftmpl_id;//短信模板ID
 	
 	private String fverify_code;//验证码
 	
@@ -38,7 +37,7 @@ public class MsgLogDO implements Serializable {
 	
 	private Date fexpired_time;//验证码过期时间
 	
-	private BigInteger fstandby1;//预留字段
+	private Long fstandby1;//预留字段
 	
 	private String fstandby2;//预留字段
 	
@@ -68,11 +67,11 @@ public class MsgLogDO implements Serializable {
 		this.fmobile_no = fmobile_no;
 	}
 
-	public BigInteger getFtmpl_id() {
+	public Long getFtmpl_id() {
 		return ftmpl_id;
 	}
 
-	public void setFtmpl_id(BigInteger ftmpl_id) {
+	public void setFtmpl_id(Long ftmpl_id) {
 		this.ftmpl_id = ftmpl_id;
 	}
 
@@ -140,11 +139,11 @@ public class MsgLogDO implements Serializable {
 		this.fexpired_time = fexpired_time;
 	}
 
-	public BigInteger getFstandby1() {
+	public Long getFstandby1() {
 		return fstandby1;
 	}
 
-	public void setFstandby1(BigInteger fstandby1) {
+	public void setFstandby1(Long fstandby1) {
 		this.fstandby1 = fstandby1;
 	}
 

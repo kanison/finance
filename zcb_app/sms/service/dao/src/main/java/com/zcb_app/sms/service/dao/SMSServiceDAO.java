@@ -55,7 +55,7 @@ public interface SMSServiceDAO {
 	 * @author Gu.Dongying 
 	 * @Date 2015年5月5日 上午11:45:52
 	 */
-	public VerifyCodeInfoDO queryVerifyCodeInfo(VerifyCodeInfoDO codeInfo);
+	public VerifyCodeInfoDO queryMsgInfo(VerifyCodeInfoDO codeInfo);
 	
 	/**
 	 * 更新验证相应的结果信息

@@ -1,7 +1,6 @@
 package com.zcb_app.sms.service.facade.dataobject;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 
 import com.app.utils.CommonUtil;
@@ -17,7 +16,7 @@ public class SendInfoDO implements Serializable {
 	/**
 	 * 流水编号（自增主键）
 	 */
-	private BigInteger fpkid;
+	private long fpkid;
 	
 	/**
 	 * 手机号码
@@ -37,12 +36,12 @@ public class SendInfoDO implements Serializable {
 	/**
 	 * 短信模板ID
 	 */
-	private BigInteger ftmpl_id;
+	private Long ftmpl_id;
 	
 	/**
 	 * 频率控制的周期，以秒为单位
 	 */
-	private BigInteger timespan;
+	private Long timespan;
 
 	/**
 	 * 分库名索引
@@ -58,7 +57,7 @@ public class SendInfoDO implements Serializable {
 	 * 获取流水编号（自增主键）
 	 * @return fpkid 流水编号（自增主键）
 	 */
-	public BigInteger getFpkid() {
+	public long getFpkid() {
 		return fpkid;
 	}
 
@@ -66,7 +65,7 @@ public class SendInfoDO implements Serializable {
 	 * 设置流水编号（自增主键）
 	 * @param fpkid the 流水编号（自增主键） to set
 	 */
-	public void setFpkid(BigInteger fpkid) {
+	public void setFpkid(long fpkid) {
 		this.fpkid = fpkid;
 	}
 
@@ -122,7 +121,7 @@ public class SendInfoDO implements Serializable {
 	 * 获取短信模板ID
 	 * @return ftmpl_id 短信模板ID
 	 */
-	public BigInteger getFtmpl_id() {
+	public Long getFtmpl_id() {
 		return ftmpl_id;
 	}
 
@@ -130,7 +129,7 @@ public class SendInfoDO implements Serializable {
 	 * 设置短信模板ID
 	 * @param ftmpl_id the 短信模板ID to set
 	 */
-	public void setFtmpl_id(BigInteger ftmpl_id) {
+	public void setFtmpl_id(Long ftmpl_id) {
 		this.ftmpl_id = ftmpl_id;
 	}
 
@@ -170,7 +169,7 @@ public class SendInfoDO implements Serializable {
 	 * 获取频率控制的周期，以秒为单位
 	 * @return timespan 频率控制的周期，以秒为单位
 	 */
-	public BigInteger getTimespan() {
+	public Long getTimespan() {
 		return timespan;
 	}
 
@@ -178,7 +177,7 @@ public class SendInfoDO implements Serializable {
 	 * 设置频率控制的周期，以秒为单位
 	 * @param timespan the 频率控制的周期，以秒为单位 to set
 	 */
-	public void setTimespan(BigInteger timespan) {
+	public void setTimespan(Long timespan) {
 		this.timespan = timespan;
 	}
 

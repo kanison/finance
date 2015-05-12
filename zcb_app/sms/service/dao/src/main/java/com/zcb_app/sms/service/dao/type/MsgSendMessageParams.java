@@ -1,6 +1,5 @@
 package com.zcb_app.sms.service.dao.type;
 
-import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -11,7 +10,7 @@ public class MsgSendMessageParams {
 
 	private String mobile_no;//手机号
 	
-	private BigInteger tmpl_id;//短信模板ID
+	private Long tmpl_id;//短信模板ID
 	
 	private String client_ip;//用户IP
 	
@@ -27,11 +26,11 @@ public class MsgSendMessageParams {
 		this.mobile_no = mobile_no;
 	}
 
-	public BigInteger getTmpl_id() {
+	public Long getTmpl_id() {
 		return tmpl_id;
 	}
 
-	public void setTmpl_id(BigInteger tmpl_id) {
+	public void setTmpl_id(Long tmpl_id) {
 		this.tmpl_id = tmpl_id;
 	}
 

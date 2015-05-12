@@ -1,6 +1,5 @@
 package com.zcb_app.sms.service.facade.dataobject;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +26,9 @@ public class MsgSettingsDO {
 	
 	private String send_notify_sms_ips;//	内部下发通知消息的IP白名单，以分号分隔
 	
-	private Map<BigInteger, MsgTemplateDO> templates;
+	private List<String> send_notify_sms_ipslist;
+	
+	private Map<Long, MsgTemplateDO> templates;
 
 	public List<StrategyDO> getStrategys() {
 		return strategys;
@@ -83,13 +84,33 @@ public class MsgSettingsDO {
 
 	public void setSend_notify_sms_ips(String send_notify_sms_ips) {
 		this.send_notify_sms_ips = send_notify_sms_ips;
+		if(StringUtils.isNotBlank(this.send_notify_sms_ips) 
+				&& StringUtils.isNotEmpty(this.send_notify_sms_ips)){
+			this.setSend_notify_sms_ipslist(Arrays.asList(this.send_notify_sms_ips.split(SEMICOLON)));
+		}
 	}
 
-	public Map<BigInteger, MsgTemplateDO> getTemplates() {
+	/**
+	 * 获取send_notify_sms_ipslist
+	 * @return send_notify_sms_ipslist send_notify_sms_ipslist
+	 */
+	public List<String> getSend_notify_sms_ipslist() {
+		return send_notify_sms_ipslist;
+	}
+
+	/**
+	 * 设置send_notify_sms_ipslist
+	 * @param send_notify_sms_ipslist the send_notify_sms_ipslist to set
+	 */
+	public void setSend_notify_sms_ipslist(List<String> send_notify_sms_ipslist) {
+		this.send_notify_sms_ipslist = send_notify_sms_ipslist;
+	}
+
+	public Map<Long, MsgTemplateDO> getTemplates() {
 		return templates;
 	}
 
-	public void setTemplates(Map<BigInteger, MsgTemplateDO> templates) {
+	public void setTemplates(Map<Long, MsgTemplateDO> templates) {
 		this.templates = templates;
 	}
 	

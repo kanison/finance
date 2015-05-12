@@ -1,7 +1,6 @@
 package com.zcb_app.sms.service.facade.dataobject;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 
 
@@ -13,21 +12,21 @@ public class IPLimitDO implements Serializable {
 	
 	private static final long serialVersionUID = -8302017148267235845L;
 
-	private BigInteger fpkid;//流水编号（自增主键）
+	private long fpkid;//流水编号（自增主键）
 	
 	private String fclient_ip;//用户ip
 	
-	private BigInteger ftmpl_id;//短信模板id，触发受限的短信模板id
+	private Long ftmpl_id;//短信模板id，触发受限的短信模板id
 	
 	private Date fblock_stime;//受限制的开始时间
 	
-	private BigInteger fblock_timespan;//受限制的时长，秒为单位，只有当前时间大于fblock_stime+ fblock_timespan才解除限制
+	private long fblock_timespan;//受限制的时长，秒为单位，只有当前时间大于fblock_stime+ fblock_timespan才解除限制
 
-	public BigInteger getFpkid() {
+	public long getFpkid() {
 		return fpkid;
 	}
 
-	public void setFpkid(BigInteger fpkid) {
+	public void setFpkid(long fpkid) {
 		this.fpkid = fpkid;
 	}
 
@@ -39,11 +38,11 @@ public class IPLimitDO implements Serializable {
 		this.fclient_ip = fclient_ip;
 	}
 
-	public BigInteger getFtmpl_id() {
+	public Long getFtmpl_id() {
 		return ftmpl_id;
 	}
 
-	public void setFtmpl_id(BigInteger ftmpl_id) {
+	public void setFtmpl_id(Long ftmpl_id) {
 		this.ftmpl_id = ftmpl_id;
 	}
 
@@ -55,11 +54,11 @@ public class IPLimitDO implements Serializable {
 		this.fblock_stime = fblock_stime;
 	}
 
-	public BigInteger getFblock_timespan() {
+	public long getFblock_timespan() {
 		return fblock_timespan;
 	}
 
-	public void setFblock_timespan(BigInteger fblock_timespan) {
+	public void setFblock_timespan(long fblock_timespan) {
 		this.fblock_timespan = fblock_timespan;
 	}
 

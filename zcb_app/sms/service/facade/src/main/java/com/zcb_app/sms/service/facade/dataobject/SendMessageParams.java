@@ -1,7 +1,6 @@
 package com.zcb_app.sms.service.facade.dataobject;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Map;
 
 public class SendMessageParams implements Serializable {
@@ -10,7 +9,7 @@ public class SendMessageParams implements Serializable {
 
 	private String mobile;//手机号
 	
-	private BigInteger tmpl_id;//短信模板ID
+	private Long tmpl_id;//短信模板ID
 	
 	private String client_ip;//用户IP
 	
@@ -28,11 +27,11 @@ public class SendMessageParams implements Serializable {
 		this.mobile = mobile;
 	}
 
-	public BigInteger getTmpl_id() {
+	public Long getTmpl_id() {
 		return tmpl_id;
 	}
 
-	public void setTmpl_id(BigInteger tmpl_id) {
+	public void setTmpl_id(Long tmpl_id) {
 		this.tmpl_id = tmpl_id;
 	}
 

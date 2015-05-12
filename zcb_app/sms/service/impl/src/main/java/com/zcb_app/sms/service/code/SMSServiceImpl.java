@@ -1,6 +1,5 @@
 package com.zcb_app.sms.service.code;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
@@ -155,7 +154,12 @@ public class SMSServiceImpl implements SMSServiceFacade {
 		checkIPInternalAuthorization(params.getClient_ip());
 		// 4、保存短信消息（将tmpl_value的值保存到Frela_info字段中），将历史的短信发送信息记录流水表中
 		MsgSendMessageParams msgParams = MsgSendMessageParams.valueOf(params);
-		smsServiceDAO.saveMsgInfo(msgParams);
+		try {
+			smsServiceDAO.saveMsgInfo(msgParams);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// 5、根据模板和输入参数，生成短信内容
 		MsgTemplateDO template = SMSServiceTemplateUtils.getTemplate(params.getTmpl_id());
 		String msg = generateMsg(template.getTmpl_text(), params.getTmpl_value());
@@ -263,7 +267,7 @@ public class SMSServiceImpl implements SMSServiceFacade {
 	 * @author Gu.Dongying
 	 * @Date 2015年4月30日 下午2:33:16
 	 */
-	private void checkTemplate(BigInteger templateId) {
+	private void checkTemplate(Long templateId) {
 		if (SMSServiceTemplateUtils.isTemplateExists(templateId.toString())) {
 			throw new SMSServiceRetException(SMSServiceRetException.ERR_TEMPLATE_PARAMS, "短信模板未配置!");
 		}
@@ -307,7 +311,7 @@ public class SMSServiceImpl implements SMSServiceFacade {
 		MobileLimitDO mobileLimit = new MobileLimitDO();
 		mobileLimit.setFmobile_no(sParams.getMobile());
 		mobileLimit.setFtmpl_id(sParams.getTmpl_id());
-		MobileLimitDO currMobileLimit = smsServiceDAO.queryMobileLimit(mobileLimit);
+		MobileLimitDO currMobileLimit = smsServiceDAO.queryMobileLimit(mobileLimit);;
 		// 手机号超过频率限制
 		if (currMobileLimit != null) {
 			throw new SMSServiceRetException(SMSServiceRetException.ERR_EXCEED_MOBILE_NO_LIMIT, "手机号超过频率限制");
@@ -360,7 +364,6 @@ public class SMSServiceImpl implements SMSServiceFacade {
 	 * @Date 2015年4月30日 下午3:22:05
 	 */
 	private String generateMsg(String templateContent, Map<String, String> templateValues) {
-		String content = templateContent;
 		if (templateValues != null && !templateValues.isEmpty()) {
 			Iterator<String> keys = templateValues.keySet().iterator();
 			if (keys != null) {
@@ -368,23 +371,24 @@ public class SMSServiceImpl implements SMSServiceFacade {
 				while (keys.hasNext()) {
 					key = keys.next();
 					if (StringUtils.isNotBlank(key) && StringUtils.isNotEmpty(key)) {
-						content.replace(SMSServiceCommonConstant.DOLLAR_FLAG + key
+						templateContent = templateContent.replace(SMSServiceCommonConstant.DOLLAR_FLAG + key
 								+ SMSServiceCommonConstant.DOLLAR_FLAG, templateValues.get(key));
 					}
 				}
 			}
 		}
-		return content;
+		return templateContent;
 	}
 
 	/**
-	 * 调短信网关下发短信 TODO
-	 * 
-	 * @author Gu.Dongying
-	 * @Date 2015年4月30日 下午3:24:13
+	 * 调短信网关下发短信
+	 * @param mobileCode 手机号
+	 * @param msg 短信内容
+	 * @author Gu.Dongying 
+	 * @Date 2015年5月12日 上午11:59:14
 	 */
-	private void sendMsg(String code, String msg) {
-		System.out.println("短信发送成功----------------");
+	private void sendMsg(String mobileCode, String msg) {
+		System.out.println("短信发送成功 \n 手机号：" + mobileCode + "; \n短信内容：" + msg);
 	}
 
 	/**
@@ -404,7 +408,7 @@ public class SMSServiceImpl implements SMSServiceFacade {
 		VerifyCodeInfoDO codeInfo = new VerifyCodeInfoDO();
 		codeInfo.setFmobile_no(params.getMobile());
 		codeInfo.setFtmpl_id(params.getTmpl_id());
-		codeInfo = smsServiceDAO.queryVerifyCodeInfo(codeInfo);
+		codeInfo = smsServiceDAO.queryMsgInfo(codeInfo);
 		// 校验是否超过有效期；
 		if (codeInfo.getFexpired_time().getTime() < (new Date()).getTime()) {
 			throw new SMSServiceRetException(SMSServiceRetException.ERR_VERIFY_CODE_EXPIRED, "验证码已过期！");
@@ -441,19 +445,19 @@ public class SMSServiceImpl implements SMSServiceFacade {
 	private void checkIPInternalAuthorization(String ip) {
 		MsgSettingsDO msgSettings = SMSServiceTemplateUtils.readMsgSettings();
 		final String clientIP = ip;
-		if (msgSettings.getIp_whitelists() != null && !msgSettings.getIp_whitelists().isEmpty()) {
-			boolean isExists = CollectionUtils.exists(msgSettings.getIp_whitelists(), new Predicate() {
+		if (msgSettings.getSend_notify_sms_ipslist() != null && !msgSettings.getSend_notify_sms_ipslist().isEmpty()) {
+			boolean isExists = CollectionUtils.exists(msgSettings.getSend_notify_sms_ipslist(), new Predicate() {
 				public boolean evaluate(Object object) {
 					return clientIP.equals(object);
 				}
 			});
 			if (!isExists) {
 				throw new SMSServiceRetException(SMSServiceRetException.ERR_IP_INTERNAL_AUTHORIZATION,
-						"客户端IP非部授权IP!");
+						"客户端IP非内部授权IP!");
 			}
 		} else {
 			throw new SMSServiceRetException(SMSServiceRetException.ERR_IP_INTERNAL_AUTHORIZATION,
-					"客户端IP非部授权IP!");
+					"客户端IP非内部授权IP!");
 		}
 	}
 }

@@ -4,7 +4,7 @@ import java.math.BigInteger;
 
 public class StrategyDO {
 	
-	private BigInteger timespan;//	频率控制的周期，以秒为单位
+	private Long timespan;//	频率控制的周期，以秒为单位
 	
 	private int mob_no_limit;//	手机号频率值，以条为单位
 	
@@ -12,11 +12,11 @@ public class StrategyDO {
 	
 	private BigInteger blocktime;//	超过频率后被限制的时间，以秒为单位
 
-	public BigInteger getTimespan() {
+	public Long getTimespan() {
 		return timespan;
 	}
 
-	public void setTimespan(BigInteger timespan) {
+	public void setTimespan(Long timespan) {
 		this.timespan = timespan;
 	}
 

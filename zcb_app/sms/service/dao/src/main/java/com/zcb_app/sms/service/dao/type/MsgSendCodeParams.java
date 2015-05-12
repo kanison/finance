@@ -1,6 +1,5 @@
 package com.zcb_app.sms.service.dao.type;
 
-import java.math.BigInteger;
 import java.util.Date;
 
 import com.zcb_app.sms.service.facade.dataobject.SendCodeParams;
@@ -9,7 +8,7 @@ public class MsgSendCodeParams {
 
 	private String mobile;//手机号
 	
-	private BigInteger tmpl_id;//短信模板ID
+	private Long tmpl_id;//短信模板ID
 	
 	private String verify_code;//验证码
 	
@@ -37,11 +36,11 @@ public class MsgSendCodeParams {
 		this.mobile = mobile;
 	}
 
-	public BigInteger getTmpl_id() {
+	public Long getTmpl_id() {
 		return tmpl_id;
 	}
 
-	public void setTmpl_id(BigInteger tmpl_id) {
+	public void setTmpl_id(Long tmpl_id) {
 		this.tmpl_id = tmpl_id;
 	}
 

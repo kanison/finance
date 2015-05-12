@@ -6,7 +6,7 @@
 
 <sqlMap namespace="user">
 
-	<insert id="insertVerifyCode"
+	<insert id="insertMsgInfo"
 		parameterClass="com.zcb_app.sms.service.facade.dataobject.VerifyCodeInfoDO">
 		insert into sms_db_$db_idx$.t_mvcode_info_$tb_idx$(
 		Fmobile_no,
@@ -21,7 +21,7 @@
 		Fcheck_time,
 		Fexpired_time,
 		Fstandby1,
-		Fstandby1
+		Fstandby2
 		) values (
 		#fmobile_no#,
 		#ftmpl_id#,
@@ -35,7 +35,7 @@
 		#fcheck_time#,
 		ADDTIME(NOW(), #i_expired_time#),
 		#fstandby1#,
-		#fstandby1#
+		#fstandby2#
 		)
 		on duplicate key
 		update
@@ -51,7 +51,7 @@
 		Fcheck_time = #fcheck_time#,
 		Fexpired_time = ADDTIME(NOW(), #i_expired_time#),
 		Fstandby1 = #fstandby1#,
-		Fstandby1 = #fstandby1#
+		Fstandby2 = #fstandby2#
 	</insert>
 
 	<insert id="insertMsgLog"
@@ -61,17 +61,17 @@
 		Frela_key,Frela_info,Fchk_suc_times,
 		Fchk_err_times,Fclient_ip,Fsend_time,
 		Fcheck_time,
-		Fexpired_time,Fstandby1,Fstandby1)
+		Fexpired_time,Fstandby1,Fstandby2)
 		VALUES
 		(#fpkid#,#fmobile_no#,#ftmpl_id#,#fverify_code#,
 		#frela_key#,#frela_info#,#fchk_suc_times#,
 		#fchk_err_times#,#fclient_ip#,NOW(),
-		#fcheck_time#,#fexpired_time#,#fstandby1#,#fstandby1#)
+		#fcheck_time#,#fexpired_time#,#fstandby1#,#fstandby2#)
 	</insert>
 
 	<insert id="insertMobileLimit"
 		parameterClass="com.zcb_app.sms.service.facade.dataobject.MobileLimitDO">
-		INSERT INTO mv_db.t_mobile_limit
+		INSERT INTO sms_db.t_mobile_limit
 		(Fmobile_no,Ftmpl_id,Fblock_stime,Fblock_timespan)
 		VALUES
 		(#fmobile_no#,#ftmpl_id#,NOW(),#fblock_timespan#)
@@ -79,7 +79,7 @@
 
 	<insert id="insertIPLimit"
 		parameterClass="com.zcb_app.sms.service.facade.dataobject.IPLimitDO">
-		INSERT INTO mv_db.t_ip_limit
+		INSERT INTO sms_db.t_ip_limit
 		(Fclient_ip,Ftmpl_id,Fblock_stime,Fblock_timespan)
 		VALUES
 		(#fclient_ip#,#ftmpl_id#,NOW(),#fblock_timespan#)

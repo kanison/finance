@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -70,7 +71,7 @@ public class SMSServiceTemplateUtils {
 	 * @author Gu.Dongying 
 	 * @Date 2015年5月4日 上午11:56:24
 	 */
-	public static MsgTemplateDO getTemplate(BigInteger templateId){
+	public static MsgTemplateDO getTemplate(Long templateId){
 		if(SETTINGS == null){
 			initMsgSettings();
 		}
@@ -161,28 +162,51 @@ public class SMSServiceTemplateUtils {
 	 * @Date 2015年5月4日 上午11:06:52
 	 */
 	@SuppressWarnings("unchecked")
-	private static Map<BigInteger, MsgTemplateDO> buildTemplates(Element templatesEl) {
-		Map<BigInteger, MsgTemplateDO> templates = null;
+	private static Map<Long, MsgTemplateDO> buildTemplates(Element templatesEl) {
+		Map<Long, MsgTemplateDO> templates = null;
 		if (templatesEl != null) {
 			List<Element> items = templatesEl.elements(LBL_ITEM);
 			if (items != null && !items.isEmpty()) {
 				MsgTemplateDO template = null;
-				templates = new HashMap<BigInteger, MsgTemplateDO>();
+				templates = new HashMap<Long, MsgTemplateDO>();
+				
+				String authCodeLen = null;
+				String errChkTimes = null;
+				String expireTime = null;
+				String succChkTimes = null;
+				
 				for (Element item : items) {
 					try {
 						template = new MsgTemplateDO();
-						template.setAuth_code_len(Integer.valueOf(item
-								.attributeValue(LBL_TEMP_IM_USE_AUTH_CODE_LEN)));
-						template.setErr_chk_times(Integer.valueOf(item
-								.attributeValue(LBL_TEMP_IM_ERR_CHK_TIMES)));
-						template.setExpire_time(Integer.valueOf(item.attributeValue(LBL_TEMP_IM_EXPIRE_TIME)));
+						
+						authCodeLen = item.attributeValue(LBL_TEMP_IM_USE_AUTH_CODE_LEN);
+						if(StringUtils.isNotEmpty(authCodeLen) && StringUtils.isNotBlank(authCodeLen)){							
+							template.setAuth_code_len(Integer.valueOf(authCodeLen));
+						}
+						
+						errChkTimes = item.attributeValue(LBL_TEMP_IM_ERR_CHK_TIMES);
+						if(StringUtils.isNotEmpty(errChkTimes) && StringUtils.isNotBlank(errChkTimes)){							
+							template.setErr_chk_times(Integer.valueOf(errChkTimes));
+						}
+						
+						expireTime = item.attributeValue(LBL_TEMP_IM_EXPIRE_TIME);
+						if(StringUtils.isNotEmpty(expireTime) && StringUtils.isNotBlank(expireTime)){
+							template.setExpire_time(Integer.valueOf(expireTime));
+						}
+						
 						template.setId(item.attributeValue(LBL_TEMP_IM_ID));
-						template.setSucc_chk_times(Integer.valueOf(item
-								.attributeValue(LBL_TEMP_IM_SUCC_CHK_TIMES)));
+						
+						succChkTimes = item.attributeValue(LBL_TEMP_IM_SUCC_CHK_TIMES);
+						if(StringUtils.isNotEmpty(succChkTimes) && StringUtils.isNotBlank(succChkTimes)){							
+							template.setSucc_chk_times(Integer.valueOf(succChkTimes));
+						}
+						
 						template.setTmpl_text(item.attributeValue(LBL_TEMP_IM_USE_TMPL_TEXT));
+						
 						template.setUse_relakey(SMSServiceCommonConstant.BOOLEAN_VAL_TRUE.equals(item
 								.attributeValue(LBL_TEMP_IM_USE_RELAKEY)) ? true : false);
-						templates.put(new BigInteger(template.getId()), template);
+						
+						templates.put(new Long(template.getId()), template);
 					} catch (NumberFormatException e) {
 						e.printStackTrace();
 						continue;
@@ -216,7 +240,7 @@ public class SMSServiceTemplateUtils {
 						strategy.setBlocktime(new BigInteger(item.attributeValue(LBL_STR_IM_BLOCKTIME)));
 						strategy.setIp_limit(Integer.valueOf(item.attributeValue(LBL_STR_IM_IP_LIMIT)));
 						strategy.setMob_no_limit(Integer.valueOf(item.attributeValue(LBL_STR_IM_MOB_NO_LIMIT)));
-						strategy.setTimespan(new BigInteger(item.attributeValue(LBL_STR_IM_TIMESPAN)));
+						strategy.setTimespan(new Long(item.attributeValue(LBL_STR_IM_TIMESPAN)));
 						strategys.add(strategy);
 					} catch (NumberFormatException e) {
 						e.printStackTrace();
