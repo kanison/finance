@@ -18,4 +18,6 @@ public class SMSServiceCommonConstant {
 
 	public static final String DOLLAR_FLAG = "$";
 	public static final String SIMPLE_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	
+	public static final int USE_BAK_PORT = 1;//使用备用渠道发送短信
 }

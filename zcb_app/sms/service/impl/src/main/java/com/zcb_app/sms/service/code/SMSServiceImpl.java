@@ -104,7 +104,7 @@ public class SMSServiceImpl implements SMSServiceFacade {
 		// 5、根据模板和输入参数，生成短信内容
 		String msg = generateMsg(template.getTmpl_text(), tempValues);
 		// 6、调短信网关下发短信
-		sendMsg(params.getMobile(), msg);
+		sendMsg(params.getMobile(), msg, params.getUse_bak_port());
 	}
 
 	/**
@@ -154,17 +154,12 @@ public class SMSServiceImpl implements SMSServiceFacade {
 		checkIPInternalAuthorization(params.getClient_ip());
 		// 4、保存短信消息（将tmpl_value的值保存到Frela_info字段中），将历史的短信发送信息记录流水表中
 		MsgSendMessageParams msgParams = MsgSendMessageParams.valueOf(params);
-		try {
-			smsServiceDAO.saveMsgInfo(msgParams);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		smsServiceDAO.saveMsgInfo(msgParams);
 		// 5、根据模板和输入参数，生成短信内容
 		MsgTemplateDO template = SMSServiceTemplateUtils.getTemplate(params.getTmpl_id());
 		String msg = generateMsg(template.getTmpl_text(), params.getTmpl_value());
 		// 6、调短信网关下发短信
-		sendMsg(params.getMobile(), msg);
+		sendMsg(params.getMobile(), msg, params.getUse_bak_port());
 	}
 
 	/**
@@ -381,14 +376,18 @@ public class SMSServiceImpl implements SMSServiceFacade {
 	}
 
 	/**
-	 * 调短信网关下发短信
+	 * 调短信网关下发短信 TODO
 	 * @param mobileCode 手机号
 	 * @param msg 短信内容
 	 * @author Gu.Dongying 
 	 * @Date 2015年5月12日 上午11:59:14
 	 */
-	private void sendMsg(String mobileCode, String msg) {
-		System.out.println("短信发送成功 \n 手机号：" + mobileCode + "; \n短信内容：" + msg);
+	private void sendMsg(String mobileCode, String msg, int useBakPort) {
+		if(SMSServiceCommonConstant.USE_BAK_PORT == useBakPort){
+			System.out.println("使用备份渠道发送短信成功 \n 手机号：" + mobileCode + " \n短信内容：" + msg);
+		}else{			
+			System.out.println("短信发送成功 \n 手机号：" + mobileCode + " \n短信内容：" + msg);
+		}
 	}
 
 	/**
