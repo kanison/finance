@@ -480,6 +480,10 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 		user.setQuerylock(true);
 		//查询加锁用户交易账户
 		user = queryUserAccount(user);
+		if(user == null){
+			throw new AccountServiceRetException(
+					AccountServiceRetException.ERR_USER_ACCT_NOT_EXSIT, "交易账户不存在");
+		}
 		//判断用户的可用金额(非冻结余额)是否足够，不够报余额不足错误(总额减去已冻结金额必须大于等于冻结金额)
 		if(params.getFreeze_amt().compareTo(user.getBalance().subtract(user.getFreeze_balance())) > -1){
 			throw new AccountServiceRetException(
@@ -572,6 +576,10 @@ public class UserAccountIbatisImpl extends SqlMapClientDaoSupport implements
 		user.setQuerylock(true);
 		//查询加锁用户交易账户
 		user = queryUserAccount(user);
+		if(user == null){
+			throw new AccountServiceRetException(
+					AccountServiceRetException.ERR_USER_ACCT_NOT_EXSIT, "交易账户不存在");
+		}
 		//判断用户的冻结余额是否足够，不够报余额不足错误
 		if(unFreeze.getUnfreeze_amt().compareTo(user.getFreeze_balance()) == 1){
 			throw new AccountServiceRetException(
