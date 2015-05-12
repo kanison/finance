@@ -33,7 +33,6 @@ public class AccountServiceRetException  extends ErrorCodeException{
 	public static final String FREEZE_ID_ERROR="20020008";//解冻单号错误
 	public static final String FREEZE_BALANCE_ERROR="2002009";//解冻金额错误
 	public static final String FREEZE_STATUS_ERROR="2002012";//原冻结单状态错误
-	public static final String FREEZE_STATUS_ERROR2="2002013";//冻结单状态错误
 		
 	public static final String ERR_USER_NOT_EXSIT = "20020010";//用户不存在
 	public static final String ERR_USER_ACCT_NOT_EXSIT = "20020011";//用户现金账号不存在
