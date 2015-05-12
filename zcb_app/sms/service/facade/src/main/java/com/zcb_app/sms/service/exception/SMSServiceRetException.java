@@ -34,6 +34,10 @@ public class SMSServiceRetException  extends ErrorCodeException{
 	
 	public static final String ERR_EXCEED_IP_LIMIT = "300100013";//IP地址超过频率限制
 	
+	public static final String ERR_RELATION_KEY_NONE = "300100014";//关联Key必传
+	
+	public static final String ERR_RELATION_KEY = "300100015";//关联Key错误
+	
 	public SMSServiceRetException(String msg) {
 		super(msg);
 	}

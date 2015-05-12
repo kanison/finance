@@ -420,6 +420,17 @@ public class SMSServiceImpl implements SMSServiceFacade {
 			throw new SMSServiceRetException(SMSServiceRetException.ERR_VERIFY_CODE_TIMES, "验证码校验超过校验次数！");
 		}
 
+		//使用关联Key进行校验
+		if(template.isUse_relakey()){
+			if(StringUtils.isBlank(params.getRelation_key()) 
+					|| StringUtils.isEmpty(params.getRelation_key())){
+				throw new SMSServiceRetException(SMSServiceRetException.ERR_RELATION_KEY_NONE, "未传关联Key！");
+			}
+			if(!params.getRelation_key().equals(codeInfo.getFrela_key())){
+				throw new SMSServiceRetException(SMSServiceRetException.ERR_RELATION_KEY, "关联Key错误！");
+			}
+		}
+		
 		// 校验输入的验证码与下发的验证码是否相同，并更新验证相应的结果信息
 		if (!params.getVerify_code().equals(codeInfo.getFverify_code())) {
 			codeInfo.setFchk_err_times(codeInfo.getFchk_err_times() + 1);
