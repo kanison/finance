@@ -2,13 +2,13 @@ CREATE DATABASE IF NOT EXISTS `sms_db` DEFAULT CHARACTER SET utf8;
 
 USE `sms_db`
 
-DROP TABLE IF EXISTS `t_mvcode_log_yyyymm`;
+DROP TABLE IF EXISTS `t_mvcode_log_$YYYY$MM`;
 
-CREATE TABLE `t_mvcode_log_yyyymm` (
+CREATE TABLE `t_mvcode_log_$YYYY$MM` (
   `Fpkid` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '流水编号（自增主键）',
   `Fmobile_no` varchar(32) NOT NULL COMMENT '手机号码',
   `Ftmpl_id` bigint(20) NOT NULL COMMENT '短信模板ID',
-  `Fverify_code` varchar(16) NOT NULL COMMENT '验证码',
+  `Fverify_code` varchar(16) COMMENT '验证码',
   `Frela_key` varchar(128) DEFAULT NULL COMMENT '关联key',
   `Frela_info` varchar(1024) DEFAULT NULL COMMENT '关联存储的信息',
   `Fchk_suc_times` int(11) DEFAULT '0' COMMENT '校验成功的次数',
