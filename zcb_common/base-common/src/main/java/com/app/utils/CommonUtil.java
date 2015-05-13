@@ -1008,13 +1008,13 @@ public class CommonUtil {
 	}
 	public static String getDbIndexByMobile(String mobileNO){
 		int len = mobileNO.length();
-		if (len < 2)
+		if (len < 3)
 			return "";
 		
 		//为防止sql注入，强制检查是否为数字
 		char chAarray[] = new char[2];
-		chAarray[0] = mobileNO.charAt(0);
-		chAarray[1] = mobileNO.charAt(1);
+		chAarray[0] = mobileNO.charAt(len - 2);
+		chAarray[1] = mobileNO.charAt(len - 1);
 		
 		if (chAarray[0] > '9' || chAarray[0] < '0')
 			return "";
@@ -1030,7 +1030,7 @@ public class CommonUtil {
 			return "";
 		
 		//为防止sql注入，强制检查是否为数字
-		char ch1 = mobileNO.charAt(2);
+		char ch1 = mobileNO.charAt(len - 3);
 		
 		if (ch1 > '9' || ch1 < '0')
 			return "";
