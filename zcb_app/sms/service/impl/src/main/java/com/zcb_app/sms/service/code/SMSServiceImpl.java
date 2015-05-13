@@ -82,7 +82,7 @@ public class SMSServiceImpl implements SMSServiceFacade {
 		// 1、检查输入参数，手机号格式是否正确，模板是否配置
 		checkSendInParameters(params);
 		checkMobilephoneCode(params.getMobile());
-		checkTemplate(params.getTmpl_id());
+		checkTemplate(params.getTmpl_id(), true);
 		MsgSendCodeParams sParams = MsgSendCodeParams.valueOf(params);
 		// 2、按手机号和IP检查是否超过频率限制
 		ctrlSendCodeLimit(sParams);
@@ -124,7 +124,7 @@ public class SMSServiceImpl implements SMSServiceFacade {
 		// 检查输入参数，手机号格式是否正确，模板是否配置
 		checkVerifyInParameters(params);
 		checkMobilephoneCode(params.getMobile());
-		checkTemplate(params.getTmpl_id());
+		checkTemplate(params.getTmpl_id(), true);
 		// 校验验证码
 		MsgVerifyCodeParams vParams = MsgVerifyCodeParams.valueOf(params);
 		return checkVerifyCode(vParams);
@@ -149,7 +149,7 @@ public class SMSServiceImpl implements SMSServiceFacade {
 		// 2、检查输入参数，手机号格式是否正确，模板是否配置
 		checkSMSParams(params);
 		checkMobilephoneCode(params.getMobile());
-		checkTemplate(params.getTmpl_id());
+		checkTemplate(params.getTmpl_id(), false);
 		// 3、验证IP是否为内部授权IP（下发通知类的消息只有内部白名单的机器可以调用），不再进行频率限制控制。
 		checkIPInternalAuthorization(params.getClient_ip());
 		// 4、保存短信消息（将tmpl_value的值保存到Frela_info字段中），将历史的短信发送信息记录流水表中
@@ -262,9 +262,20 @@ public class SMSServiceImpl implements SMSServiceFacade {
 	 * @author Gu.Dongying
 	 * @Date 2015年4月30日 下午2:33:16
 	 */
-	private void checkTemplate(Long templateId) {
-		if (SMSServiceTemplateUtils.isTemplateExists(templateId)) {
-			throw new SMSServiceRetException(SMSServiceRetException.ERR_TEMPLATE_PARAMS, "短信模板未配置!");
+	private void checkTemplate(Long templateId, boolean checkAttrs) {
+		if (!SMSServiceTemplateUtils.isTemplateExists(templateId)) {
+			throw new SMSServiceRetException(SMSServiceRetException.ERR_TEMPLATE_NOT_EXISTS, "短信模板不存在!");
+		}
+		
+		MsgTemplateDO template = SMSServiceTemplateUtils.getTemplate(templateId);
+		if(StringUtils.isBlank(template.getTmpl_text()) && StringUtils.isEmpty(template.getTmpl_text())){
+			throw new SMSServiceRetException(SMSServiceRetException.ERR_TEMPLATE_PARAMS, "短信模板配置错误!");
+		}
+		if(checkAttrs && (template.getAuth_code_len() < 1 
+				|| template.getErr_chk_times() < 1 
+				|| template.getSucc_chk_times() < 1 
+				|| template.getExpire_time() < 1)){
+			throw new SMSServiceRetException(SMSServiceRetException.ERR_TEMPLATE_PARAMS, "短信模板配置错误!");
 		}
 	}
 

@@ -10,7 +10,7 @@ public class SMSServiceRetException  extends ErrorCodeException{
 	
 	public static final String ERR_MOBILE_PARAMS = "30010001";//手机号输入错误
 	
-	public static final String ERR_TEMPLATE_PARAMS = "30010002";//短信模板错误
+	public static final String ERR_TEMPLATE_PARAMS = "30010002";//短信模板配置错误
 	
 	public static final String ERR_CLIENT_IP_PARAMS = "30010003";//用户IP错误
 	
