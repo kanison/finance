@@ -17,6 +17,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import com.app.utils.CommonUtil;
+import com.zcb_app.sms.service.exception.SMSServiceRetException;
 import com.zcb_app.sms.service.facade.dataobject.MsgSettingsDO;
 import com.zcb_app.sms.service.facade.dataobject.MsgTemplateDO;
 import com.zcb_app.sms.service.facade.dataobject.StrategyDO;
@@ -71,13 +72,12 @@ public class SMSServiceTemplateUtils {
 	 * @Date 2015年5月4日 上午11:56:24
 	 */
 	public static MsgTemplateDO getTemplate(Long templateId){
-		if(SETTINGS == null){
-			initMsgSettings();
+		if(isTemplateExists(templateId)){
+			return SETTINGS.getTemplates().get(templateId);
+		}else{
+			throw new SMSServiceRetException(SMSServiceRetException.ERR_TEMPLATE_NOT_EXISTS, "短信模板不存在!");
 		}
-		if(SETTINGS == null || SETTINGS.getTemplates() == null){
-			return null;
-		}
-		return SETTINGS.getTemplates().get(templateId);
+		
 	}
 	
 	/**
@@ -87,7 +87,7 @@ public class SMSServiceTemplateUtils {
 	 * @author Gu.Dongying 
 	 * @Date 2015年5月4日 上午11:46:42
 	 */
-	public static boolean isTemplateExists(String templateId){
+	public static boolean isTemplateExists(Long templateId){
 		if(SETTINGS == null){
 			initMsgSettings();
 		}

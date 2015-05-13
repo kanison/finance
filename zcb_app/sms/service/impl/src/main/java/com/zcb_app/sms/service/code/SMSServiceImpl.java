@@ -263,7 +263,7 @@ public class SMSServiceImpl implements SMSServiceFacade {
 	 * @Date 2015年4月30日 下午2:33:16
 	 */
 	private void checkTemplate(Long templateId) {
-		if (SMSServiceTemplateUtils.isTemplateExists(templateId.toString())) {
+		if (SMSServiceTemplateUtils.isTemplateExists(templateId)) {
 			throw new SMSServiceRetException(SMSServiceRetException.ERR_TEMPLATE_PARAMS, "短信模板未配置!");
 		}
 	}
