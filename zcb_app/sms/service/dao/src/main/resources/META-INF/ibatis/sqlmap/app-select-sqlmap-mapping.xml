@@ -18,7 +18,7 @@
 		WHERE
 		Fmobile_no=#fmobile_no# 
 		AND Ftmpl_id=#ftmpl_id#
-		AND UNIX_TIMESTAMP(Fblock_stime) + Fblock_timespan <![CDATA[<]]> UNIX_TIMESTAMP(NOW())
+		AND UNIX_TIMESTAMP(NOW()) <![CDATA[<]]> UNIX_TIMESTAMP(Fblock_stime) + Fblock_timespan
 		ORDER BY Fpkid DESC
 		LIMIT 1
 	</select>
@@ -35,7 +35,7 @@
 		WHERE
 		Fclient_ip=#fclient_ip# 
 		AND Ftmpl_id=#ftmpl_id#
-		AND UNIX_TIMESTAMP(Fblock_stime) + Fblock_timespan <![CDATA[<]]> UNIX_TIMESTAMP(NOW())
+		AND UNIX_TIMESTAMP(NOW()) <![CDATA[<]]> UNIX_TIMESTAMP(Fblock_stime) + Fblock_timespan
 		ORDER BY Fpkid DESC
 		LIMIT 1
 	</select>
