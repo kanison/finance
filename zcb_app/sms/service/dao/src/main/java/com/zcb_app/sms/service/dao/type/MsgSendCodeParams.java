@@ -118,13 +118,13 @@ public class MsgSendCodeParams {
 	
 	public static MsgSendCodeParams valueOf(SendCodeParams params){
 		MsgSendCodeParams send = new MsgSendCodeParams();
-		send.setCheck_time(new Date());
+		//send.setCheck_time(new Date());
 		send.setClient_ip(params.getClient_ip());
 		send.setMobile(params.getMobile());
 		send.setRelation_key(params.getRelation_key());
 		send.setRelation_info(params.getRelation_info());
 		send.setTmpl_id(params.getTmpl_id());
-		send.setSend_time(new Date());
+		//send.setSend_time(new Date());
 		return send;
 	}
 	
