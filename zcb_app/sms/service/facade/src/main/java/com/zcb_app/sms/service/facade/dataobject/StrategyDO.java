@@ -1,6 +1,5 @@
 package com.zcb_app.sms.service.facade.dataobject;
 
-import java.math.BigInteger;
 
 public class StrategyDO {
 	
@@ -10,7 +9,7 @@ public class StrategyDO {
 	
 	private int ip_limit;//	ip频率值，以条为单位
 	
-	private BigInteger blocktime;//	超过频率后被限制的时间，以秒为单位
+	private Long blocktime;//	超过频率后被限制的时间，以秒为单位
 
 	public Long getTimespan() {
 		return timespan;
@@ -36,11 +35,11 @@ public class StrategyDO {
 		this.ip_limit = ip_limit;
 	}
 
-	public BigInteger getBlocktime() {
+	public Long getBlocktime() {
 		return blocktime;
 	}
 
-	public void setBlocktime(BigInteger blocktime) {
+	public void setBlocktime(Long blocktime) {
 		this.blocktime = blocktime;
 	}
 }

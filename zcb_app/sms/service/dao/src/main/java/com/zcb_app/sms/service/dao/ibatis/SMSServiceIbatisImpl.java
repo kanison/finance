@@ -261,7 +261,7 @@ public class SMSServiceIbatisImpl extends SqlMapClientDaoSupport implements
 					if (querySendCodeInfoMoblieCount(mobileSendInfo) >= strategy.getMob_no_limit()) {
 						try {
 							mobileLimit = new MobileLimitDO();
-							mobileLimit.setFblock_timespan(strategy.getTimespan());
+							mobileLimit.setFblock_timespan(strategy.getBlocktime());
 							mobileLimit.setFmobile_no(scParams.getMobile());
 							mobileLimit.setFtmpl_id(scParams.getTmpl_id());
 							addMobileLimitInfo(mobileLimit);
@@ -276,7 +276,7 @@ public class SMSServiceIbatisImpl extends SqlMapClientDaoSupport implements
 					if (querySendCodeInfoIPCount(ipSendInfo) >= strategy.getIp_limit()) {
 						try {
 							ipLimit = new IPLimitDO();
-							ipLimit.setFblock_timespan(strategy.getTimespan());
+							ipLimit.setFblock_timespan(strategy.getBlocktime());
 							ipLimit.setFclient_ip(scParams.getClient_ip());
 							ipLimit.setFtmpl_id(scParams.getTmpl_id());
 							addIPLimitInfo(ipLimit);
