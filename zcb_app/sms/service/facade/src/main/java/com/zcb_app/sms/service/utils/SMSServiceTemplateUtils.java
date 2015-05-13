@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -237,7 +236,7 @@ public class SMSServiceTemplateUtils {
 				for (Element item : items) {
 					try {
 						strategy = new StrategyDO();
-						strategy.setBlocktime(new BigInteger(item.attributeValue(LBL_STR_IM_BLOCKTIME)));
+						strategy.setBlocktime(new Long(item.attributeValue(LBL_STR_IM_BLOCKTIME)));
 						strategy.setIp_limit(Integer.valueOf(item.attributeValue(LBL_STR_IM_IP_LIMIT)));
 						strategy.setMob_no_limit(Integer.valueOf(item.attributeValue(LBL_STR_IM_MOB_NO_LIMIT)));
 						strategy.setTimespan(new Long(item.attributeValue(LBL_STR_IM_TIMESPAN)));
