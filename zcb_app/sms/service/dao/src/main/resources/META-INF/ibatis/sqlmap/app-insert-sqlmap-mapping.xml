@@ -65,7 +65,7 @@
 		VALUES
 		(#fpkid#,#fmobile_no#,#ftmpl_id#,#fverify_code#,
 		#frela_key#,#frela_info#,#fchk_suc_times#,
-		#fchk_err_times#,#fclient_ip#,NOW(),
+		#fchk_err_times#,#fclient_ip#,#fsend_time#,
 		#fcheck_time#,#fexpired_time#,#fstandby1#,#fstandby2#)
 	</insert>
 
