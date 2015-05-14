@@ -293,45 +293,42 @@ public class SMSServiceImpl implements SMSServiceFacade {
 		// 校验手机号是否在不受频率限制的白名单内
 		if (settings.getMob_no_whitelists() != null && !settings.getMob_no_whitelists().isEmpty()) {
 			final String mobile = sParams.getMobile();
-			if (CollectionUtils.exists(settings.getMob_no_whitelists(), new Predicate() {
+			if (!CollectionUtils.exists(settings.getMob_no_whitelists(), new Predicate() {
 				public boolean evaluate(Object object) {
 					return mobile.equals(object);
 				}
 			})) {
-				return;
+				// 查询手机号频率限制记录
+				MobileLimitDO mobileLimit = new MobileLimitDO();
+				mobileLimit.setFmobile_no(sParams.getMobile());
+				mobileLimit.setFtmpl_id(sParams.getTmpl_id());
+				MobileLimitDO currMobileLimit = smsServiceDAO.queryMobileLimit(mobileLimit);;
+				// 手机号超过频率限制
+				if (currMobileLimit != null) {
+					throw new SMSServiceRetException(SMSServiceRetException.ERR_EXCEED_MOBILE_NO_LIMIT, "手机号超过频率限制");
+				}
 			}
 		}
 		// 校验IP是否在不受频率限制的白名单内
 		if (settings.getIp_whitelists() != null && !settings.getIp_whitelists().isEmpty()) {
 			final String ip = sParams.getClient_ip();
-			if (CollectionUtils.exists(settings.getIp_whitelists(), new Predicate() {
+			if (!CollectionUtils.exists(settings.getIp_whitelists(), new Predicate() {
 				public boolean evaluate(Object object) {
 					return ip.equals(object);
 				}
 			})) {
-				return;
+				// 查询IP地址频率限制记录
+				IPLimitDO ipLimit = new IPLimitDO();
+				ipLimit.setFclient_ip(sParams.getClient_ip());
+				ipLimit.setFtmpl_id(sParams.getTmpl_id());
+				IPLimitDO currIPLimit = smsServiceDAO.queryIPLimit(ipLimit);
+				// IP地址超过频率限制
+				if (currIPLimit != null) {
+					throw new SMSServiceRetException(SMSServiceRetException.ERR_EXCEED_IP_LIMIT, "IP超过频率限制");
+				}
 			}
 		}
 
-		// 查询手机号频率限制记录
-		MobileLimitDO mobileLimit = new MobileLimitDO();
-		mobileLimit.setFmobile_no(sParams.getMobile());
-		mobileLimit.setFtmpl_id(sParams.getTmpl_id());
-		MobileLimitDO currMobileLimit = smsServiceDAO.queryMobileLimit(mobileLimit);;
-		// 手机号超过频率限制
-		if (currMobileLimit != null) {
-			throw new SMSServiceRetException(SMSServiceRetException.ERR_EXCEED_MOBILE_NO_LIMIT, "手机号超过频率限制");
-		}
-
-		// 查询IP地址频率限制记录
-		IPLimitDO ipLimit = new IPLimitDO();
-		ipLimit.setFclient_ip(sParams.getClient_ip());
-		ipLimit.setFtmpl_id(sParams.getTmpl_id());
-		IPLimitDO currIPLimit = smsServiceDAO.queryIPLimit(ipLimit);
-		// IP地址超过频率限制
-		if (currIPLimit != null) {
-			throw new SMSServiceRetException(SMSServiceRetException.ERR_EXCEED_IP_LIMIT, "IP超过频率限制");
-		}
 		// 更新频率信息
 		smsServiceDAO.modifySendCodeLimitInfo(sParams);
 	}
