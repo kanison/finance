@@ -1,5 +1,6 @@
 package com.zcb_app.sms.service.dao.type;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -52,10 +53,14 @@ public class MsgSendMessageParams {
 			if(tmpl_value.keySet() != null && !tmpl_value.keySet().isEmpty()){
 				StringBuilder sb = new StringBuilder();
 				Iterator<String> iterator = tmpl_value.keySet().iterator();
+				String value = null;
 				while(iterator.hasNext()){
-					sb.append(iterator.next());
-					sb.append(SMSServiceCommonConstant.EQUALITY_SIGN);
-					sb.append(this.tmpl_value.get(iterator.next()));
+					value = iterator.next();
+					if(value != null){
+						sb.append(value);
+						sb.append(SMSServiceCommonConstant.EQUALITY_SIGN);
+						sb.append(this.tmpl_value.get(value));
+					}
 				}
 			}
 		}
