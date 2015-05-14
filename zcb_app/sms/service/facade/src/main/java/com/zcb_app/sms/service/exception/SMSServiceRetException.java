@@ -40,6 +40,8 @@ public class SMSServiceRetException  extends ErrorCodeException{
 	
 	public static final String ERR_TEMPLATE_NOT_EXISTS = "300100016";//短信模板不存在
 	
+	public static final String ERR_VERIFYCODE_NOT_EXISTS = "300100017";//短信验证码已丢失
+	
 	public SMSServiceRetException(String msg) {
 		super(msg);
 	}

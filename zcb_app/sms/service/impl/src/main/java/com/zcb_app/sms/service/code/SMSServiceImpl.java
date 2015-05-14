@@ -416,6 +416,9 @@ public class SMSServiceImpl implements SMSServiceFacade {
 		codeInfo.setFmobile_no(params.getMobile());
 		codeInfo.setFtmpl_id(params.getTmpl_id());
 		codeInfo = smsServiceDAO.queryMsgInfo(codeInfo);
+		if(codeInfo == null){
+			throw new SMSServiceRetException(SMSServiceRetException.ERR_VERIFYCODE_NOT_EXISTS, "短信验证码已丢失!");
+		}
 		// 校验是否超过有效期；
 		if (codeInfo.getFexpired_time().getTime() < (new Date()).getTime()) {
 			throw new SMSServiceRetException(SMSServiceRetException.ERR_VERIFY_CODE_EXPIRED, "验证码已过期！");
