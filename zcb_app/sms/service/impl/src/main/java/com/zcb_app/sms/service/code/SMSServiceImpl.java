@@ -1,6 +1,7 @@
 package com.zcb_app.sms.service.code;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -100,6 +101,9 @@ public class SMSServiceImpl implements SMSServiceFacade {
 		smsServiceDAO.addSendInfo(sendInfo);
 
 		Map<String, String> tempValues = params.getTmpl_value();
+		if(tempValues == null){
+			tempValues = new HashMap<String, String>();
+		}
 		tempValues.put(PLACE_AUTH_CODE, verifyCode);
 		// 5、根据模板和输入参数，生成短信内容
 		String msg = generateMsg(template.getTmpl_text(), tempValues);
