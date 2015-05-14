@@ -258,7 +258,7 @@ public class SMSServiceIbatisImpl extends SqlMapClientDaoSupport implements
 				if (strategy != null) {
 					mobileSendInfo.setTimespan(strategy.getTimespan());
 					// 达到手机号频率受限峰值，添加受限记录
-					if (querySendCodeInfoMoblieCount(mobileSendInfo) >= strategy.getMob_no_limit()) {
+					if (querySendCodeInfoMoblieCount(mobileSendInfo) >= strategy.getMob_no_limit() - 1) {
 						try {
 							mobileLimit = new MobileLimitDO();
 							mobileLimit.setFblock_timespan(strategy.getBlocktime());
@@ -273,7 +273,7 @@ public class SMSServiceIbatisImpl extends SqlMapClientDaoSupport implements
 
 					ipSendInfo.setTimespan(strategy.getTimespan());
 					// 达到IP频率受限峰值，添加受限记录
-					if (querySendCodeInfoIPCount(ipSendInfo) >= strategy.getIp_limit()) {
+					if (querySendCodeInfoIPCount(ipSendInfo) >= strategy.getIp_limit() - 1) {
 						try {
 							ipLimit = new IPLimitDO();
 							ipLimit.setFblock_timespan(strategy.getBlocktime());
