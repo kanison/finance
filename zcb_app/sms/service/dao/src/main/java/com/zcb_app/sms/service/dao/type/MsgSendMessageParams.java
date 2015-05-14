@@ -1,6 +1,5 @@
 package com.zcb_app.sms.service.dao.type;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -62,6 +61,7 @@ public class MsgSendMessageParams {
 						sb.append(this.tmpl_value.get(value));
 					}
 				}
+				this.tmpl_value_str = sb.toString();
 			}
 		}
 	}
