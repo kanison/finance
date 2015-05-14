@@ -75,6 +75,12 @@
 		(Fmobile_no,Ftmpl_id,Fblock_stime,Fblock_timespan)
 		VALUES
 		(#fmobile_no#,#ftmpl_id#,NOW(),#fblock_timespan#)
+		on duplicate key
+		update
+		Fmobile_no = #fmobile_no#,
+		Ftmpl_id = #ftmpl_id#,
+		Fblock_stime = NOW(),
+		Fblock_timespan = #fblock_timespan#
 	</insert>
 
 	<insert id="insertIPLimit"
@@ -83,6 +89,12 @@
 		(Fclient_ip,Ftmpl_id,Fblock_stime,Fblock_timespan)
 		VALUES
 		(#fclient_ip#,#ftmpl_id#,NOW(),#fblock_timespan#)
+		on duplicate key
+		update
+		Fclient_ip = #fclient_ip#,
+		Ftmpl_id = #ftmpl_id#,
+		Fblock_stime = NOW(),
+		Fblock_timespan = #fblock_timespan#
 	</insert>
 
 	<insert id="insertSendInfo"
