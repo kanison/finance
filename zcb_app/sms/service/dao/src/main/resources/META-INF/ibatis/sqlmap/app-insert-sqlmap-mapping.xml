@@ -14,12 +14,14 @@
 		Fverify_code,
 		Frela_key,
 		Frela_info,
-		Fchk_suc_times,
-		Fchk_err_times,
 		Fclient_ip,
 		Fsend_time,
 		Fcheck_time,
+		<isNotEqual property="i_expired_time" compareValue="0">
+		Fchk_suc_times,
+		Fchk_err_times,
 		Fexpired_time,
+		</isNotEqual>
 		Fstandby1,
 		Fstandby2
 		) values (
@@ -28,12 +30,14 @@
 		#fverify_code#,
 		#frela_key#,
 		#frela_info#,
-		#fchk_suc_times#,
-		#fchk_err_times#,
 		#fclient_ip#,
 		NOW(),
 		#fcheck_time#,
+		<isNotEqual property="i_expired_time" compareValue="0">
+		#fchk_suc_times#,
+		#fchk_err_times#,
 		ADDTIME(NOW(), #i_expired_time#),
+		</isNotEqual>
 		#fstandby1#,
 		#fstandby2#
 		)
@@ -44,12 +48,14 @@
 		Fverify_code = #fverify_code#,
 		Frela_key = #frela_key#,
 		Frela_info = #frela_info#,
-		Fchk_suc_times = #fchk_suc_times#,
-		Fchk_err_times = #fchk_err_times#,
 		Fclient_ip = #fclient_ip#,
 		Fsend_time = NOW(),
 		Fcheck_time = #fcheck_time#,
+		<isNotEqual property="i_expired_time" compareValue="0">
+		Fchk_suc_times = #fchk_suc_times#,
+		Fchk_err_times = #fchk_err_times#,
 		Fexpired_time = ADDTIME(NOW(), #i_expired_time#),
+		</isNotEqual>
 		Fstandby1 = #fstandby1#,
 		Fstandby2 = #fstandby2#
 	</insert>
