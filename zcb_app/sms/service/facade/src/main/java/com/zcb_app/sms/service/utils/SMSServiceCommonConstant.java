@@ -8,6 +8,8 @@ public class SMSServiceCommonConstant {
 
 	// 等号
 	public static final String EQUALITY_SIGN = "=";
+	// 分号
+	public static final String SEMICOLON_SIGN = ";";
 	// true字符串
 	public static final String BOOLEAN_VAL_TRUE = "true";
 	// 手机号正则表达式

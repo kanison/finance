@@ -59,6 +59,7 @@ public class MsgSendMessageParams {
 						sb.append(value);
 						sb.append(SMSServiceCommonConstant.EQUALITY_SIGN);
 						sb.append(this.tmpl_value.get(value));
+						sb.append(SMSServiceCommonConstant.SEMICOLON_SIGN);
 					}
 				}
 				this.tmpl_value_str = sb.toString();
