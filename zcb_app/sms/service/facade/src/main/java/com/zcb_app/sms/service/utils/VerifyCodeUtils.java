@@ -7,12 +7,12 @@ package com.zcb_app.sms.service.utils;
 public class VerifyCodeUtils {
 	
 	/**
-	 * 生成验证码
+	 * 生成验证码(含字母)
 	 * @return String 验证码
 	 * @author Gu.Dongying 
 	 * @Date 2015年5月4日 下午1:42:45
 	 */
-	public static String generateVerifyCode(int verifyCodeLen){
+	public static String generateVerifyCodeLetters(int verifyCodeLen){
 		StringBuilder sb = new StringBuilder();
 		long rand;
 		for(int i = 0; i < verifyCodeLen; i++){			
@@ -24,6 +24,22 @@ public class VerifyCodeUtils {
 			}else{
 				sb.append((char)(rand + 61));
 			}
+		}
+		return sb.toString();
+	}
+	
+	/**
+	 * 生成验证码
+	 * @return String 验证码
+	 * @author Gu.Dongying 
+	 * @Date 2015年5月4日 下午1:42:45
+	 */
+	public static String generateVerifyCode(int verifyCodeLen){
+		StringBuilder sb = new StringBuilder();
+		long rand;
+		for(int i = 0; i < verifyCodeLen; i++){			
+			rand = Math.round(Math.random()*9);
+			sb.append(rand);
 		}
 		return sb.toString();
 	}
