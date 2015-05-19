@@ -17,6 +17,8 @@ import com.zcb_app.sms.service.dao.type.MsgSendMessageParams;
 import com.zcb_app.sms.service.dao.type.MsgVerifyCodeParams;
 import com.zcb_app.sms.service.exception.SMSServiceRetException;
 import com.zcb_app.sms.service.facade.SMSServiceFacade;
+import com.zcb_app.sms.service.facade.dataobject.IPLimitDO;
+import com.zcb_app.sms.service.facade.dataobject.MobileLimitDO;
 import com.zcb_app.sms.service.facade.dataobject.MsgSettingsDO;
 import com.zcb_app.sms.service.facade.dataobject.MsgTemplateDO;
 import com.zcb_app.sms.service.facade.dataobject.SendCodeParams;
@@ -84,7 +86,7 @@ public class SMSServiceImpl implements SMSServiceFacade {
 		checkTemplate(params.getTmpl_id(), true);
 		MsgSendCodeParams sParams = MsgSendCodeParams.valueOf(params);
 		// 2、按手机号和IP检查是否超过频率限制
-		smsServiceDAO.ctrlSendCodeLimit(sParams);
+		ctrlSendCodeLimit(sParams);
 
 		// 3、生成验证码;4、保存验证码，将历史的验证码信息记录流水表中
 		MsgTemplateDO template = SMSServiceTemplateUtils.getTemplate(params.getTmpl_id());
@@ -281,6 +283,62 @@ public class SMSServiceImpl implements SMSServiceFacade {
 		}
 	}
 
+	/**
+	 * 1、排除是否手机号和IP在不受频率限制的白名单内<br>
+	 * 2、按手机号和IP检查是否超过频率限制，并更新频率信息
+	 * 
+	 * @param sParams
+	 *            code:手机号 clientIP:手机号对应的客户端IP
+	 * @author Gu.Dongying
+	 * @Date 2015年4月30日 下午3:08:07
+	 */
+	private void ctrlSendCodeLimit(MsgSendCodeParams sParams) {
+		synchronized (sParams) {			
+			MsgSettingsDO settings = SMSServiceTemplateUtils.readMsgSettings();
+			// 校验手机号是否在不受频率限制的白名单内
+			if (settings.getMob_no_whitelists() != null && !settings.getMob_no_whitelists().isEmpty()) {
+				final String mobile = sParams.getMobile();
+				if (!CollectionUtils.exists(settings.getMob_no_whitelists(), new Predicate() {
+					public boolean evaluate(Object object) {
+						return mobile.equals(object);
+					}
+				})) {
+					// 查询手机号频率限制记录
+					MobileLimitDO mobileLimit = new MobileLimitDO();
+					mobileLimit.setFmobile_no(sParams.getMobile());
+					mobileLimit.setFtmpl_id(sParams.getTmpl_id());
+					MobileLimitDO currMobileLimit = smsServiceDAO.queryMobileLimit(mobileLimit);;
+					// 手机号超过频率限制
+					if (currMobileLimit != null) {
+						throw new SMSServiceRetException(SMSServiceRetException.ERR_EXCEED_MOBILE_NO_LIMIT, "手机号超过频率限制");
+					}
+				}
+			}
+			// 校验IP是否在不受频率限制的白名单内
+			if (settings.getIp_whitelists() != null && !settings.getIp_whitelists().isEmpty()) {
+				final String ip = sParams.getClient_ip();
+				if (!CollectionUtils.exists(settings.getIp_whitelists(), new Predicate() {
+					public boolean evaluate(Object object) {
+						return ip.equals(object);
+					}
+				})) {
+					// 查询IP地址频率限制记录
+					IPLimitDO ipLimit = new IPLimitDO();
+					ipLimit.setFclient_ip(sParams.getClient_ip());
+					ipLimit.setFtmpl_id(sParams.getTmpl_id());
+					IPLimitDO currIPLimit = smsServiceDAO.queryIPLimit(ipLimit);
+					// IP地址超过频率限制
+					if (currIPLimit != null) {
+						throw new SMSServiceRetException(SMSServiceRetException.ERR_EXCEED_IP_LIMIT, "IP超过频率限制");
+					}
+				}
+			}
+			
+			// 更新频率信息
+			smsServiceDAO.modifySendCodeLimitInfo(sParams);
+		}
+	}
+	
 	/**
 	 * 生成验证码, 保存验证码，将历史的验证码信息记录流水表中
 	 * 
