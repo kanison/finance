@@ -90,11 +90,14 @@ public interface SMSServiceDAO {
 	public void addIPLimitInfo(IPLimitDO ipLimit);
 	
 	/**
-	 * 更新发送短信的频率限制信息
-	 * @param scParams
-	 * @author Gu.Dongying 
-	 * @Date 2015年5月6日 上午10:36:33
+	 * 1、排除是否手机号和IP在不受频率限制的白名单内<br>
+	 * 2、按手机号和IP检查是否超过频率限制，并更新频率信息
+	 * 
+	 * @param sParams
+	 *            code:手机号 clientIP:手机号对应的客户端IP
+	 * @author Gu.Dongying
+	 * @Date 2015年4月30日 下午3:08:07
 	 */
-	public void modifySendCodeLimitInfo(MsgSendCodeParams scParams);
+	public void ctrlSendCodeLimit(MsgSendCodeParams sParams);
 	
 }
