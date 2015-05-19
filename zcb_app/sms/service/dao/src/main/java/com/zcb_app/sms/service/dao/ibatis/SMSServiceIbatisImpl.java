@@ -1,13 +1,17 @@
 package com.zcb_app.sms.service.dao.ibatis;
 
+import java.sql.SQLException;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.orm.ibatis.SqlMapClientTemplate;
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ibatis.sqlmap.client.SqlMapClient;
 import com.zcb_app.sms.service.dao.SMSServiceDAO;
 import com.zcb_app.sms.service.dao.type.MsgSendCodeParams;
 import com.zcb_app.sms.service.dao.type.MsgSendMessageParams;
@@ -107,10 +111,11 @@ public class SMSServiceIbatisImpl extends SqlMapClientDaoSupport implements
 	 * @param mobileLimit 手机号、模板ID
 	 * @return MobileLimitDO
 	 * @author Gu.Dongying 
+	 * @throws SQLException 
 	 * @Date 2015年5月5日 上午9:43:14
 	 */
-	public MobileLimitDO queryMobileLimit(MobileLimitDO mobileLimit){
-		SqlMapClientTemplate client = getSqlMapClientTemplate();
+	private MobileLimitDO queryMobileLimit(SqlMapClient client, MobileLimitDO mobileLimit) throws SQLException{
+		//SqlMapClientTemplate client = getSqlMapClientTemplate();
 		MobileLimitDO mobile = (MobileLimitDO)client.queryForObject("queryMobileLimit", mobileLimit);
 		return mobile;
 	}
@@ -120,10 +125,11 @@ public class SMSServiceIbatisImpl extends SqlMapClientDaoSupport implements
 	 * @param ipLimit IP、模板ID
 	 * @return IPLimitDO
 	 * @author Gu.Dongying 
+	 * @throws SQLException 
 	 * @Date 2015年5月5日 上午9:43:14
 	 */
-	public IPLimitDO queryIPLimit(IPLimitDO ipLimit){
-		SqlMapClientTemplate client = getSqlMapClientTemplate();
+	private IPLimitDO queryIPLimit(SqlMapClient client, IPLimitDO ipLimit) throws SQLException{
+		//SqlMapClientTemplate client = getSqlMapClientTemplate();
 		IPLimitDO ip = (IPLimitDO)client.queryForObject("queryIPLimit", ipLimit);
 		return ip;
 	}
@@ -234,10 +240,10 @@ public class SMSServiceIbatisImpl extends SqlMapClientDaoSupport implements
 	/** 
 	 * 更新发送验证码频率限制的信息
 	 * @author Gu.Dongying 
+	 * @throws SQLException 
 	 * @Date 2015年5月6日 上午10:37:25
 	 */
-	@Transactional
-	public void modifySendCodeLimitInfo(MsgSendCodeParams scParams) {
+	private void modifySendCodeLimitInfo(SqlMapClient client,MsgSendCodeParams scParams) throws SQLException {
 		MsgSettingsDO settings = SMSServiceTemplateUtils.readMsgSettings();
 		List<StrategyDO> strategys = settings.getStrategys();
 		if (strategys != null && !strategys.isEmpty()) {
@@ -257,7 +263,7 @@ public class SMSServiceIbatisImpl extends SqlMapClientDaoSupport implements
 				if (strategy != null) {
 					mobileSendInfo.setTimespan(strategy.getTimespan());
 					// 达到手机号频率受限峰值，添加受限记录
-					if (querySendCodeInfoMoblieCount(mobileSendInfo) >= strategy.getMob_no_limit() - 1) {
+					if (querySendCodeInfoMoblieCount(client, mobileSendInfo) >= strategy.getMob_no_limit() - 1) {
 						try {
 							mobileLimit = new MobileLimitDO();
 							mobileLimit.setFblock_timespan(strategy.getBlocktime());
@@ -272,7 +278,7 @@ public class SMSServiceIbatisImpl extends SqlMapClientDaoSupport implements
 
 					ipSendInfo.setTimespan(strategy.getTimespan());
 					// 达到IP频率受限峰值，添加受限记录
-					if (querySendCodeInfoIPCount(ipSendInfo) >= strategy.getIp_limit() - 1) {
+					if (querySendCodeInfoIPCount(client, ipSendInfo) >= strategy.getIp_limit() - 1) {
 						try {
 							ipLimit = new IPLimitDO();
 							ipLimit.setFblock_timespan(strategy.getBlocktime());
@@ -290,17 +296,95 @@ public class SMSServiceIbatisImpl extends SqlMapClientDaoSupport implements
 		
 	}
 	
-	private int querySendCodeInfoMoblieCount(SendInfoDO sendInfo){
-		SqlMapClientTemplate client = getSqlMapClientTemplate();
-		sendInfo.genDataTableIndex();
-		int count = (Integer)client.queryForObject("querySendCodeInfoMoblieCount", sendInfo);
-		return count;
+	/**
+	 * 1、排除是否手机号和IP在不受频率限制的白名单内<br>
+	 * 2、按手机号和IP检查是否超过频率限制，并更新频率信息
+	 * 
+	 * @param sParams
+	 *            code:手机号 clientIP:手机号对应的客户端IP
+	 * @author Gu.Dongying
+	 * @Date 2015年4月30日 下午3:08:07
+	 */
+	//@Transactional
+	public synchronized void ctrlSendCodeLimit(MsgSendCodeParams sParams) {
+		SqlMapClient sqlMapClient = this.getSqlMapClient();
+		try {
+			sqlMapClient.startTransaction();
+			
+			MsgSettingsDO settings = SMSServiceTemplateUtils.readMsgSettings();
+			// 校验手机号是否在不受频率限制的白名单内
+			if (settings.getMob_no_whitelists() != null && !settings.getMob_no_whitelists().isEmpty()) {
+				final String mobile = sParams.getMobile();
+				if (!CollectionUtils.exists(settings.getMob_no_whitelists(), new Predicate() {
+					public boolean evaluate(Object object) {
+						return mobile.equals(object);
+					}
+				})) {
+					// 查询手机号频率限制记录
+					MobileLimitDO mobileLimit = new MobileLimitDO();
+					mobileLimit.setFmobile_no(sParams.getMobile());
+					mobileLimit.setFtmpl_id(sParams.getTmpl_id());
+					MobileLimitDO currMobileLimit = queryMobileLimit(sqlMapClient, mobileLimit);;
+					// 手机号超过频率限制
+					if (currMobileLimit != null) {
+						throw new SMSServiceRetException(SMSServiceRetException.ERR_EXCEED_MOBILE_NO_LIMIT, "手机号超过频率限制");
+					}
+				}
+			}
+			// 校验IP是否在不受频率限制的白名单内
+			if (settings.getIp_whitelists() != null && !settings.getIp_whitelists().isEmpty()) {
+				final String ip = sParams.getClient_ip();
+				if (!CollectionUtils.exists(settings.getIp_whitelists(), new Predicate() {
+					public boolean evaluate(Object object) {
+						return ip.equals(object);
+					}
+				})) {
+					// 查询IP地址频率限制记录
+					IPLimitDO ipLimit = new IPLimitDO();
+					ipLimit.setFclient_ip(sParams.getClient_ip());
+					ipLimit.setFtmpl_id(sParams.getTmpl_id());
+					IPLimitDO currIPLimit = queryIPLimit(sqlMapClient, ipLimit);
+					// IP地址超过频率限制
+					if (currIPLimit != null) {
+						throw new SMSServiceRetException(SMSServiceRetException.ERR_EXCEED_IP_LIMIT, "IP超过频率限制");
+					}
+				}
+			}
+			
+			// 更新频率信息
+			modifySendCodeLimitInfo(sqlMapClient, sParams);
+			
+			// 记录下发的短信记录
+			SendInfoDO sendInfo = new SendInfoDO();
+			sendInfo.setFclient_ip(sParams.getClient_ip());
+			sendInfo.setFmobile_no(sParams.getMobile());
+			sendInfo.setFtmpl_id(sParams.getTmpl_id());
+			sendInfo.genDataTableIndex();
+			sqlMapClient.insert("insertSendInfo", sendInfo);
+			
+			sqlMapClient.commitTransaction();
+		} catch (SQLException e) {
+			throw new SMSServiceRetException(SMSServiceRetException.SYSTEM_ERROR, "频率限制系统错误");
+		}finally{
+			try {
+				sqlMapClient.endTransaction();
+			} catch (SQLException e) {
+				throw new SMSServiceRetException(SMSServiceRetException.SYSTEM_ERROR, "频率限制系统错误");
+			}
+		}
 	}
 	
-	private int querySendCodeInfoIPCount(SendInfoDO sendInfo){
-		SqlMapClientTemplate client = getSqlMapClientTemplate();
+	private int querySendCodeInfoMoblieCount(SqlMapClient client, SendInfoDO sendInfo) throws SQLException {
+		// SqlMapClientTemplate client = getSqlMapClientTemplate();
 		sendInfo.genDataTableIndex();
-		int count = (Integer)client.queryForObject("querySendCodeInfoIPCount", sendInfo);
+		int count = (Integer) client.queryForObject("querySendCodeInfoMoblieCount", sendInfo);
+		return count;
+	}
+
+	private int querySendCodeInfoIPCount(SqlMapClient client, SendInfoDO sendInfo) throws SQLException {
+		// SqlMapClientTemplate client = getSqlMapClientTemplate();
+		sendInfo.genDataTableIndex();
+		int count = (Integer) client.queryForObject("querySendCodeInfoIPCount", sendInfo);
 		return count;
 	}
 	
